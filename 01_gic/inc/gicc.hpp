@@ -1,15 +1,13 @@
-#pragma once 
+#pragma once
 
 #include <cstddef>
 #include <cstdint>
 
 namespace work {
 class GICD {
-public:
-    GICD() {
-    }
-    ~GICD() {
-    }
+  public:
+    GICD() {}
+    ~GICD() {}
 
     void init();
     void enable(int intno);
@@ -17,11 +15,9 @@ public:
 };
 
 class GICC {
-public:
-    GICC() {
-    }
-    ~GICC() {
-    }
+  public:
+    GICC() {}
+    ~GICC() {}
 
     void init();
     void enable();
