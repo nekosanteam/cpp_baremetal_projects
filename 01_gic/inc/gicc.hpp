@@ -5,9 +5,11 @@
 
 namespace work {
 class GICD {
-  public:
-    GICD() {}
-    ~GICD() {}
+public:
+    GICD() {
+    }
+    ~GICD() {
+    }
 
     void init();
     void enable(int intno);
@@ -15,9 +17,11 @@ class GICD {
 };
 
 class GICC {
-  public:
-    GICC() {}
-    ~GICC() {}
+public:
+    GICC() {
+    }
+    ~GICC() {
+    }
 
     void init();
     void enable();

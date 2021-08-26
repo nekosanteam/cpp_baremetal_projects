@@ -3,3 +3,8 @@ BasedOnStyle: LLVM
 IndentWidth: 4
 ColumnLimit: 130
 ---
+Language: Cpp
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+...

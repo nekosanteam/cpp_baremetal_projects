@@ -7,7 +7,7 @@
 namespace work {
 
 class UART {
-  public:
+public:
     UART();
     virtual ~UART();
     virtual void init() = 0;

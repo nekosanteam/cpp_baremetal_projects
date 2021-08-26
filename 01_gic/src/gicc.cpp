@@ -59,11 +59,11 @@ constexpr Register<GICD_BASE, 0x0FF0> GICD_CIDR0{};
 constexpr Register<GICD_BASE, 0x0FF4> GICD_CIDR1{};
 constexpr Register<GICD_BASE, 0x0FF8> GICD_CIDR2{};
 constexpr Register<GICD_BASE, 0x0FFC> GICD_CIDR3{};
-} // v2
+} // namespace v2
 constexpr RegisterArray64<GICD_BASE, 0x6000, 960> GICD_IROUTER{}; // GICv3 only.
-constexpr Register<GICD_BASE, 0xC000> GICD_ESTATUSR{}; // GICv3 only.
-constexpr Register<GICD_BASE, 0xC004> GICD_ERRTESTR{}; // GICv3 only.
-constexpr RegisterArray<GICD_BASE, 0xC084, 30> GICD_SPISR{}; // GICv3 only.
+constexpr Register<GICD_BASE, 0xC000> GICD_ESTATUSR{};            // GICv3 only.
+constexpr Register<GICD_BASE, 0xC004> GICD_ERRTESTR{};            // GICv3 only.
+constexpr RegisterArray<GICD_BASE, 0xC084, 30> GICD_SPISR{};      // GICv3 only.
 namespace v3 {
 constexpr Register<GICD_BASE, 0xFFD0> GICD_PIDR4{};
 constexpr Register<GICD_BASE, 0xFFD4> GICD_PIDR5{};
@@ -77,7 +77,7 @@ constexpr Register<GICD_BASE, 0xFFF0> GICD_CIDR0{};
 constexpr Register<GICD_BASE, 0xFFF4> GICD_CIDR1{};
 constexpr Register<GICD_BASE, 0xFFF8> GICD_CIDR2{};
 constexpr Register<GICD_BASE, 0xFFFC> GICD_CIDR3{};
-} // v3
+} // namespace v3
 
 // GICC Registers (GICv2)
 constexpr Register<GICC_BASE, 0x0000> GICC_CTLR{};
@@ -96,17 +96,22 @@ constexpr Register<GICC_BASE, 0x00E0> GICC_NSAPR0{};
 constexpr Register<GICC_BASE, 0x00FC> GICC_IIDR{};
 constexpr Register<GICC_BASE, 0x1000> GICC_DIR{};
 
+void GICD::init() {
+}
 
-void GICD::init() {}
+void GICD::enable(int intno) {
+}
 
-void GICD::enable(int intno) {}
+void GICD::disable(int intno) {
+}
 
-void GICD::disable(int intno) {}
+void GICC::init() {
+}
 
-void GICC::init() {}
+void GICC::enable() {
+}
 
-void GICC::enable() {}
-
-void GICC::disable() {}
+void GICC::disable() {
+}
 
 } // namespace work
