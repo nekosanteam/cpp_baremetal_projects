@@ -7,35 +7,49 @@
 namespace work {
 
 namespace MMIO {
+using Offset  = unsigned int;
+
 using PhyAddr = std::uintptr_t;
-using Offset = unsigned int;
-
-template <PhyAddr base, Offset offset, typename Access = std::uint32_t> class Register {
+template <PhyAddr ptr>
+class PhyBase {
 public:
-    static inline Access get() {
-        return *(reinterpret_cast<volatile Access *>(base + offset));
-    }
-
-    static inline Access set(Access val) {
-        *(reinterpret_cast<volatile Access *>(base + offset)) = val;
-    }
+	const static PhyAddr base_{ptr};
 };
 
-template <PhyAddr base, Offset offset> using Register64 = Register<base, offset, std::uint64_t>;
-
-template <PhyAddr base, Offset offset, unsigned int members, typename Access = std::uint32_t> class RegisterArray {
+using MmapAddr = std::uintptr_t;
+template <int N>
+class MmapBase {
 public:
-    static inline Access get(int num) {
-        return *(reinterpret_cast<volatile Access *>(base + offset + num * sizeof(Access)));
-    }
-
-    static inline Access set(int num, Access val) {
-        *(reinterpret_cast<volatile Access *>(base + offset + num * sizeof(Access))) = val;
-    }
+    static MmapAddr base_;
 };
 
-template <PhyAddr base, Offset offset, unsigned int members>
-using RegisterArray64 = RegisterArray<base, offset, members, std::uint64_t>;
+template <class Base, Offset offset, typename Access = std::uint32_t>
+class Register {
+public:
+	static inline Access get() { return *(reinterpret_cast<volatile Access*>(Base::base_ + offset)); }
+
+	static inline Access set(Access val) { *(reinterpret_cast<volatile Access*>(Base::base_ + offset)) = val; }
+};
+
+template <class Base, Offset offset>
+using Register64 = Register<Base, offset, std::uint64_t>;
+
+template <class Base, Offset offset, unsigned int members, typename Access = std::uint32_t>
+class RegisterArray {
+public:
+	static inline Access get(int num)
+	{
+		return *(reinterpret_cast<volatile Access*>(Base::base_ + offset + num * sizeof(Access)));
+	}
+
+	static inline Access set(int num, Access val)
+	{
+		*(reinterpret_cast<volatile Access*>(Base::base_ + offset + num * sizeof(Access))) = val;
+	}
+};
+
+template <class Base, Offset offset, unsigned int members>
+using RegisterArray64 = RegisterArray<Base, offset, members, std::uint64_t>;
 
 } // namespace MMIO
 } // namespace work
