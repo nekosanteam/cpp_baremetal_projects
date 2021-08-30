@@ -7,28 +7,36 @@
 namespace work {
 
 namespace MMIO {
-using Offset  = unsigned int;
+using Offset = unsigned int;
 
 using PhyAddr = std::uintptr_t;
 template <PhyAddr ptr>
 class PhyBase {
 public:
-	const static PhyAddr base_{ptr};
+	const static PhyAddr base_ { ptr };
 };
 
 using MmapAddr = std::uintptr_t;
 template <int N>
 class MmapBase {
 public:
-    static MmapAddr base_;
+	static MmapAddr base_;
 };
 
 template <class Base, Offset offset, typename Access = std::uint32_t>
 class Register {
 public:
-	static inline Access get() { return *(reinterpret_cast<volatile Access*>(Base::base_ + offset)); }
+	static inline Access get()
+	{
+		Access val = *(reinterpret_cast<volatile Access*>(Base::base_ + offset));
+		return val;
+	}
 
-	static inline Access set(Access val) { *(reinterpret_cast<volatile Access*>(Base::base_ + offset)) = val; }
+	static inline Access set(Access val)
+	{
+		*(reinterpret_cast<volatile Access*>(Base::base_ + offset)) = val;
+		return val;
+	}
 };
 
 template <class Base, Offset offset>
@@ -39,12 +47,14 @@ class RegisterArray {
 public:
 	static inline Access get(int num)
 	{
-		return *(reinterpret_cast<volatile Access*>(Base::base_ + offset + num * sizeof(Access)));
+	    Access val = *(reinterpret_cast<volatile Access*>(Base::base_ + offset + num * sizeof(Access)));
+		return val;
 	}
 
 	static inline Access set(int num, Access val)
 	{
 		*(reinterpret_cast<volatile Access*>(Base::base_ + offset + num * sizeof(Access))) = val;
+		return val;
 	}
 };
 
