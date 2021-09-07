@@ -1,0 +1,7 @@
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
+set(CLANG_TRIPLE "aarch64-linux-gnu")
+set(CLANG_VERSION "-13")
+set(CLANG_C_FLAGS_ADD -ffreestanding)
+set(CLANG_CXX_FLAGS_ADD -ffreestanding)
+include(_clang-common)

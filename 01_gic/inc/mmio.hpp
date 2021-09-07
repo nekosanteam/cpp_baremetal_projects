@@ -7,9 +7,9 @@
 namespace work {
 
 namespace MMIO {
-using Offset = unsigned int;
-
+using Offset  = unsigned int;
 using PhyAddr = std::uintptr_t;
+
 template <PhyAddr ptr>
 class PhyBase {
 public:
@@ -47,7 +47,7 @@ class RegisterArray {
 public:
 	static inline Access get(int num)
 	{
-	    Access val = *(reinterpret_cast<volatile Access*>(Base::base_ + offset + num * sizeof(Access)));
+		Access val = *(reinterpret_cast<volatile Access*>(Base::base_ + offset + num * sizeof(Access)));
 		return val;
 	}
 
