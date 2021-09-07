@@ -4,8 +4,10 @@ SECTIONS
 {
     . = 0x80000;
 
+    __text_start = .;
     .text : { *(.text*) }
     . = ALIGN(4);
+    __text_end = .;
 
     __rodata_start = .;
     .rodata : { *(.data*) }
@@ -21,4 +23,13 @@ SECTIONS
     .bss : { *(.bss*) }
     . = ALIGN(4);
     __bss_end = .;
+
+    __stack_start = .;
+    stack_top = .;
+    . = . + 2048;
+    . = . + 2048;
+    . = . + 2048;
+    . = . + 2048;
+    . = ALIGN(8);
+    __stack_end = .;
 }
