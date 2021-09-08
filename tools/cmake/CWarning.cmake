@@ -8,11 +8,11 @@ set(CWARNING_MSVC_Warning_CXX  )
 
 macro(target_compile_option_warning Target_)
   target_compile_options(${Target_}
-    PRIVATE $<$<C_COMPILER_ID:GNU>:${CWARNING_GCC_Warning}>
-    PRIVATE $<$<C_COMPILER_ID:Clang>:${CWARNING_Clang_Warning}>
-    PRIVATE $<$<C_COMPILER_ID:MSVC>:${CWARNING_MSVC_Warning}>
-    PRIVATE $<$<CXX_COMPILER_ID:GNU>:${CWARNING_GCC_Warning} ${CWARNING_GCC_Warning_CXX}>
-    PRIVATE $<$<CXX_COMPILER_ID:Clang>:${CWARNING_Clang_Warning} ${CWARNING_Clang_Warning_CXX}>
-    PRIVATE $<$<CXX_COMPILER_ID:MSVC>:${CWARNING_MSVC_Warning} ${CWARNING_MSVC_Warning_CXX}>
+    PRIVATE $<$<COMPILE_LANG_AND_ID:C,GNU>:${CWARNING_GCC_Warning}>
+    PRIVATE $<$<COMPILE_LANG_AND_ID:C,Clang>:${CWARNING_Clang_Warning}>
+    PRIVATE $<$<COMPILE_LANG_AND_ID:C,MSVC>:${CWARNING_MSVC_Warning}>
+    PRIVATE $<$<COMPILE_LANG_AND_ID:CXX,GNU>:${CWARNING_GCC_Warning} ${CWARNING_GCC_Warning_CXX}>
+    PRIVATE $<$<COMPILE_LANG_AND_ID:CXX,Clang>:${CWARNING_Clang_Warning} ${CWARNING_Clang_Warning_CXX}>
+    PRIVATE $<$<COMPILE_LANG_AND_ID:CXX,MSVC>:${CWARNING_MSVC_Warning} ${CWARNING_MSVC_Warning_CXX}>
   )
 endmacro()
