@@ -5,7 +5,7 @@ SECTIONS
     . = 0x80000;
 
     __text_start = .;
-    .text : { startup.o(.text*), *(.text*) }
+    .text : { *(.text*) }
     . = ALIGN(4);
     __text_end = .;
 

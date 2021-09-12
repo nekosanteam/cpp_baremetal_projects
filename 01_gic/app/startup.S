@@ -1,5 +1,6 @@
 
-    .global _start
+    .global stack_top
+;    .global _start
     .align
 _start:
 
