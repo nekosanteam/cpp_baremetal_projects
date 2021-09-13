@@ -11,6 +11,8 @@ enable_language(ASM)
 
 message("CMAKE_SYSTEM: " ${CMAKE_SYSTEM})
 message("CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR})
+message("CMAKE_C_FLAGS: " ${CMAKE_C_FLAGS})
+message("CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
 
 add_library(lib01_gic OBJECT src/gicc.cpp)
 target_include_directories(lib01_gic
