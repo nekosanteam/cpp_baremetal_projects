@@ -1,5 +1,5 @@
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR aarch64)
 set(GCC_CROSS_COMPILE "aarch64-linux-gnu-")
-set(GCC_VERSION "-10")
+set(GCC_VERSION "")
 include(_gcc-common)

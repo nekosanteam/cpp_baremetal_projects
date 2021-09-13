@@ -5,8 +5,12 @@ set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD   17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-PROJECT(BareMetal01_GIC CXX)
-ENABLE_LANGUAGE(C ASM)
+project(BareMetal01_GIC CXX)
+enable_language(C)
+enable_language(ASM)
+
+message("CMAKE_SYSTEM: " ${CMAKE_SYSTEM})
+message("CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR})
 
 add_library(lib01_gic OBJECT src/gicc.cpp)
 target_include_directories(lib01_gic
@@ -16,10 +20,12 @@ if(COMMAND target_compile_option_warning)
 endif()
 
 add_executable(01_gic app/main.cpp
-  $<$<PLATFORM_ID:Generic>:app/startup.S>)
+  $<$<PLATFORM_ID:Generic>:app/startup_a64.S>)
 if(COMMAND target_compile_option_warning)
   target_compile_option_warning(01_gic)
 endif()
 target_link_libraries(01_gic lib01_gic)
 set_target_properties(01_gic
   PROPERTIES LINK_DEPENDS $<$<PLATFORM_ID:Generic>:${CMAKE_SOURCE_DIR}/01_gic/app/ldscript_a64.ld> )
+target_link_options(01_gic
+  PRIVATE $<$<PLATFORM_ID:Generic>:-T ${CMAKE_SOURCE_DIR}/01_gic/app/ldscript_a64.ld> )
