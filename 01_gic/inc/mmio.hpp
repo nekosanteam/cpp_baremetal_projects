@@ -21,6 +21,13 @@ template <int N>
 class MmapBase {
 public:
 	static MmapAddr base_;
+
+public:
+    static int  open(PhyAddr base, std::size_t size);
+    static void close();
+
+private:
+    int fd;
 };
 
 template <class Base, Offset offset, typename Access = std::uint32_t>

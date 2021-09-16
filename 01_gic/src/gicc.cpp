@@ -21,23 +21,34 @@ using MMIO::Register64;
 using MMIO::RegisterArray;
 using MMIO::RegisterArray64;
 
+namespace devkit {
 constexpr MMIO::PhyAddr GIC_ADDR { 0xffc00000 };
 constexpr MMIO::PhyAddr GICD_OFFSET { 0x1000 };
 constexpr MMIO::PhyAddr GICC_OFFSET { 0x2000 };
 using GIC_BASE  = MMIO::PhyBase<GIC_ADDR>;
 using GICD_BASE = MMIO::PhyBase<GIC_ADDR + GICD_OFFSET>;
 using GICC_BASE = MMIO::PhyBase<GIC_ADDR + GICC_OFFSET>;
+} // namespace devkit
+namespace qemu {
+constexpr MMIO::PhyAddr GICD_ADDR { 0x08000000 };
+constexpr MMIO::PhyAddr GICC_ADDR { 0x08010000 };
+using GICD_BASE = MMIO::PhyBase<GICD_ADDR>;
+using GICC_BASE = MMIO::PhyBase<GICC_ADDR>;
+} // namespace qemu
+
+using qemu::GICD_BASE;
+using qemu::GICC_BASE;
 
 // GICD Registers. (Distributor)
 constexpr Register<GICD_BASE, 0x0000>           GICD_CTLR {};       ///< Distributor control register.
 constexpr Register<GICD_BASE, 0x0004>           GICD_TYPER {};      ///< Interrupt control type register.
 constexpr Register<GICD_BASE, 0x0008>           GICD_IIDR {};       ///< Distributor Implementer Identification Register.
-namespace v3 {
+namespace gic_v3 {
 constexpr Register<GICD_BASE, 0x0040>           GICD_SETSPI_NSR {}; // GICv3
 constexpr Register<GICD_BASE, 0x0048>           GICD_CLRSPI_NSR {}; // GICv3
 constexpr Register<GICD_BASE, 0x0050>           GICD_SETSPI_SR {};  // GICv3
 constexpr Register<GICD_BASE, 0x0058>           GICD_CLRSPI_SR {};  // GICv3
-}
+} // namespace gic_v3
 constexpr RegisterArray<GICD_BASE, 0x0080, 32>  GICD_IGROUPn {};
 constexpr RegisterArray<GICD_BASE, 0x0100, 32>  GICD_ISENABLERn {};
 constexpr RegisterArray<GICD_BASE, 0x0180, 32>  GICD_ICENABLERn {};
@@ -48,18 +59,18 @@ constexpr RegisterArray<GICD_BASE, 0x0380, 32>  GICD_ICACTIVERn {};
 constexpr RegisterArray<GICD_BASE, 0x0400, 256> GICD_IPRIORITYRn {};
 constexpr RegisterArray<GICD_BASE, 0x0800, 256> GICD_ITARGETSRn {};
 constexpr RegisterArray<GICD_BASE, 0x0C00, 256> GICD_ICFGRn {};
-namespace v2 {
+namespace gic_v2 {
 constexpr Register<GICD_BASE, 0x0D00>           GICD_PPISR {};     // GICv2 only.
 constexpr RegisterArray<GICD_BASE, 0x0D04, 15>  GICD_SPISRn {};    // GICv2 only.
-} // namespace v2
-namespace v3 {
+} // namespace gic_v2
+namespace gic_v3 {
 constexpr RegisterArray<GICD_BASE, 0x0D00, 32>  GICD_IGRPMODRn {}; // GICv3 only.
 constexpr RegisterArray<GICD_BASE, 0x0E04, 64>  GICD_NCACRn {};    // GICv3 only.
-} // namespace v3
+} // namespace gic_v3
 constexpr Register<GICD_BASE, 0x0F00>           GICD_SGIR {};
 constexpr RegisterArray<GICD_BASE, 0x0F10, 4>   GICD_CPENDSGIRn {};
 constexpr RegisterArray<GICD_BASE, 0x0F20, 4>   GICD_SPENDSGIRn {};
-namespace v2 {
+namespace gic_v2 {
 constexpr Register<GICD_BASE, 0x0FD0> GICD_PIDR4 {};
 constexpr Register<GICD_BASE, 0x0FD4> GICD_PIDR5 {};
 constexpr Register<GICD_BASE, 0x0FD8> GICD_PIDR6 {};
@@ -72,14 +83,14 @@ constexpr Register<GICD_BASE, 0x0FF0> GICD_CIDR0 {};
 constexpr Register<GICD_BASE, 0x0FF4> GICD_CIDR1 {};
 constexpr Register<GICD_BASE, 0x0FF8> GICD_CIDR2 {};
 constexpr Register<GICD_BASE, 0x0FFC> GICD_CIDR3 {};
-} // namespace v2
-namespace v3 {
+} // namespace gic_v2
+namespace gic_v3 {
 constexpr RegisterArray64<GICD_BASE, 0x6000, 960> GICD_IROUTER {};  // GICv3 only.
 constexpr Register<GICD_BASE, 0xC000>             GICD_ESTATUSR {}; // GICv3 only.
 constexpr Register<GICD_BASE, 0xC004>             GICD_ERRTESTR {}; // GICv3 only.
 constexpr RegisterArray<GICD_BASE, 0xC084, 30>    GICD_SPISR {};    // GICv3 only.
-} // namespace v3
-namespace v3 {
+} // namespace gic_v3
+namespace gic_v3 {
 constexpr Register<GICD_BASE, 0xFFD0> GICD_PIDR4 {};
 constexpr Register<GICD_BASE, 0xFFD4> GICD_PIDR5 {};
 constexpr Register<GICD_BASE, 0xFFD8> GICD_PIDR6 {};
@@ -92,7 +103,7 @@ constexpr Register<GICD_BASE, 0xFFF0> GICD_CIDR0 {};
 constexpr Register<GICD_BASE, 0xFFF4> GICD_CIDR1 {};
 constexpr Register<GICD_BASE, 0xFFF8> GICD_CIDR2 {};
 constexpr Register<GICD_BASE, 0xFFFC> GICD_CIDR3 {};
-} // namespace v3
+} // namespace gic_v3
 
 // GICC Registers (GICv2)
 constexpr Register<GICC_BASE, 0x0000> GICC_CTLR {}; //<

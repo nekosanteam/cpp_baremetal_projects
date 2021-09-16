@@ -12,7 +12,7 @@ enable_language(ASM)
 message("CMAKE_SYSTEM: " ${CMAKE_SYSTEM})
 message("CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR})
 
-add_library(lib01_gic OBJECT src/gicc.cpp)
+add_library(lib01_gic OBJECT src/gicc.cpp src/uart.cpp)
 target_include_directories(lib01_gic
   PUBLIC inc/)
 if(COMMAND target_compile_option_warning)
