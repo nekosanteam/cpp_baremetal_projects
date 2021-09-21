@@ -70,6 +70,38 @@ TEST(StringTest, TestStrNCat02)
     BYTES_EQUAL(0xc3, dst[12]);
 }
 
+TEST(StringTest, TestStrCmp)
+{
+    LONGS_EQUAL(0, nk_strcmp("aa", "aa"));
+    LONGS_EQUAL(-1, nk_strcmp("aa", "ab"));
+    LONGS_EQUAL(1, nk_strcmp("aaa", "aa"));
+}
+
+TEST(StringTest, TestStrNCmp)
+{
+    LONGS_EQUAL(0, nk_strncmp("aab", "aac", 2));
+    LONGS_EQUAL(-1, nk_strncmp("aa", "ab", 3));
+    LONGS_EQUAL(1, nk_strncmp("aaa", "aa", 3));
+}
+
+TEST(StringTest, TestStrChr)
+{
+    char org[] = "abcdgfgf";
+
+    STRCMP_EQUAL("fgf", nk_strchr(org, 'f'));
+    POINTERS_EQUAL(NULL, nk_strchr(org, 'i'));
+    BYTES_EQUAL(0, *nk_strchr(org, '\0'));
+}
+
+TEST(StringTest, TestStrRChr)
+{
+    char org[] = "abcdgfgf";
+
+    STRCMP_EQUAL("gf", nk_strrchr(org, 'g'));
+    POINTERS_EQUAL(NULL, nk_strrchr(org, 'i'));
+    BYTES_EQUAL(0, *nk_strrchr(org, '\0'));
+}
+
 int main(int argc, char** argv)
 {
     return CommandLineTestRunner::RunAllTests(argc, argv);
