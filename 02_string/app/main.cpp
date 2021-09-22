@@ -1,5 +1,6 @@
 #include "nkstring.h"
 #include <cstdio>
+#include <cstring>
 
 #include <CppUTest/CommandLineTestRunner.h>
 
@@ -10,8 +11,8 @@ TEST_GROUP(StringTest)
 
     TEST_SETUP()
     {
-        memset(dst, 0xc3, 32);
-        memset(src, 0xc9, 32);
+        std::memset(dst, 0xc3, 32);
+        std::memset(src, 0xc9, 32);
     }
 
     TEST_TEARDOWN() {}

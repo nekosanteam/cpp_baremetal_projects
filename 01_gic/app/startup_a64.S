@@ -1,6 +1,6 @@
+#define STACK_SIZE 0x0800
 
     .global stack_top
-;    .global _start
     .align
 _start:
 
@@ -19,7 +19,7 @@ _start:
     add x1, x1, #4
     mrs x2, MPIDR_EL1
     and x2, x2, #0xFF // X2 == CPU number.
-    mov x3, #0x0800
+    mov x3, #STACK_SIZE
     mul x3, x2, x3
     sub x1, x1, x3
     mov sp, x1

@@ -9,9 +9,6 @@ project(BareMetal01_GIC CXX)
 enable_language(C)
 enable_language(ASM)
 
-message("CMAKE_SYSTEM: " ${CMAKE_SYSTEM})
-message("CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR})
-
 add_library(lib01_gic OBJECT src/gicc.cpp src/uart.cpp)
 target_include_directories(lib01_gic
   PUBLIC inc/)

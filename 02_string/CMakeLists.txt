@@ -9,9 +9,6 @@ project(BareMetal02_STRING CXX)
 enable_language(C)
 enable_language(ASM)
 
-message("CMAKE_SYSTEM: " ${CMAKE_SYSTEM})
-message("CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR})
-
 add_library(lib02_nkstring OBJECT src/nkstring.cpp)
 target_include_directories(lib02_nkstring
   PUBLIC inc/)

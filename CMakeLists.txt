@@ -3,8 +3,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/tools/cmake)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(CppBareMetal CXX)
 
+message("CMAKE_SYSTEM: " ${CMAKE_SYSTEM})
+message("CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR})
+
 include(CTest)
 include(BuildBareMetal)
 include(CompilerWarning)
+#include(FetchLibraries)
 add_subdirectory(01_gic)
 add_subdirectory(02_string)
