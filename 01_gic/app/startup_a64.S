@@ -1,6 +1,7 @@
 #define STACK_SIZE 0x0800
 
     .global stack_top
+    .global _start
     .align
 _start:
 

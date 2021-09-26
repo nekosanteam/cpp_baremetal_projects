@@ -5,7 +5,10 @@ SECTIONS
     . = 0x40000000;
 
     __text_start = .;
-    .text : { *(.text*) }
+    .text : { 
+        startup_a64.S.o (.text*)
+        *(.text*)
+    }
     . = ALIGN(4);
     __text_end = .;
 
@@ -23,6 +26,14 @@ SECTIONS
     .bss : { *(.bss*) }
     . = ALIGN(4);
     __bss_end = .;
+
+    __init_array_start = .;
+    .init.array : {
+        *(.init.array)
+        *(.init.array.*)
+    }
+    . = ALIGN(4);
+    __init_array_end = .;
 
     __stack_start = .;
     stack_top = .;

@@ -1,6 +1,6 @@
 macro(target_compile_option_baremetal Target_)
   target_compile_options(${Target_}
-    PRIVATE $<$<AND:$<PLATFORM_ID:Generic>,$<COMPILE_LANGUAGE:C,CXX>>:-ffreestanding>)
+    PRIVATE $<$<AND:$<PLATFORM_ID:Generic>,$<COMPILE_LANGUAGE:C,CXX>>:-ffreestanding -fno-exceptions -fno-unwind-tables -fno-non-call-exceptions -fno-use-cxa-atexit -fno-rtti>)
 endmacro()
 
 macro(target_link_option_baremetal Target_ LdScript_)

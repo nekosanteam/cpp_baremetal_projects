@@ -14,3 +14,11 @@ int main(int argc, char** argv)
 
 	return 0;
 }
+
+void operator delete(void* p)
+{
+}
+
+void operator delete(void* p, size_t size)
+{
+}

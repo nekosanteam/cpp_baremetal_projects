@@ -4,3 +4,5 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 set(GCC_CROSS_COMPILE "aarch64-linux-gnu-")
 set(GCC_VERSION $ENV{GCC_VERSION})
 include(_gcc-common)
+
+set(BUILD_TESTING OFF)
