@@ -22,3 +22,4 @@ void operator delete(void* p)
 void operator delete(void* p, size_t size)
 {
 }
+

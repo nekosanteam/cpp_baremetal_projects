@@ -6,7 +6,6 @@ SECTIONS
 
     __text_start = .;
     .text : { 
-        startup_a64.S.o (.text*)
         *(.text*)
     }
     . = ALIGN(4);
