@@ -5,6 +5,7 @@ project(CppBareMetal CXX)
 
 message("CMAKE_SYSTEM: " ${CMAKE_SYSTEM})
 message("CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR})
+message("CMAKE_CROSSCOMPILING: " ${CMAKE_CROSSCOMPILING})
 
 include(CTest)
 include(BuildBareMetal)
