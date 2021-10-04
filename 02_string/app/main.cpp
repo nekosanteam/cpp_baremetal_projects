@@ -103,6 +103,29 @@ TEST(StringTest, TestStrRChr)
     BYTES_EQUAL(0, *nk_strrchr(org, '\0'));
 }
 
+TEST(StringTest, TestMemChr)
+{
+    dst[3] = static_cast<char>(0xcc);
+
+    POINTERS_EQUAL(dst + 3, nk_memchr(dst, 0x7c, 4))
+}
+
+TEST(StringTest, TestMemCmp)
+{
+}
+
+TEST(StringTest, TestMemSet)
+{
+}
+
+TEST(StringTest, TestMemCpy)
+{
+}
+
+TEST(StringTest, TestMemMove)
+{
+}
+
 int main(int argc, char** argv)
 {
     return CommandLineTestRunner::RunAllTests(argc, argv);
