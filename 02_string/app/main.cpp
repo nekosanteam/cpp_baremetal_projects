@@ -75,7 +75,8 @@ TEST(StringTest, TestStrCmp)
 {
     LONGS_EQUAL(0, nk_strcmp("aa", "aa"));
     LONGS_EQUAL(-1, nk_strcmp("aa", "ab"));
-    LONGS_EQUAL(1, nk_strcmp("aaa", "aa"));
+    LONGS_EQUAL(std::strcmp("aaa", "aa"), nk_strcmp("aaa", "aa"));
+    //LONGS_EQUAL(1, nk_strcmp("aaa", "aa"));
 }
 
 TEST(StringTest, TestStrNCmp)
@@ -105,25 +106,45 @@ TEST(StringTest, TestStrRChr)
 
 TEST(StringTest, TestMemChr)
 {
-    dst[3] = static_cast<char>(0xcc);
+    dst[3] = static_cast<char>(0x7c);
 
-    POINTERS_EQUAL(dst + 3, nk_memchr(dst, 0x7c, 4))
+    POINTERS_EQUAL(dst + 3, nk_memchr(dst, 0x7c, 4));
 }
 
 TEST(StringTest, TestMemCmp)
 {
+    for (int i=0; i<4; i++) {
+        src[i] = static_cast<char>(0x79);
+        dst[i] = static_cast<char>(0x79);
+    }
+    LONGS_EQUAL(0, nk_memcmp(src, dst, 4));
+    LONGS_EQUAL(1, nk_memcmp(src, dst, 5));
+    LONGS_EQUAL(-1, nk_memcmp(dst, src, 6));    
 }
 
 TEST(StringTest, TestMemSet)
 {
+    nk_memset(src, 0x75, 5);
+    nk_memset(dst, 0x75, 5);
+    LONGS_EQUAL(0, nk_memcmp(dst, src, 5));
+    LONGS_EQUAL(1, nk_memcmp(src, dst, 6));
+    LONGS_EQUAL(-1, nk_memcmp(dst, src, 6));
 }
 
 TEST(StringTest, TestMemCpy)
 {
+    nk_memcpy(dst, src, 6);
+    LONGS_EQUAL(0, nk_memcmp(dst, src, 6));
+    LONGS_EQUAL(1, nk_memcmp(src, dst, 7));
+    LONGS_EQUAL(-1, nk_memcmp(dst, src, 7));
 }
 
 TEST(StringTest, TestMemMove)
 {
+    nk_memmove(dst, src, 7);
+    LONGS_EQUAL(0, nk_memcmp(dst, src, 7));
+    LONGS_EQUAL(1, nk_memcmp(src, dst, 8));
+    LONGS_EQUAL(-1, nk_memcmp(dst, src, 8));
 }
 
 int main(int argc, char** argv)

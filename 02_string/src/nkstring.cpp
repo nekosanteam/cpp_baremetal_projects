@@ -124,6 +124,13 @@ static inline int nki_strcmp(const AccType* lhs, const AccType* rhs)
 	}
 }
 
+template <char>
+static inline int nki_strcmp(const char* lhs, const char* rhs)
+{
+	return nki_strcmp<unsigned char>(
+	    reinterpret_cast<const unsigned char*>(lhs), reinterpret_cast<const unsigned char*>(rhs));
+}
+
 template <typename AccType>
 static inline int nki_strncmp(const AccType* lhs, const AccType* rhs, size_t count)
 {
@@ -145,6 +152,13 @@ static inline int nki_strncmp(const AccType* lhs, const AccType* rhs, size_t cou
 	} else {
 		return 1;
 	}
+}
+
+template <char>
+static inline int nki_strncmp(const char* lhs, const char* rhs, size_t count)
+{
+	return nki_strncmp<unsigned char>(
+	    reinterpret_cast<const unsigned char*>(lhs), reinterpret_cast<const unsigned char*>(rhs), count);
 }
 
 template <typename AccType>
@@ -183,6 +197,7 @@ static inline void* nki_memchr(const void* ptr, int ch, size_t count)
 		if (*pos == static_cast<unsigned char>(ch)) {
 			return const_cast<void*>(static_cast<const void*>(pos));
 		}
+        pos++;
 	}
 	return NULL;
 }
@@ -198,6 +213,8 @@ static inline int nki_memcmp(const void* lhs, const void* rhs, size_t count)
 		} else if (*lhs_u > *rhs_u) {
 			return 1;
 		}
+        lhs_u++;
+        rhs_u++;
 	}
 	return 0;
 }
