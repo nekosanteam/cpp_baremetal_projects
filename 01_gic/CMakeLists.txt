@@ -19,12 +19,13 @@ if(COMMAND target_compile_option_baremetal)
   target_compile_option_baremetal(lib01_gic)
 endif()
 
-add_executable(01_gic app/main.cpp
-  $<$<PLATFORM_ID:Generic>:app/startup_a64.S>)
+add_executable(01_gic app/main.cpp)
 if(COMMAND target_compile_option_warning)
   target_compile_option_warning(01_gic)
 endif()
-target_link_libraries(01_gic lib01_gic)
+target_link_libraries(01_gic
+  lib01_gic
+  $<$<PLATFORM_ID:Generic>:lib00_startup>)
 if(COMMAND target_link_option_baremetal)
-  target_link_option_baremetal(01_gic ${PROJECT_SOURCE_DIR}/app/ldscript_a64.ld)
+  target_link_option_baremetal(01_gic ${BareMetal00_Startup_SOURCE_DIR}/app/ldscript_a64.ld)
 endif()
