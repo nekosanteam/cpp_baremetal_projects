@@ -21,4 +21,14 @@ SECTIONS
         .bss : { *(.bss*) }
         . = ALIGN(4);
         __bss_end = .;
+
+        __stack_start = .;
+        __stack_top = .;
+        . += 0x0800;
+        . += 0x0800;
+        . += 0x0800;
+        . += 0x0800;
+        . = ALIGN(4);
+        __stack_bottom = .;
+        __stack_end = .;
 }

@@ -1,6 +1,6 @@
 #define STACK_SIZE 0x0800
 
-    .global stack_top
+    .global __stack_top
     .global _start
     .align
 _start:
@@ -16,7 +16,7 @@ _start:
     msr VBAR_EL1, x1
 
     // Initialize stack pointer registers.
-    adr x1, stack_top
+    adr x1, __stack_top
     add x1, x1, #4
     mrs x2, MPIDR_EL1
     and x2, x2, #0xFF // X2 == CPU number.

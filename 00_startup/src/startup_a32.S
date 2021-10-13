@@ -1,4 +1,5 @@
 @ startup
+        .global __stack_top
         .global _start
         .align
 _start:
@@ -6,7 +7,7 @@ _start:
         // IRQ, FIQ disable, Thumb disable, SVC mode.
         ldr     r0, =0x000000d3
         msr     cpsr, r0
-        ldr     sp, =0x06400000
+        ldr     sp, =__stack_top
 
         bl      main
         b       .

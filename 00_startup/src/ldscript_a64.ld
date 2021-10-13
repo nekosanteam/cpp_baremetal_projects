@@ -35,11 +35,12 @@ SECTIONS
     __init_array_end = .;
 
     __stack_start = .;
-    stack_top = .;
+    __stack_top = .;
     . = . + 0x0800;
     . = . + 0x0800;
     . = . + 0x0800;
     . = . + 0x0800;
     . = ALIGN(8);
+    __stack_bottom = .;
     __stack_end = .;
 }

@@ -1,8 +1,14 @@
 project(BareMetal00_Startup C)
 enable_language(ASM)
 
+if (strequal "AArch64" CMAKE_SYSTEM_PROCESSOR)
+  set(STARTUP_ASM_SRC src/startup_a64.S)
+elseif(string(equal "Arm" CMAKE_SYSTEM_PROCESSOR))
+  set(STARTUP_ASM_SRC src/startup_a32.S)
+endif()
+
 add_library(lib00_startup OBJECT src/startup.c
-  $<$<PLATFORM_ID:Generic>:src/startup_a64.S>)
+  $<$<PLATFORM_ID:Generic>: $STARTUP_ASM_SRC>)
 if(COMMAND target_compile_option_warning)
   target_compile_option_warning(lib00_startup)
 endif()
