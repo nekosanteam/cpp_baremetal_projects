@@ -1,5 +1,8 @@
 #pragma once
-
+/**
+ * @file uart.hpp
+ * 
+ */
 #include <cstddef>
 #include <cstdint>
 #include <string>

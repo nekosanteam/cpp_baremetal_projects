@@ -1,3 +1,7 @@
+/**
+ * @file nkstring.h
+ * 
+ */
 #ifndef NK_STRING_H__
 #define NK_STRING_H__
 

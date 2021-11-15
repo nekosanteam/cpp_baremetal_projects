@@ -1,3 +1,7 @@
+/**
+ * @file nkstring.cpp
+ * 
+ */
 #include "nkstring.h"
 #include <array>
 #include <cstdint>

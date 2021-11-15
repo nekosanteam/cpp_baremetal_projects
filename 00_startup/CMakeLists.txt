@@ -1,9 +1,9 @@
 project(BareMetal00_Startup C)
 enable_language(ASM)
 
-if (strequal "AArch64" CMAKE_SYSTEM_PROCESSOR)
+if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "AArch64")
   set(STARTUP_ASM_SRC src/startup_a64.S)
-elseif(string(equal "Arm" CMAKE_SYSTEM_PROCESSOR))
+elseif(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "Arm")
   set(STARTUP_ASM_SRC src/startup_a32.S)
 endif()
 
