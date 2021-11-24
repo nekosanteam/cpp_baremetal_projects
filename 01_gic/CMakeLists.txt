@@ -9,7 +9,7 @@ project(BareMetal01_GIC CXX)
 enable_language(C)
 enable_language(ASM)
 
-add_library(lib01_gic OBJECT src/gicc.cpp src/uart.cpp)
+add_library(lib01_gic OBJECT src/gicc.cpp src/mmio.cpp src/uart.cpp)
 target_include_directories(lib01_gic
   PUBLIC inc/)
 if(COMMAND target_compile_option_warning)
