@@ -19,18 +19,18 @@ elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "Arm")
   endif()
 endif()
 
-add_library(lib00_startup OBJECT src/startup.c
+add_library(lib00_Startup OBJECT src/startup.c
   $<$<PLATFORM_ID:Generic>: $STARTUP_ASM>)
 if(COMMAND target_compile_option_warning)
-  target_compile_option_warning(lib00_startup)
+  target_compile_option_warning(lib00_Startup)
 endif()
 
-add_executable(00_startup app/main.c)
+add_executable(00_Startup app/main.c)
 if(COMMAND target_compile_option_warning)
-  target_compile_option_warning(00_startup)
+  target_compile_option_warning(00_Startup)
 endif()
-target_link_libraries(00_startup
-  $<$<PLATFORM_ID:Generic>:lib00_startup>)
+target_link_libraries(00_Startup
+  $<$<PLATFORM_ID:Generic>:lib00_Startup>)
 if(COMMAND target_link_option_baremetal)
-  target_link_option_baremetal(00_startup ${BareMetal00_Startup_SOURCE_DIR}/${LDSCRIPT})
+  target_link_option_baremetal(00_Startup ${BareMetal00_Startup_SOURCE_DIR}/${LDSCRIPT})
 endif()
