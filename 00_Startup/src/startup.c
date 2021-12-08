@@ -1,7 +1,7 @@
 void clear_bss()
 {
-    extern void* __bss_start;
-    extern void* __bss_end;
+    extern const void* __bss_start;
+    extern const void* __bss_end;
 
     unsigned int* p;
     unsigned int* start = (unsigned char*)__bss_start;

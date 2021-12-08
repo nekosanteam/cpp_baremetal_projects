@@ -37,3 +37,14 @@ FetchContent_Declare(
   DOWNLOAD_NO_PROGRESS OFF
 )
 FetchContent_MakeAvailable(googletest)
+
+FetchContent_Declare(
+  fff
+  #GIT_REPOSITORY https://github.com/meekrosoft/fff.git
+  #GIT_TAG        7e09f07e5b262b1cc826189dc5057379e40ce886
+  URL      https://github.com/meekrosoft/fff/archive/refs/tags/v1.1.tar.gz
+  URL_HASH SHA256=510efb70ab17a0035affd170960401921c9cc36ec81002ed00d2bfec6e08f385
+  DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/fff/
+  DOWNLOAD_NO_PROGRESS OFF
+)
+FetchContent_MakeAvailable(fff)
