@@ -48,3 +48,14 @@ FetchContent_Declare(
   DOWNLOAD_NO_PROGRESS OFF
 )
 FetchContent_MakeAvailable(fff)
+
+FetchContent_Declare(
+  newlib
+  #GIT_REPOSITORY https://sourceware.org/git/newlib-cygwin.git
+  #GIT_TAG        415fdd4279b85eeec9d54775ce13c5c412451e08
+  URL      ftp://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz
+  URL_HASH SHA256=f296e372f51324224d387cc116dc37a6bd397198756746f93a2b02e9a5d40154
+  DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/newlib/
+  DOWNLOAD_NO_PROGRESS OFF
+)
+FetchContent_MakeAvailable(newlib)
