@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.16)
+
+add_subdirectory(00_Startup)
+add_subdirectory(01_Drivers)
+add_subdirectory(02_HAL)
+add_subdirectory(03_OS)
+add_subdirectory(04_FAL)
+add_subdirectory(05_Libraries)
+add_subdirectory(06_MAL)
+add_subdirectory(07_Platforms)
