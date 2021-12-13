@@ -9,10 +9,10 @@ mkdir -p build_all
 
 TARGET1=build_all/native_gcc
 rm -rf $TARGET1
-CC=gcc${GCC_VERSION} CXX=g++${GCC_VERSION} cmake $SOURCE_ROOT -B $TARGET1    || exit 1
-CC=gcc${GCC_VERSION} CXX=g++${GCC_VERSION} cmake --build $TARGET1 || exit 1
+CC=gcc${GCC_VERSION} CXX=g++${GCC_VERSION} cmake $SOURCE_ROOT -B $TARGET1 -G Ninja || exit 1
+CC=gcc${GCC_VERSION} CXX=g++${GCC_VERSION} cmake --build $TARGET1
 
 TARGET2=build_all/native_clang
 rm -rf $TARGET2
-CC=clang${CLANG_VERSION} CXX=clang++${CLANG_VERSION} cmake $SOURCE_ROOT -B $TARGET2    || exit 1
-CC=clang${CLANG_VERSION} CXX=clang++${CLANG_VERSION} cmake --build $TARGET2 || exit 1
+CC=clang${CLANG_VERSION} CXX=clang++${CLANG_VERSION} cmake $SOURCE_ROOT -B $TARGET2 -G Ninja || exit 1
+CC=clang${CLANG_VERSION} CXX=clang++${CLANG_VERSION} cmake --build $TARGET2

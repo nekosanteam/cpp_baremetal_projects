@@ -13,3 +13,4 @@ include(CompilerWarning)
 include(FetchLibraries)
 
 add_subdirectory(platforms)
+add_subdirectory(src)

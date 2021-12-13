@@ -1,10 +1,4 @@
 cmake_minimum_required(VERSION 3.13)
-
-set(CMAKE_C_STANDARD   11)
-set(CMAKE_C_EXTENSIONS OFF)
-set(CMAKE_CXX_STANDARD   17)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
 project(BareMetal05_Libraries CXX)
 enable_language(C)
 enable_language(ASM)
@@ -20,7 +14,7 @@ if(COMMAND target_compile_option_baremetal)
 endif()
 
 if (BUILD_TESTING)
-  add_executable(05_Libraries app/main.cpp)
+  add_executable(05_Libraries test/main.cpp)
   if(COMMAND target_compile_option_warning)
     target_compile_option_warning(05_Libraries)
   endif()

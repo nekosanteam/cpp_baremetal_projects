@@ -1,0 +1,5 @@
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR arm)
+set(GCC_CROSS_COMPILE "arm-linux-gnueabihf-")
+set(GCC_VERSION $ENV{GCC_VERSION})
+include(_gcc-common)
