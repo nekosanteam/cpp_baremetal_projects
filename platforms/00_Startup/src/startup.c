@@ -1,4 +1,8 @@
+#if defined(__GCC__)
 #pragma GCC optimize ("no-tree-loop-distribute-patterns")
+#elif defined(__clang__)
+#pragma clang loop distribute(enable)
+#endif
 
 void clear_bss()
 {
