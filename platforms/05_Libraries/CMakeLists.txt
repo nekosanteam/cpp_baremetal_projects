@@ -5,7 +5,8 @@ enable_language(ASM)
 
 add_library(lib05_Libraries OBJECT src/nkstring.cpp)
 target_include_directories(lib05_Libraries
-  PUBLIC inc/)
+  PUBLIC  export/
+  PRIVATE inc/)
 if(COMMAND target_compile_option_warning)
   target_compile_option_warning(lib05_Libraries)
 endif()
@@ -15,9 +16,6 @@ endif()
 
 if (BUILD_TESTING)
   add_executable(05_Libraries test/main.cpp)
-  if(COMMAND target_compile_option_warning)
-    target_compile_option_warning(05_Libraries)
-  endif()
   target_link_libraries(05_Libraries lib05_Libraries CppUTest CppUTestExt)
   add_test(NAME 05_LIBRARIES_ALL COMMAND 05_Libraries)
 endif()

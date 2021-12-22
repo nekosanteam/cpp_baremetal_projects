@@ -251,7 +251,7 @@ static inline void* nki_memcpy(void* nk_restrict dst, const void* nk_restrict sr
 static inline void* nki_memmove(void* dst, const void* src, size_t count)
 {
 
-	if ((src <= dst) && (dst < (src + count))) {
+	if ((src <= dst) && (dst < (static_cast<const unsigned char*>(src) + count))) {
 		unsigned char*       dst_u = static_cast<unsigned char*>(dst);
 		const unsigned char* src_u = static_cast<const unsigned char*>(src);
 		dst_u += count;

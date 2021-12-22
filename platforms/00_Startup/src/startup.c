@@ -1,7 +1,5 @@
-#if defined(__GCC__)
+#if defined(__GNUC__)
 #pragma GCC optimize ("no-tree-loop-distribute-patterns")
-#elif defined(__clang__)
-#pragma clang loop distribute(enable)
 #endif
 
 void clear_bss()
@@ -44,5 +42,9 @@ __gxx_personality_v0(int version, _Unwind_Action actions, uint64_t exceptionClas
 }
 
 void _Unwind_Resume(_Unwind_Exception *exception_object)
+{
+}
+
+void __stack_chk_fail(void)
 {
 }
