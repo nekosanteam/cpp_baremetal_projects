@@ -1,7 +1,7 @@
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-set(CLANG_TRIPLE  "arm-linux-gnueabihf")
+set(CLANG_TRIPLE  "armv7a-none-gnueabihf")
 set(CLANG_VERSION $ENV{CLANG_VERSION})
 include(_clang-common)
 

@@ -1,6 +1,3 @@
-#if defined(__GNUC__)
-#pragma GCC optimize ("no-tree-loop-distribute-patterns")
-#endif
 
 void clear_bss()
 {

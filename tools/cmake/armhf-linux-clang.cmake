@@ -1,5 +1,5 @@
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR arm)
-set(CLANG_TRIPLE  "arm-linux-gnueabihf")
+set(CLANG_TRIPLE  "armv7a-linux-gnueabihf")
 set(CLANG_VERSION $ENV{CLANG_VERSION})
 include(_clang-common)
