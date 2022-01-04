@@ -19,9 +19,9 @@ FetchContent_Declare(
   URL_HASH SHA256=21c692105db15299b5529af81a11a7ad80397f92c122bd7bf1e4a4b0e85654f7
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/cpputest/
 )
-set(LONGLONG ON  CACHE BOOL "Support long long")
-set(C++11    ON  CACHE BOOL "Compile with C++11 support")
-set(TESTS    OFF CACHE BOOL "Compile and make tests for the code?")
+set(LONGLONG ON  CACHE BOOL "")
+set(C++11    ON  CACHE BOOL "")
+set(TESTS    OFF CACHE BOOL "")
 
 FetchContent_Declare(
   GoogleTest

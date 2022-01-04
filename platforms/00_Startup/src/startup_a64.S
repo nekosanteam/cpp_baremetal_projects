@@ -1,8 +1,9 @@
 #define STACK_SIZE 0x0800
 
-    .global __stack_top
-    .global _start
-    .align
+.global _start
+.global __stack_top
+
+	.align
 _start:
 
     // Initialize VBAR_ELn.
