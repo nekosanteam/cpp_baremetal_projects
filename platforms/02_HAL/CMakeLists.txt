@@ -9,7 +9,7 @@ project(BareMetal02_HAL CXX)
 enable_language(C)
 enable_language(ASM)
 
-add_library(lib02_HAL OBJECT src/intc.cpp src/console.cpp src/timer.cpp)
+add_library(lib02_HAL OBJECT src/intc.cpp src/console.cpp src/timer.cpp src/flash.cpp)
 target_include_directories(lib02_HAL
   PUBLIC  export/
   PRIVATE inc/)
