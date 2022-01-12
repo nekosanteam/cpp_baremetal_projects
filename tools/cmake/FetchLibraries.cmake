@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 include(FetchContent)
 
+# acutest
 FetchContent_Declare(
   acutest
   #GIT_REPOSITORY https://github.com/mity/acutest.git
@@ -11,6 +12,7 @@ FetchContent_Declare(
   DOWNLOAD_NO_EXTRACT ON
 )
 
+# CppUTest
 FetchContent_Declare(
   CppUTest
   #GIT_REPOSITORY https://github.com/cpputest/cpputest.git
@@ -23,6 +25,7 @@ set(LONGLONG ON  CACHE BOOL "")
 set(C++11    ON  CACHE BOOL "")
 set(TESTS    OFF CACHE BOOL "")
 
+# GoogleTest
 FetchContent_Declare(
   GoogleTest
   #GIT_REPOSITORY https://github.com/google/googletest.git
@@ -32,6 +35,7 @@ FetchContent_Declare(
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/googletest/
 )
 
+# fff
 FetchContent_Declare(
   fff
   #GIT_REPOSITORY https://github.com/meekrosoft/fff.git
@@ -41,6 +45,7 @@ FetchContent_Declare(
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/fff/
 )
 
+# newlib
 FetchContent_Declare(
   newlib
   #GIT_REPOSITORY https://sourceware.org/git/newlib-cygwin.git
@@ -50,8 +55,30 @@ FetchContent_Declare(
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/newlib/
 )
 
+# Trusted Firmware-A
+FetchContent_Declare(
+  atf
+  #GIT_REPOSITORY https://github.com/ARM-software/arm-trusted-firmware.git
+  #GIT_TAG        a1f02f4f3daae7e21ee58b4c93ec3e46b8f28d15
+  URL      https://github.com/ARM-software/arm-trusted-firmware/archive/refs/tags/v2.6.zip
+  URL_HASH SHA256=d64312a67b6a21df298f0c9ee2514c7948821d70d6bcf01ab15dd8aca5d4a003
+  DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/atf/
+)
+
+# u-boot
+FetchContent_Declare(
+  uboot
+  #GIT_REPOSITORY https://github.com/u-boot/u-boot.git
+  #GIT_TAG        d637294e264adfeb29f390dfc393106fd4d41b17
+  URL      https://github.com/u-boot/u-boot/archive/refs/tags/v2022.01.zip
+  URL_HASH SHA256=6ca0c4754f2da3d35e9688c455814585105a93eb33c228ffe3b7a8abd471c759
+  DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/uboot/
+)
+
 FetchContent_MakeAvailable(acutest)
 FetchContent_MakeAvailable(cpputest)
 FetchContent_MakeAvailable(googletest)
 FetchContent_MakeAvailable(fff)
 FetchContent_MakeAvailable(newlib)
+FetchContent_MakeAvailable(atf)
+FetchContent_MakeAvailable(uboot)
