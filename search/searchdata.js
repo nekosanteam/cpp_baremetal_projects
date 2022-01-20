@@ -8,7 +8,7 @@ var indexSectionsWithContent =
   5: "bcdfgilru",
   6: "_gmopru",
   7: "nu",
-  8: "eア"
+  8: "beア"
 };
 
 var indexSectionNames =
