@@ -55,6 +55,14 @@ FetchContent_Declare(
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/newlib/
 )
 
+# NT-Shell
+FetchContent_Declare(
+  ntshell
+  URL      https://cubeatsystems.com/ntshell/resources/ntshell-v0.3.1.tar.gz
+  URL_HASH SHA256=ea1497ce208cf9e3d02c161fd5d72e0e785b34074e31dca34fe855ba8fd89c74
+  DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/ntshell/
+)
+
 # Trusted Firmware-A
 FetchContent_Declare(
   atf
@@ -80,5 +88,6 @@ FetchContent_MakeAvailable(cpputest)
 FetchContent_MakeAvailable(googletest)
 FetchContent_MakeAvailable(fff)
 FetchContent_MakeAvailable(newlib)
+FetchContent_MakeAvailable(ntshell)
 FetchContent_MakeAvailable(atf)
 FetchContent_MakeAvailable(uboot)
