@@ -83,11 +83,19 @@ FetchContent_Declare(
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/uboot/
 )
 
-FetchContent_MakeAvailable(acutest)
 FetchContent_MakeAvailable(cpputest)
 FetchContent_MakeAvailable(googletest)
 FetchContent_MakeAvailable(fff)
 FetchContent_MakeAvailable(newlib)
-FetchContent_MakeAvailable(ntshell)
 FetchContent_MakeAvailable(atf)
 FetchContent_MakeAvailable(uboot)
+
+FetchContent_GetProperties(acutest)
+if (NOT acutest_POPULATED)
+  FetchContent_Populate(acutest)
+endif()
+
+FetchContent_GetProperties(ntshell)
+if (NOT ntshell_POPULATED)
+  FetchContent_Populate(ntshell)
+endif()
