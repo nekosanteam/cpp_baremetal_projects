@@ -2,8 +2,8 @@
  * @file nkstring.h
  * 
  */
-#ifndef NK_STRING_H__
-#define NK_STRING_H__
+#ifndef NK_STRING_H_
+#define NK_STRING_H_
 
 #ifdef __cplusplus
 #include <cstddef>
@@ -78,4 +78,4 @@ void*  nk_memmove(void* dst, const void* src, size_t count);
 
 #undef nk_restrict
 
-#endif // NK_STRING_H__
+#endif // NK_STRING_H_
