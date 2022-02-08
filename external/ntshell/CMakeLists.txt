@@ -7,7 +7,5 @@ add_library(ntshell STATIC
   lib/util/ntopt.c  lib/util/ntstdio.c)
 
 target_include_directories(ntshell
-  PRIVATE lib/core
-  PRIVATE lib/util)
-
-# memo: ntshell-src にコピーしてビルドする設定。
+  PUBLIC lib/core
+  PUBLIC lib/util)

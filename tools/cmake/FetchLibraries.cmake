@@ -98,7 +98,6 @@ endif()
 FetchContent_GetProperties(ntshell)
 if (NOT ntshell_POPULATED)
   FetchContent_Populate(ntshell)
-  file(COPY_FILE ${CMAKE_SOURCE_DIR}/external/ntshell/CMakeLists.txt ${ntshell_SOURCE_DIR}/CMakeLists.txt
-    ONLY_IF_DIFFERENT)
+  file(COPY ${CMAKE_SOURCE_DIR}/external/ntshell/CMakeLists.txt DESTINATION ${ntshell_SOURCE_DIR}/ )
   add_subdirectory(${ntshell_SOURCE_DIR} ${ntshell_BINARY_DIR})
 endif()
