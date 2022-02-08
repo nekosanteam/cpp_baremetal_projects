@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.15)
 
 set(CWARNING_GCC_Warning   -Wall -Wextra -Wpedantic)
 set(CWARNING_Clang_Warning -Wall -Wextra -Wpedantic)
