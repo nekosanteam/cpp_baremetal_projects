@@ -18,6 +18,9 @@ endif()
 
 if (BUILD_TESTING)
   add_executable(05_LibrariesTest test/main.cpp)
-  target_link_libraries(05_LibrariesTest 05_Libraries ntshell CppUTest CppUTestExt)
+  target_link_libraries(05_LibrariesTest 05_Libraries CppUTest CppUTestExt)
   add_test(NAME 05_LIBRARIES_ALL COMMAND 05_LibrariesTest)
+
+  add_executable(05_LibrariesConsole test/consoletest.cpp)
+  target_link_libraries(05_LibrariesConsole 05_Libraries ntshell)
 endif()

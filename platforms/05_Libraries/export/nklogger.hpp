@@ -30,14 +30,21 @@ struct NkString {
 class NkOutput {
 public:
     static void func_write(const char* str, size_t sz);
-    const static int  log_level = NkLogLevel::ERROR;
+    static int  log_level();
+};
+
+class NkOutputBase {
+public:
+    virtual ~NkOutputBase() {}
+    virtual void func_write(const char* str, size_t sz) = 0;
+    virtual int  log_level() = 0;
 };
 
 template <class Output>
 class NkLoggerTmpl : private Output {
 public:
     static inline void log(int level, const char* str, size_t sz) {
-        if (level >= Output::log_level) {
+        if (level >= Output::log_level()) {
             Output::func_write(str, sz);
         }
     }
