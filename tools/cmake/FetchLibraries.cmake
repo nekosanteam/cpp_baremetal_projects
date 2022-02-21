@@ -45,16 +45,6 @@ FetchContent_Declare(
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/fff/
 )
 
-# newlib
-FetchContent_Declare(
-  newlib
-  #GIT_REPOSITORY https://sourceware.org/git/newlib-cygwin.git
-  #GIT_TAG        415fdd4279b85eeec9d54775ce13c5c412451e08
-  URL      ftp://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz
-  URL_HASH SHA256=f296e372f51324224d387cc116dc37a6bd397198756746f93a2b02e9a5d40154
-  DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/newlib/
-)
-
 # NT-Shell
 FetchContent_Declare(
   ntshell
@@ -63,32 +53,43 @@ FetchContent_Declare(
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/ntshell/
 )
 
+# newlib
+file(DOWNLOAD
+  ftp://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz
+  ${CMAKE_SOURCE_DIR}/external/newlib/newlib-4.1.0.tar.gz
+  EXPECTED_HASH SHA256=f296e372f51324224d387cc116dc37a6bd397198756746f93a2b02e9a5d40154
+  #GIT_REPOSITORY https://sourceware.org/git/newlib-cygwin.git
+  #GIT_TAG        415fdd4279b85eeec9d54775ce13c5c412451e08
+)
+
 # Trusted Firmware-A
-FetchContent_Declare(
-  atf
+file(DOWNLOAD
+  https://github.com/ARM-software/arm-trusted-firmware/archive/refs/tags/v2.6.zip
+  ${CMAKE_SOURCE_DIR}/external/atf/v2.6.zip
+  EXPECTED_HASH SHA256=d64312a67b6a21df298f0c9ee2514c7948821d70d6bcf01ab15dd8aca5d4a003
   #GIT_REPOSITORY https://github.com/ARM-software/arm-trusted-firmware.git
   #GIT_TAG        a1f02f4f3daae7e21ee58b4c93ec3e46b8f28d15
-  URL      https://github.com/ARM-software/arm-trusted-firmware/archive/refs/tags/v2.6.zip
-  URL_HASH SHA256=d64312a67b6a21df298f0c9ee2514c7948821d70d6bcf01ab15dd8aca5d4a003
-  DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/atf/
 )
 
 # u-boot
-FetchContent_Declare(
-  uboot
+file(DOWNLOAD
+  https://github.com/u-boot/u-boot/archive/refs/tags/v2022.01.zip
+  ${CMAKE_SOURCE_DIR}/external/uboot/v2022.01.zip
+  EXPECTED_HASH SHA256=6ca0c4754f2da3d35e9688c455814585105a93eb33c228ffe3b7a8abd471c759
   #GIT_REPOSITORY https://github.com/u-boot/u-boot.git
   #GIT_TAG        d637294e264adfeb29f390dfc393106fd4d41b17
-  URL      https://github.com/u-boot/u-boot/archive/refs/tags/v2022.01.zip
-  URL_HASH SHA256=6ca0c4754f2da3d35e9688c455814585105a93eb33c228ffe3b7a8abd471c759
-  DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/uboot/
+)
+
+# qemu
+file(DOWNLOAD
+  https://download.qemu.org/qemu-6.2.0.tar.xz
+  ${CMAKE_SOURCE_DIR}/external/qemu/qemu-6.2.0.tar.xz
+  EXPECTED_HASH SHA256=68e15d8e45ac56326e0b9a4afa8b49a3dfe8aba3488221d098c84698bca65b45
 )
 
 FetchContent_MakeAvailable(cpputest)
 FetchContent_MakeAvailable(googletest)
 FetchContent_MakeAvailable(fff)
-FetchContent_MakeAvailable(newlib)
-FetchContent_MakeAvailable(atf)
-FetchContent_MakeAvailable(uboot)
 
 FetchContent_GetProperties(acutest)
 if (NOT acutest_POPULATED)
