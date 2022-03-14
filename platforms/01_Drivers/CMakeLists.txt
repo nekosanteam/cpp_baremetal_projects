@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(BareMetal01_Drivers CXX)
+project(BM01_Drivers CXX)
 enable_language(C)
 enable_language(ASM)
 
@@ -22,6 +22,6 @@ if (TARGET 01_DriversTest)
     01_Drivers
     00_Startup)
   if(COMMAND target_link_option_baremetal)
-    target_link_option_baremetal(01_DriversTest ${BareMetal00_Startup_SOURCE_DIR}/${LDSCRIPT})
+    target_link_option_baremetal(01_DriversTest ${BM00_Startup_SOURCE_DIR}/${LDSCRIPT})
   endif()
 endif()

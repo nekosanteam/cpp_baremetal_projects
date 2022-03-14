@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(BareMetal00_Startup C)
+project(BM00_Startup C)
 enable_language(ASM)
 
 set(STARTUP_ASM)
@@ -38,6 +38,6 @@ if (TARGET 00_StartupTest)
   target_link_libraries(00_StartupTest
     PRIVATE 00_Startup)
   if(COMMAND target_link_option_baremetal)
-    target_link_option_baremetal(00_StartupTest ${BareMetal00_Startup_SOURCE_DIR}/${LDSCRIPT})
+    target_link_option_baremetal(00_StartupTest ${BM00_Startup_SOURCE_DIR}/${LDSCRIPT})
   endif()
 endif()

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(BareMetal05_Libraries CXX)
+project(BM05_Libraries CXX)
 enable_language(C)
 enable_language(ASM)
 
