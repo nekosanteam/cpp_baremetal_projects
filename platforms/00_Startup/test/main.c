@@ -13,7 +13,7 @@ int main(void)
     return 0;
 }
 
-#ifdef __linux
+#if defined(__linux) && __STD_HOSTED__
 #include <sys/syscall.h>
 unsigned int
 bm_sys_write(int fd, const char* buf, int size)

@@ -1,12 +1,12 @@
 
 void clear_bss()
 {
-    extern const void* __bss_start;
-    extern const void* _end;
+    extern const char __bss_start[];
+    extern const char __bss_end[];
 
     unsigned int* p;
-    unsigned int* start = (unsigned char*)__bss_start;
-    unsigned int* end   = (unsigned char*)_end;
+    unsigned int* start = (unsigned int*)&__bss_start[0];
+    unsigned int* end   = (unsigned int*)&__bss_end[0];
 
     for (p = start; p < end; p++) {
         *p = 0;

@@ -87,6 +87,13 @@ file(DOWNLOAD
   EXPECTED_HASH SHA256=68e15d8e45ac56326e0b9a4afa8b49a3dfe8aba3488221d098c84698bca65b45
 )
 
+# open62541
+file(DOWNLOAD
+  https://github.com/open62541/open62541/archive/refs/tags/v1.3.tar.gz
+  ${CMAKE_SOURCE_DIR}/external/open62541/v1.3.tar.gz
+  EXPECTED_HASH SHA256=1227384bedbe9174a4ec91f302b336afba4234f8558a08e7b10b64e4bce6cb52
+)
+
 FetchContent_MakeAvailable(cpputest)
 FetchContent_MakeAvailable(googletest)
 FetchContent_MakeAvailable(fff)

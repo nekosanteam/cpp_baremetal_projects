@@ -1,20 +1,105 @@
 #define STACK_SIZE 0x0800
 
+#define BIT(n) (1<<(n))
+
+#define CURRENTEL_EL3 (0x03 << 2)
+#define CURRENTEL_EL2 (0x02 << 2)
+#define CURRENTEL_EL1 (0x01 << 2)
+
+#define SCTLR_EL3_RES1 (BIT(29)|BIT(28)|BIT(23)|BIT(22)|BIT(18)|BIT(16)| \
+                        BIT(11)|BIT( 5)|BIT( 4))
+#define SCTLR_EL2_RES1 (BIT(29)|BIT(28)|BIT(23)|BIT(22)|BIT(18)|BIT(16)| \
+                        BIT(11)|BIT( 5)|BIT( 4))
+#define HCR_EL2_RES1   (BIT( 1))
+#define SCTLR_EL1_RES1 (BIT(29)|BIT(28)|BIT(23)|BIT(22)|BIT(20)| \
+                        BIT(11)|BIT( 8)|BIT( 7)|BIT( 4))
+
+.global _reset
 .global _start
 .global __stack_top
 
 	.align
+_reset:
+	b	_start
+
+	.align
 _start:
+	mrs	x0, CurrentEL
+	cmp	x0, CURRENTEL_EL3
+	b.eq	reset_at_el3
+	cmp	x0, CURRENTEL_EL2
+	b.eq	reset_at_el2
+	cmp	x0, CURRENTEL_EL1
+	b.eq	reset_at_el1
+	b	.
+
+/*
+ * EL3 コード
+ */
+reset_at_el3:
+	mov	x0, (((SCTLR_EL3_RES1) >>  0) & 0xffff)
+	movk	x0, (((SCTLR_EL3_RES1) >> 16) & 0xffff), lsl #16
+	msr	SCTLR_EL3, x0
+	isb
+
+	bl	setup_stack
+	bl	cpu_init_baremetal
+	bl	gic_secure_init
+	b	start_boot_method
+	b	.
+
+/*
+ * EL2 コード
+ */
+reset_at_el2:
+	mov	x0, (((SCTLR_EL2_RES1) >>  0) & 0xffff)
+	movk	x0, (((SCTLR_EL2_RES1) >> 16) & 0xffff), lsl #16
+	msr	SCTLR_EL2, x0
+	isb
+	mov	x0, (((HCR_EL2_RES1) >>  0) & 0xffff)
+	movk	x0, (((HCR_EL2_RES1) >> 16) & 0xffff), lsl #16
+	msr	HCR_EL2, x0
+	isb
+
+	bl	setup_stack
+	bl	start_boot_method
+	b	.
+
+/*
+ * EL1 コード
+ */
+reset_at_el1:
+	mov	x0, (((SCTLR_EL1_RES1) >>  0) & 0xffff)
+	movk	x0, (((SCTLR_EL1_RES1) >> 16) & 0xffff), lsl #16
+	msr	SCTLR_EL1, x0
+	isb
+
+	bl	setup_stack
+	bl	start_boot_method
+	b	.
+
+;
+setup_stack:
+	ret
+
+cpu_init_baremetal:
+	ret
+
+gic_secure_init:
+	ret
+
+start_boot_method:
+	b	.
 
 	// Initialize VBAR_ELn.
 	ldr x1, =vector_table_el3
 	msr VBAR_EL3, x1
 
-	ldr x1, =vector_table_el2
-	msr VBAR_EL2, x1
+//	ldr x1, =vector_table_el2
+//	msr VBAR_EL2, x1
 
-	ldr x1, =vector_table_el1
-	msr VBAR_EL1, x1
+//	ldr x1, =vector_table_el1
+//	msr VBAR_EL1, x1
 
 	// Initialize stack pointer registers.
 	adr x1, __stack_top
