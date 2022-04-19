@@ -1,6 +1,6 @@
 OUTPUT_FORMAT("elf64-littleaarch64")
 OUTPUT_ARCH(aarch64)
-ENTRY(_reset)
+ENTRY(_start)
 SECTIONS
 {
 	. = 0x40000000;
@@ -17,16 +17,6 @@ SECTIONS
 	. = ALIGN(4);
 	__rodata_end = .;
 
-	__data_start = .;
-	.data : { *(.data*) }
-	. = ALIGN(4);
-	__data_end = .;
-
-	__bss_start = .;
-	.bss : { *(.bss*) }
-	. = ALIGN(4);
-	__bss_end = .;
-
 	__init_array_start = .;
 	.init.array : {
 		*(.init.array)
@@ -34,6 +24,17 @@ SECTIONS
 	}
 	. = ALIGN(4);
 	__init_array_end = .;
+
+	__data_start = .;
+	.data : { *(.data .data.*) }
+	. = ALIGN(4);
+	__data_end = .;
+
+	__bss_start = .;
+	.bss : { *(.bss .bss.*) }
+	. = ALIGN(4);
+	__bss_end = .;
+	__end = .;
 
 	__stack_start = .;
 	__stack_top = .;

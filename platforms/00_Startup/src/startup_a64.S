@@ -14,16 +14,16 @@
 #define SCTLR_EL1_RES1 (BIT(29)|BIT(28)|BIT(23)|BIT(22)|BIT(20)| \
                         BIT(11)|BIT( 8)|BIT( 7)|BIT( 4))
 
-.global _reset
 .global _start
+.global _reset
 .global __stack_top
 
 	.align
-_reset:
-	b	_start
+_start:
+	b	_reset
 
 	.align
-_start:
+_reset:
 	mrs	x0, CurrentEL
 	cmp	x0, CURRENTEL_EL3
 	b.eq	reset_at_el3

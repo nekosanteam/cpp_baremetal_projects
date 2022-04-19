@@ -25,6 +25,8 @@ elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "arm")
   endif()
 endif()
 
+message("(), {}" $(STARTUP_ASM) ${STARTUP_ASM})
+
 add_library(00_Startup OBJECT ${STARTUP_ASM} ${STARTUP_C} src/startup.c)
 target_compile_options(00_Startup
   PRIVATE $<$<COMPILE_LANG_AND_ID:C,GNU>:-fno-tree-loop-distribute-patterns>
