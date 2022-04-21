@@ -6,7 +6,7 @@
 
 int main(int argc, char** argv)
 {
-    work::UART uart;
+    bm::work::UART uart;
     char str[] = "hello,world\r\n";
 
     uart.init();
@@ -17,9 +17,11 @@ int main(int argc, char** argv)
 
 void operator delete(void* p)
 {
+    (p);
 }
 
 void operator delete(void* p, size_t size)
 {
+    (p); (size);
 }
 

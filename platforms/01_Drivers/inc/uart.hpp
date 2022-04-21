@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <string>
 
+namespace bm {
 namespace work {
 
 class UART {
@@ -22,3 +23,4 @@ public:
 };
 
 } // namespace work
+} // namespace bm

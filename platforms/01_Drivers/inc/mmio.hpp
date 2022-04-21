@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <cstdint>
 
+namespace bm {
 namespace work {
 
 namespace MMIO {
@@ -73,3 +74,4 @@ using RegisterArray64 = RegisterArray<Base, offset, members, std::uint64_t>;
 
 } // namespace MMIO
 } // namespace work
+} // namespace bm

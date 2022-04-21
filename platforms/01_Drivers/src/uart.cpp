@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <string>
 
+namespace bm {
 namespace work {
 
 using MMIO::Register;
@@ -64,3 +65,4 @@ void UART::put(const char* str)
 }
 
 } // namespace work
+} // namespace bm

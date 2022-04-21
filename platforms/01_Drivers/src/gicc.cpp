@@ -9,16 +9,90 @@
 #include <cstddef>
 #include <cstdint>
 
+// GICv2
+// ref: https://developer.arm.com/documentation/ihi0048/bb/
+// GICv3
+// ref: https://developer.arm.com/documentation/ihi0069/h/
 // GIC-400
 // ref: https://developer.arm.com/documentation/ddi0471/b/
-// GICv2
-// ref:
 // GIC-500
 // ref: https://developer.arm.com/documentation/ddi0516/e/
-// GICv3
-// ref:
+// GIC-500 Errata
+// ref: https://developer.arm.com/documentation/102018/0109/
 
+namespace bm {
 namespace work {
+
+class RegisterTable {
+public:
+    using Addr = std::uintptr_t;
+    using Offset = Addr;
+
+    static inline std::uint32_t read32(Addr reg) {
+        return *(reinterpret_cast<volatile std::uint32_t *>(reg));
+    }
+
+    static inline std::uint64_t read64(Addr reg) {
+        std::uint64_t val;
+        val =   static_cast<std::uint64_t>(*(reinterpret_cast<volatile std::uint32_t *>(reg)));
+        val |= (static_cast<std::uint64_t>(*(reinterpret_cast<volatile std::uint32_t *>(reg + 4))) << 32);
+        return val;
+    }
+
+    static inline std::uint32_t write32(Addr reg, std::uint32_t val) {
+        *(reinterpret_cast<volatile std::uint32_t *>(reg)) = val;
+        return *(reinterpret_cast<volatile std::uint32_t *>(reg));
+    }
+
+    static inline void write32(Addr reg, std::uint32_t val1, std::uint32_t val2) {
+        *(reinterpret_cast<volatile std::uint32_t *>(reg)) = val1;
+        *(reinterpret_cast<volatile std::uint32_t *>(reg + 4)) = val2;
+        return;
+    }
+
+    static inline std::uint64_t write64(Addr reg, std::uint64_t val) {
+        *(reinterpret_cast<volatile std::uint32_t *>(reg)) = static_cast<std::uint32_t>(val & 0xFFFFFFFFu);
+        *(reinterpret_cast<volatile std::uint32_t *>(reg + 4)) = static_cast<std::uint32_t>((val >> 32) & 0xFFFFFFFFu);
+        return read64(reg);
+    }
+
+    static inline std::uint32_t clear32(Addr reg, std::uint32_t bitP) {
+        std::uint32_t val = read32(reg);
+        return write32(reg, (val & (~bitP)));
+    }
+
+    static inline std::uint64_t clear64(Addr reg, std::uint64_t bitP) {
+        std::uint64_t val = read64(reg);
+        return write64(reg, (val & (~bitP)));
+    }
+};
+
+class GICD_ : public RegisterTable {
+public:
+    using RegisterTable::Addr;
+    using RegisterTable::Offset;
+
+    const static Offset CTLR = 0x0000;
+    const static Offset IIDR = 0x0008;
+    const static Offset IGROUPR0 = 0x0080;
+    const static Offset ISENABLER0 = 0x0100;
+    const static Offset ICENABLER0 = 0x0180;
+    const static Offset ISPENDR0 = 0x0200;
+    const static Offset ICPENDR0 = 0x0280;
+    const static Offset ISACTIVER0 = 0x0300;
+    const static Offset ICACTIVER0 = 0x0380;
+    const static Offset IPRIORITYR0 = 0x0400;
+    const static Offset ITARGETSR0 = 0x0800;
+    const static Offset ICFGR0 = 0x0C00;
+    const static Offset IGRPMODR0 = 0x0D00;
+    const static Offset NSACR0 = 0x0E00;
+    const static Offset SGIR = 0x0F00;
+    const static Offset CPENDSGIR0 = 0x0F10;
+    const static Offset SPENDSGIR0 = 0x0F20;
+    const static Offset INMIR0 = 0x0F80;
+    const static Offset IROUTER0 = 0x6000;
+
+};
 
 using MMIO::Register;
 using MMIO::Register64;
@@ -143,3 +217,4 @@ void GICC::enable() { }
 void GICC::disable() { }
 
 } // namespace work
+} // namespace bm

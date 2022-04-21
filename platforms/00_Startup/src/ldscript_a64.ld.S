@@ -22,17 +22,17 @@ SECTIONS
 		*(.init.array)
 		*(.init.array.*)
 	}
-	. = ALIGN(4);
+	. = ALIGN(16);
 	__init_array_end = .;
 
 	__data_start = .;
 	.data : { *(.data .data.*) }
-	. = ALIGN(4);
+	. = ALIGN(16);
 	__data_end = .;
 
 	__bss_start = .;
 	.bss : { *(.bss .bss.*) }
-	. = ALIGN(4);
+	. = ALIGN(16);
 	__bss_end = .;
 	__end = .;
 

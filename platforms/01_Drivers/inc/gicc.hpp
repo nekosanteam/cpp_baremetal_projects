@@ -6,13 +6,16 @@
 #include <cstddef>
 #include <cstdint>
 
+namespace bm {
 namespace work {
+
 class GICD {
 public:
 	GICD() { }
 	~GICD() { }
 
 	void init();
+    void init2nd();
 	void enable(int intno);
 	void disable(int intno);
 };
@@ -28,3 +31,4 @@ public:
 };
 
 } // namespace work
+} // namespace bm
