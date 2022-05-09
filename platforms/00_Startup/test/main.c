@@ -13,7 +13,8 @@ int main(void)
     return 0;
 }
 
-#if defined(__linux) && !defined(BAREMETAL)
+#if !defined(BAREMETAL)
+#if defined(__linux)
 #include <sys/syscall.h>
 unsigned int
 bm_sys_write(int fd, const char* buf, int size)
@@ -34,6 +35,12 @@ void put_message()
     bm_sys_write(1, "hello,world\n", 13);
 }
 #else
+void put_message()
+{
+}
+#endif // __linux
+
+#else // BAREMETAL
 void put_message()
 {
 }
