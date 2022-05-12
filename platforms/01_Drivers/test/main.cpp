@@ -6,22 +6,26 @@
 
 int main(int argc, char** argv)
 {
-    bm::work::UART uart;
-    char str[] = "hello,world\r\n";
+	(void)argc;
+	(void)argv;
 
-    uart.init();
-    uart.put(str);
+	bm::work::UART uart;
+
+	char str[] = "hello,world\r\n";
+
+	uart.init();
+	uart.put(str);
 
 	return 0;
 }
 
 void operator delete(void* p)
 {
-    (p);
+	(void)p;
 }
 
 void operator delete(void* p, size_t size)
 {
-    (p); (size);
+	(void)p;
+	(void)size;
 }
-

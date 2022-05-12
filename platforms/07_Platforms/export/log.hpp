@@ -2,7 +2,7 @@
 /**
  * @file bm/log.hpp
  * @brief
- * 
+ *
  */
 #include <cstdarg>
 #include <cstdint>
@@ -18,28 +18,28 @@ void info(const char* fmt, ...);
 void debug(const char* fmt, ...);
 void trace(const char* fmt, ...);
 
-namespace log_in {
+namespace in_log {
 
 enum LogLevel {
-    NONE,
-    FATAL,
-    ERROR,
-    WARN,
-    NOTICE,
-    INFO,
-    DEBUG,
-    TRACE,
-    ALL,
+	NONE,
+	FATAL,
+	ERROR,
+	WARN,
+	NOTICE,
+	INFO,
+	DEBUG,
+	TRACE,
+	ALL,
 };
 
 void output_logV(LogLevel level, const char* fmt, std::va_list varg);
 
 class OutputLogBase {
 public:
-    static void outputV(LogLevel level, const char* fmt, std::va_list varg);
+	static void outputV(LogLevel level, const char* fmt, std::va_list varg);
 };
 
-} // namespace log_in
+} // namespace in_log
 
 } // namespace log
 } // namespace bm

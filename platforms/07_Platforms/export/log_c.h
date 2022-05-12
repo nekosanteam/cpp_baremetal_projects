@@ -27,6 +27,7 @@ void bm_trace(const char* fmt, ...);
 #define BM_LOG_LEVEL_DEBUG  (6)
 #define BM_LOG_LEVEL_TRACE  (7)
 #define BM_LOG_LEVEL_ALL    (8)
+#define BM_LOG_LEVEL_END    (9)
 
 void bm_log_outputV(int level, const char* fmt, va_list varg);
 
