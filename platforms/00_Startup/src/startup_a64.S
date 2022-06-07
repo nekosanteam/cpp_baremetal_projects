@@ -6,23 +6,20 @@
 #define CURRENTEL_EL2 (0x02 << 2)
 #define CURRENTEL_EL1 (0x01 << 2)
 
-#define SCTLR_EL3_RES1 (BIT(29)|BIT(28)|BIT(23)|BIT(22)|BIT(18)|BIT(16)| \
-                        BIT(11)|BIT( 5)|BIT( 4))
-#define SCTLR_EL2_RES1 (BIT(29)|BIT(28)|BIT(23)|BIT(22)|BIT(18)|BIT(16)| \
-                        BIT(11)|BIT( 5)|BIT( 4))
-#define HCR_EL2_RES1   (BIT( 1))
-#define SCTLR_EL1_RES1 (BIT(29)|BIT(28)|BIT(23)|BIT(22)|BIT(20)| \
-                        BIT(11)|BIT( 8)|BIT( 7)|BIT( 4))
+#define SCTLR_EL3_RES1 (0x30C50830)
+#define SCTLR_EL2_RES1 (0x30C50830)
+#define HCR_EL2_RES1   (0x00000002)
+#define SCTLR_EL1_RES1 (0x30D00990)
 
 .global _start
 .global _reset
 .global __stack_top
 
-	.align
+	.align 4
 _start:
 	b	_reset
 
-	.align
+	.align 4
 _reset:
 	mrs	x0, CurrentEL
 	cmp	x0, CURRENTEL_EL3
@@ -36,6 +33,7 @@ _reset:
 /*
  * EL3 コード
  */
+	.align 4
 reset_at_el3:
 	mov	x0, (((SCTLR_EL3_RES1) >>  0) & 0xffff)
 	movk	x0, (((SCTLR_EL3_RES1) >> 16) & 0xffff), lsl #16
@@ -51,6 +49,7 @@ reset_at_el3:
 /*
  * EL2 コード
  */
+	.align 4
 reset_at_el2:
 	mov	x0, (((SCTLR_EL2_RES1) >>  0) & 0xffff)
 	movk	x0, (((SCTLR_EL2_RES1) >> 16) & 0xffff), lsl #16
@@ -68,6 +67,7 @@ reset_at_el2:
 /*
  * EL1 コード
  */
+	.align 4
 reset_at_el1:
 	mov	x0, (((SCTLR_EL1_RES1) >>  0) & 0xffff)
 	movk	x0, (((SCTLR_EL1_RES1) >> 16) & 0xffff), lsl #16
@@ -79,6 +79,7 @@ reset_at_el1:
 	b	.
 
 ;
+	.align 4
 setup_stack:
 	ret
 
@@ -181,57 +182,75 @@ set_loop:
 	ble way_loop
 	ret    
 
-.balign 0x0800
+	.align 11
 vector_table_el3:
 curr_el_sp0_sync:
+	ret
 
-.balign 0x0080
+	.align 7
 curr_el_sp0_irq:
+	ret
 
-.balign 0x0080
+	.align 7
 curr_el_sp0_fiq:
+	ret
 
-.balign 0x0080
+	.align 7
 curr_el_sp0_serror:
+	ret
 
-.balign 0x0080
+	.align 7
 curr_el_spx_sync:
+	ret
 
-.balign 0x0080
+	.align 7
 curr_el_spx_irq:
+	ret
 
-.balign 0x0080
+	.align 7
 curr_el_spx_fiq:
+	ret
 
-.balign 0x0080
+	.align 7
 curr_el_spx_serror:
+	ret
 
-.balign 0x0080
+	.align 7
 lower_el_aarch64_sync:
+	ret
 
-.balign 0x0080
+	.align 7
 lower_el_aarch64_irq:
+	ret
 
-.balign 0x0080
+	.align 7
 lower_el_aarch64_fiq:
+	ret
 
-.balign 0x0080
+	.align 7
 lower_el_aarch64_serror:
+	ret
 
-.balign 0x0080
+	.align 7
 lower_el_aarch32_sync:
+	ret
 
-.balign 0x0080
+	.align 7
 lower_el_aarch32_irq:
+	ret
 
-.balign 0x0080
+	.align 7
 lower_el_aarch32_fiq:
+	ret
 
-.balign 0x0080
+	.align 7
 lower_el_aarch32_serror:
+	ret
 
-.balign 0x0800
+	.align 11
 vector_table_el2:
+	ret
 
-.balign 0x0800
+	.align 11
 vector_table_el1:
+	ret

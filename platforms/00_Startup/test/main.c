@@ -13,7 +13,7 @@ int main(void)
     return 0;
 }
 
-#if !defined(BAREMETAL)
+#if !defined(BM_BAREMETAL)
 #if defined(__linux)
 #include <sys/syscall.h>
 unsigned int

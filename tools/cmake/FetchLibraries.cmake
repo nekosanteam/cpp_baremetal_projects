@@ -94,6 +94,13 @@ file(DOWNLOAD
   EXPECTED_HASH SHA256=1227384bedbe9174a4ec91f302b336afba4234f8558a08e7b10b64e4bce6cb52
 )
 
+# sqlite3
+file(DOWNLOAD
+  https://www.sqlite.org/2022/sqlite-amalgamation-3380500.zip
+  ${CMAKE_SOURCE_DIR}/external/sqlite3/sqlite-amalgamation-3380500.zip
+  EXPECTED_HASH SHA256=bebb039b748441e3d25d71d11f7a4a33f5df11f318ec18fa7f343d2083755e2c
+)
+
 FetchContent_MakeAvailable(cpputest)
 FetchContent_MakeAvailable(googletest)
 FetchContent_MakeAvailable(fff)
