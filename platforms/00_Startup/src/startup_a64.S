@@ -6,10 +6,10 @@
 #define CURRENTEL_EL2 (0x02 << 2)
 #define CURRENTEL_EL1 (0x01 << 2)
 
-#define SCTLR_EL3_RES1 (0x30C50830)
-#define SCTLR_EL2_RES1 (0x30C50830)
-#define HCR_EL2_RES1   (0x00000002)
+#define SCTLR_EL3_RES1 (0x30C50838)
+#define SCTLR_EL2_RES1 (0x30C50838)
 #define SCTLR_EL1_RES1 (0x30D00990)
+#define HCR_EL2_RES1   (0x00000002)
 
 .global _start
 .global _reset
@@ -35,7 +35,7 @@ _reset:
  */
 	.align 4
 reset_at_el3:
-	mov	x0, (((SCTLR_EL3_RES1) >>  0) & 0xffff)
+	movz	x0, (((SCTLR_EL3_RES1) >>  0) & 0xffff)
 	movk	x0, (((SCTLR_EL3_RES1) >> 16) & 0xffff), lsl #16
 	msr	SCTLR_EL3, x0
 	isb

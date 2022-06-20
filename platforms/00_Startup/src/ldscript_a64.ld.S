@@ -6,7 +6,8 @@ SECTIONS
 	. = 0x40000000;
 
 	__text_start = .;
-	.text : { 
+	.text : {
+		CMakeFiles/00_Startup.dir/src/startup_a64.S.obj(.text*)
 		*(.text*)
 	}
 	. = ALIGN(4);

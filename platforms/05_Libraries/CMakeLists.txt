@@ -23,4 +23,8 @@ if (BUILD_TESTING)
 
   add_executable(05_LibrariesConsole test/consoletest.cpp)
   target_link_libraries(05_LibrariesConsole 05_Libraries ntshell)
+
+  add_executable(05_BarrierTest test/barrier_test.cpp)
+  target_compile_options(05_BarrierTest PRIVATE -O2)
+  target_link_libraries(05_BarrierTest -lpthread)
 endif()
