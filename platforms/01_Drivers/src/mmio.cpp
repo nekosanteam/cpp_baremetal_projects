@@ -20,16 +20,18 @@ public:
 	void init()
 	{
 		uint32_t v = read32(0x00);
+		write32(0x04, v | 0x01);
 	}
 };
 
 void test(void* ptr)
 {
-    char buf[16];
+//    char buf[16];
     SPI* reg = nullptr;
     reg->init();
-//    SPIreg2 reg2(ptr);
-//    uint64_t v = reg2.read64(0x04);
+    VirBase spi_base(ptr);
+    SPIreg2 reg2(spi_base);
+    uint64_t v = reg2.read64(0x04);
 }
 }
 }

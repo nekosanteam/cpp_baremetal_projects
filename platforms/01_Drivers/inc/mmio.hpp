@@ -36,25 +36,41 @@ public:
     VirAddr base_;
 
 public:
+    VirBase() : base_(0) {}
+    VirBase(const VirBase& base) : base_(base.base_) {}
+    VirBase& operator=(VirBase& rhs) {
+        base_ = rhs.base_;
+        return *this;
+    }
+
     explicit VirBase(VirAddr base) : base_(base) {}
-    explicit VirBase(void* p) : VirBase(reinterpret_cast<VirAddr>(p)) {}
+    explicit VirBase(void* p) : base_(reinterpret_cast<VirAddr>(p)) {}
 };
 
 class MMapBase {
 public:
 	std::uintptr_t base_;
 
+private:
+    int fd_;
+    std::size_t size_;
+
 public:
+    MMapBase() : base_(0), fd_(-1), size_(0) {}
+    MMapBase(const MMapBase& base) = delete;
+    MMapBase(MMapBase&& rhs) : base_(rhs.base_), fd_(rhs.fd_), size_(rhs.size_) {}
     MMapBase(PhyAddr base, std::size_t size);
     int open();
     void close();
-
-private:
-    int fd;
 };
 
 template <class BaseT>
 class RegisterTableT : public BaseT {
+public:
+    using Base = BaseT;
+
+    explicit RegisterTableT(Base base) : Base(base) {}
+
 public:
     inline uint8_t  read8(Offset off)
     {
