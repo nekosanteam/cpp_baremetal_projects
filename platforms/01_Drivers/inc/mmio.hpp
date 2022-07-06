@@ -112,92 +112,92 @@ public:
         *(reinterpret_cast<volatile uint64_t*>(BaseT::base_ + off)) = v64;
     }
 
-    inline void modify8(Offset off, uint8_t mask8, uint8_t v8)
+    inline void modify8(Offset off, uint8_t field8, uint8_t v8)
     {
         uint8_t n8 = read8(off);
-        n8 = ((n8 & mask8) | v8);
+        n8 = ((n8 & ~field8) | v8);
         write8(off, n8);
     }
 
-    inline void modify16(Offset off, uint16_t mask16, uint16_t v16)
+    inline void modify16(Offset off, uint16_t field16, uint16_t v16)
     {
         uint16_t n16 = read16(off);
-        n16 = ((n16 & mask16) | v16);
+        n16 = ((n16 & ~field16) | v16);
         write16(off, n16);
     }
 
-    inline void modify32(Offset off, uint32_t mask32, uint32_t v32)
+    inline void modify32(Offset off, uint32_t field32, uint32_t v32)
     {
         uint32_t n32 = read32(off);
-        n32 = ((n32 & mask32) | v32);
+        n32 = ((n32 & ~field32) | v32);
         write32(off, n32);
     }
 
-    inline void modify64(Offset off, uint64_t mask64, uint64_t v64)
+    inline void modify64(Offset off, uint64_t field64, uint64_t v64)
     {
         uint64_t n64 = read64(off);
-        n64 = ((n64 & mask64) | v64);
+        n64 = ((n64 & ~field64) | v64);
         write64(off, n64);
     }
 
-    inline void clear8(Offset off, uint8_t bits8)
+    inline void clear8(Offset off, uint8_t field8)
     {
-        modify8(off, ~bits8, 0u);
+        modify8(off, field8, 0u);
     }
 
-    inline void clear16(Offset off, uint16_t bits16)
+    inline void clear16(Offset off, uint16_t field16)
     {
-        modify16(off, ~bits16, 0u);
+        modify16(off, field16, 0u);
     }
 
-    inline void clear32(Offset off, uint32_t bits32)
+    inline void clear32(Offset off, uint32_t field32)
     {
-        modify32(off, ~bits32, 0u);
+        modify32(off, field32, 0u);
     }
 
-    inline void clear64(Offset off, uint64_t bits64)
+    inline void clear64(Offset off, uint64_t field64)
     {
-        modify64(off, ~bits64, 0u);
+        modify64(off, field64, 0u);
     }
 
     inline void set8(Offset off, int bit)
     {
-        modify8(off, ~(1u<<bit), (1u<<bit));
+        modify8(off, (1u<<bit), (1u<<bit));
     }
 
     inline void set16(Offset off, int bit)
     {
-        modify16(off, ~(1u<<bit), (1u<<bit));
+        modify16(off, (1u<<bit), (1u<<bit));
     }
 
     inline void set32(Offset off, int bit)
     {
-        modify32(off, ~(1u<<bit), (1u<<bit));
+        modify32(off, (1u<<bit), (1u<<bit));
     }
 
     inline void set64(Offset off, int bit)
     {
-        modify64(off, ~(1u<<bit), (1u<<bit));
+        modify64(off, (1u<<bit), (1u<<bit));
     }
 
     inline void reset8(Offset off, int bit)
     {
-        modify8(off, ~(1u<<bit), 0);
+        modify8(off, (1u<<bit), 0);
     }
 
     inline void reset16(Offset off, int bit)
     {
-        modify16(off, ~(1u<<bit), 0);
+        modify16(off, (1u<<bit), 0);
     }
 
     inline void reset32(Offset off, int bit)
     {
-        modify32(off, ~(1u<<bit), 0);
+        modify32(off, (1u<<bit), 0);
     }
 
     inline void reset64(Offset off, int bit)
     {
-        modify64(off, ~(1u<<bit), 0);
+        modify64(off, (1u<<bit), 0);
     }
 };
 
