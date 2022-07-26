@@ -13,7 +13,7 @@ if(COMMAND target_compile_option_baremetal)
   target_compile_option_baremetal(01_Drivers)
 endif()
 
-add_executable(01_DriversTest test/main.cpp)
+#add_executable(01_DriversTest test/main.cpp)
 if (TARGET 01_DriversTest)
   if(COMMAND target_compile_option_warning)
     target_compile_option_warning(01_DriversTest)
