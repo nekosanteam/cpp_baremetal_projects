@@ -133,6 +133,14 @@ struct udp6reader {
 }
 
 #include <cstdio>
+#include <deque>
+#include <forward_list>
+#include <list>
+#include <map>
+#include <queue>
+#include <set>
+#include <string>
+#include <vector>
 
 namespace m = bm::work;
 using std::strcpy;
@@ -141,6 +149,25 @@ using std::printf;
 
 int main(int argc, char** argv)
 {
+/*    std::string str;
+    printf("std::string size = %d\n", sizeof(str)); // 32 (amd64 linux)
+    std::vector<std::uint32_t> vec;
+    printf("std::vector size = %d\n", sizeof(vec)); // 24 (amd64 linux)
+    std::forward_list<std::uint32_t> flst;
+    printf("std::forward_list size = %d\n", sizeof(flst)); // 8 (amd64 linux)
+    std::list<std::uint32_t> lst;
+    printf("std::list   size = %d\n", sizeof(lst)); // 24 (amd64 linux)
+    std::queue<std::uint32_t> que;
+    printf("std::queue  size = %d\n", sizeof(que)); // 80 (amd64 linux)
+    std::deque<std::uint32_t> deq;
+    printf("std::deque  size = %d\n", sizeof(deq)); // 80 (amd64 linux)
+    std::map<std::string, std::string> map;
+    printf("std::map    size = %d\n", sizeof(map)); // 48 (amd64 linux)
+    std::map<std::uint8_t, std::uint8_t> map2;
+    printf("std::map(int) size = %d\n", sizeof(map2)); // 48 (amd64 linux)
+    std::set<std::string> set;
+    printf("std::set    size = %d\n", sizeof(set)); // 48 (amd64 linux)
+*/
     if (argc > 1) {
         if (argv[1][0] == 's') {
             m::udp4 s;
