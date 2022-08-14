@@ -1,20 +1,19 @@
 ---
 BasedOnStyle: Webkit
 IndentWidth: 4
-ColumnLimit: 140
+ColumnLimit: 160
 ---
 Language: Cpp
 AccessModifierOffset: -4
-AlignConsecutiveAssignments: Consecutive
-AlignConsecutiveDeclarations: Consecutive
-AlignConsecutiveMacros: Consecutive
+AlignConsecutiveAssignments: AcrossComments
+AlignConsecutiveDeclarations: AcrossComments
+AlignConsecutiveMacros: AcrossComments
 AlignTrailingComments: true
 AllowShortBlocksOnASingleLine: Never
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AlwaysBreakTemplateDeclarations: Yes
-BraceWrapping:
-    BeforeElse: true
+BreakBeforeBraces: Stroustrup
 NamespaceIndentation: None
 TabWidth: 4
 UseTab: ForIndentation
