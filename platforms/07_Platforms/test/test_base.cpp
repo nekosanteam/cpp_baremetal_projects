@@ -1,6 +1,14 @@
 #include "log.hpp"
 #include "log_c.h"
 
+#include "HAL/hal_namespace.h"
+
+#include "FAL/fal_namespace.h"
+
+#include "MAL/mal_namespace.h"
+
+#include "PAL/pal_namespace.h"
+
 void test_log_cpp()
 {
 	using bm::log::debug;

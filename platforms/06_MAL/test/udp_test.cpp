@@ -63,8 +63,8 @@ public:
 	bool recv(std::uint8_t* buf, std::size_t& size, tcp6reader* reader);
 };
 
-}
-}
+} // namespace work
+} // namespace bm
 
 // *.cpp
 #include <cstring>
@@ -141,8 +141,8 @@ struct udp6reader {
 	int sock;
 };
 
-}
-}
+} // namespace work
+} // namespace bm
 
 #include <cstdio>
 #include <deque>
@@ -163,11 +163,11 @@ void print_v4addr(sockaddr* addr, size_t len)
 {
 	// https://man7.org/linux/man-pages/man7/ip.7.html
 	sockaddr_in* rp = (sockaddr_in*)addr;
-    uint32_t nt = ntohl(rp->sin_addr.s_addr);
+	uint32_t     nt = ntohl(rp->sin_addr.s_addr);
 	printf("v4 addr %08x ", nt); // uint32_t.
-    for (int i=0; i<4; i++) {
-        printf("%d.", (uint8_t)(nt >> ((3-i)*8)));
-    }
+	for (int i = 0; i < 4; i++) {
+		printf("%d.", (uint8_t)(nt >> ((3 - i) * 8)));
+	}
 }
 
 void print_v6addr(sockaddr* addr, size_t len)
@@ -184,7 +184,7 @@ void print_v6addr(sockaddr* addr, size_t len)
 int main(int argc, char** argv)
 {
 	/*
-        std::string str;
+	    std::string str;
 	    printf("std::string size = %d\n", sizeof(str)); // 32 (amd64 linux)
 	    std::vector<std::uint32_t> vec;
 	    printf("std::vector size = %d\n", sizeof(vec)); // 24 (amd64 linux)
@@ -207,8 +207,9 @@ int main(int argc, char** argv)
 		if (argv[1][0] == 's') {
 			m::udp4       s;
 			m::udp4writer p;
-			uint8_t       buf[128];
-			size_t        size;
+
+			uint8_t buf[128];
+			size_t  size;
 
 			p.sock = socket(PF_INET, SOCK_DGRAM, 0);
 			strcpy((char*)&buf[0], "send");
@@ -219,9 +220,10 @@ int main(int argc, char** argv)
 		else if (argv[1][0] == 'r') {
 			m::udp4          r;
 			m::udp4reader    p;
-			uint8_t          buf[128];
-			size_t           size;
 			m::udp4::Address addr;
+
+			uint8_t buf[128];
+			size_t  size;
 
 			p.sock = socket(PF_INET, SOCK_DGRAM, 0);
 			size   = sizeof(buf);
@@ -231,7 +233,8 @@ int main(int argc, char** argv)
 		else if (argv[1][0] == 'a') {
 			struct addrinfo  hints;
 			struct addrinfo* results;
-			int              r;
+
+			int r;
 
 			memset(&hints, 0, sizeof(hints));
 			hints.ai_family   = AF_UNSPEC;

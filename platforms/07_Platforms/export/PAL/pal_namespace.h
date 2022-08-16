@@ -9,8 +9,8 @@
   namespace bm { \
   namespace pal {
 #define NAMESPACE_PAL_END \
-  } \
-  }
-#define USING_NAMESPACE_PAL(n) using m = bm::pal
+  } /* namespace pal */ \
+  } /* namespace bm */
+#define USING_NAMESPACE_PAL(m) namespace m = bm::pal
 
 #endif /* BM_PLATFORM_PAL_NAMESPACE_H_ */

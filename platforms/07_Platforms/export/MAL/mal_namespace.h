@@ -9,8 +9,8 @@
   namespace bm { \
   namespace mal {
 #define NAMESPACE_MAL_END \
-  } \
-  }
-#define USING_NAMESPACE_MAL(n) using m = bm::mal
+  } /* namespace mal */ \
+  } /* namespace bm */
+#define USING_NAMESPACE_MAL(m) namespace m = bm::mal
 
 #endif /* BM_PLATFORM_MAL_NAMESPACE_H_ */

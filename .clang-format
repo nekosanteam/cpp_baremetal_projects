@@ -1,5 +1,5 @@
 ---
-BasedOnStyle: Webkit
+BasedOnStyle: WebKit
 IndentWidth: 4
 ColumnLimit: 160
 ---

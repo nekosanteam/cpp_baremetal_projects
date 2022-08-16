@@ -9,8 +9,8 @@
   namespace bm { \
   namespace fal {
 #define NAMESPACE_FAL_END \
-  } \
-  }
-#define USING_NAMESPACE_FAL(n) using m = bm::fal
+  } /* namespace fal */ \
+  } /* namespace bm */
+#define USING_NAMESPACE_FAL(m) namespace m = bm::fal
 
 #endif /* BM_PLATFORM_FAL_NAMESPACE_H_ */
