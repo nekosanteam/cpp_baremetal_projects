@@ -3,11 +3,27 @@
 
 #include "HAL/hal_namespace.h"
 
+NAMESPACE_HAL_BEGIN
+int gHAL;
+NAMESPACE_HAL_END
+
 #include "FAL/fal_namespace.h"
+
+NAMESPACE_FAL_BEGIN
+int gFAL;
+NAMESPACE_FAL_END
 
 #include "MAL/mal_namespace.h"
 
+NAMESPACE_MAL_BEGIN
+int gMAL;
+NAMESPACE_MAL_END
+
 #include "PAL/pal_namespace.h"
+
+NAMESPACE_PAL_BEGIN
+int gPAL;
+NAMESPACE_PAL_END
 
 void test_log_cpp()
 {
