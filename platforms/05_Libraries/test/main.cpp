@@ -6,8 +6,8 @@
 
 TEST_GROUP(StringTest)
 {
-    char dst[32];
-    char src[32];
+    nk_char dst[32];
+    nk_char src[32];
 
     TEST_SETUP()
     {
@@ -20,7 +20,7 @@ TEST_GROUP(StringTest)
 
 TEST(StringTest, TestStrCpy)
 {
-    char org[] = "test01";
+    nk_char org[] = "test01";
 
     nk_strcpy(src, org);
     nk_strcpy(dst, src);
@@ -30,7 +30,7 @@ TEST(StringTest, TestStrCpy)
 
 TEST(StringTest, TestStrNCpy)
 {
-    char org[] = "test02";
+    nk_char org[] = "test02";
 
     nk_strncpy(dst, org, 8);
     STRCMP_EQUAL("test02", dst);
@@ -88,7 +88,7 @@ TEST(StringTest, TestStrNCmp)
 
 TEST(StringTest, TestStrChr)
 {
-    char org[] = "abcdgfgf";
+    nk_char org[] = "abcdgfgf";
 
     STRCMP_EQUAL("fgf", nk_strchr(org, 'f'));
     POINTERS_EQUAL(NULL, nk_strchr(org, 'i'));
@@ -97,7 +97,7 @@ TEST(StringTest, TestStrChr)
 
 TEST(StringTest, TestStrRChr)
 {
-    char org[] = "abcdgfgf";
+    nk_char org[] = "abcdgfgf";
 
     STRCMP_EQUAL("gf", nk_strrchr(org, 'g'));
     POINTERS_EQUAL(NULL, nk_strrchr(org, 'i'));
@@ -106,7 +106,7 @@ TEST(StringTest, TestStrRChr)
 
 TEST(StringTest, TestMemChr)
 {
-    dst[3] = static_cast<char>(0x7c);
+    dst[3] = static_cast<nk_char>(0x7c);
 
     POINTERS_EQUAL(dst + 3, nk_memchr(dst, 0x7c, 4));
 }
@@ -114,8 +114,8 @@ TEST(StringTest, TestMemChr)
 TEST(StringTest, TestMemCmp)
 {
     for (int i=0; i<4; i++) {
-        src[i] = static_cast<char>(0x79);
-        dst[i] = static_cast<char>(0x79);
+        src[i] = static_cast<nk_char>(0x79);
+        dst[i] = static_cast<nk_char>(0x79);
     }
     LONGS_EQUAL(0, nk_memcmp(src, dst, 4));
     LONGS_EQUAL(1, nk_memcmp(src, dst, 5));

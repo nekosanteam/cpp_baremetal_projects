@@ -269,56 +269,56 @@ static inline void* nki_memmove(void* dst, const void* src, size_t count)
 
 } // namespace
 
-char* nk_strcpy(char* nk_restrict dst, const char* nk_restrict src)
+nk_char* nk_strcpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src)
 {
-	return nki_strcpy<char>(dst, src);
+	return nki_strcpy<nk_char>(dst, src);
 }
 
-char* nk_strncpy(char* nk_restrict dst, const char* nk_restrict src, size_t count)
+nk_char* nk_strncpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count)
 {
-	return nki_strncpy<char>(dst, src, count);
+	return nki_strncpy<nk_char>(dst, src, count);
 }
 
-char* nk_strcat(char* nk_restrict dst, const char* nk_restrict src)
+nk_char* nk_strcat(nk_char* nk_restrict dst, const nk_char* nk_restrict src)
 {
-	return nki_strcat<char>(dst, src);
+	return nki_strcat<nk_char>(dst, src);
 }
 
-char* nk_strncat(char* nk_restrict dst, const char* nk_restrict src, size_t count)
+nk_char* nk_strncat(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count)
 {
-	return nki_strncat<char>(dst, src, count);
+	return nki_strncat<nk_char>(dst, src, count);
 }
 
-size_t nk_strxfrm(char* nk_restrict dst, const char* nk_restrict src, size_t count);
+size_t nk_strxfrm(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count);
 
-size_t nk_strlen(const char* str)
+size_t nk_strlen(const nk_char* str)
 {
-	return nki_strlen<char>(str);
+	return nki_strlen<nk_char>(str);
 }
 
-size_t nk_strlen_s(const char* str, size_t strsz)
+size_t nk_strlen_s(const nk_char* str, size_t strsz)
 {
-	return nki_strlen_s<char>(str, strsz);
+	return nki_strlen_s<nk_char>(str, strsz);
 }
 
-int nk_strcmp(const char* lhs, const char* rhs)
+int nk_strcmp(const nk_char* lhs, const nk_char* rhs)
 {
-	return nki_strcmp<char>(lhs, rhs);
+	return nki_strcmp<nk_char>(lhs, rhs);
 }
 
-int nk_strncmp(const char* lhs, const char* rhs, size_t count)
+int nk_strncmp(const nk_char* lhs, const nk_char* rhs, size_t count)
 {
-	return nki_strncmp<char>(lhs, rhs, count);
+	return nki_strncmp<nk_char>(lhs, rhs, count);
 }
 
-char* nk_strchr(const char* str, int ch)
+nk_char* nk_strchr(const nk_char* str, int ch)
 {
-	return nki_strchr<char>(str, (char)ch);
+	return nki_strchr<nk_char>(str, (nk_char)ch);
 }
 
-char* nk_strrchr(const char* str, int ch)
+nk_char* nk_strrchr(const nk_char* str, int ch)
 {
-	return nki_strrchr<char>(str, (char)ch);
+	return nki_strrchr<nk_char>(str, (nk_char)ch);
 }
 
 void* nk_memchr(const void* ptr, int ch, size_t count)
