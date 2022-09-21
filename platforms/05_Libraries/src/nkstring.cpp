@@ -3,8 +3,10 @@
  * 
  */
 #include "nkstring.h"
+
 #include <array>
 #include <cstdint>
+#include <utility>
 
 // restrict keyword (C11)
 #ifdef __cplusplus
@@ -14,6 +16,9 @@
 #endif
 
 namespace {
+
+using std::pair;
+using std::make_pair;
 
 template <typename AccType>
 static inline AccType* nki_strcpy(AccType* nk_restrict dst, const AccType* nk_restrict src)
@@ -265,6 +270,152 @@ static inline void* nki_memmove(void* dst, const void* src, size_t count)
 	} else {
 		return nki_memcpy(dst, src, count);
 	}
+}
+
+typedef uint32_t nki_mbstate;
+typedef uint8_t  nki_char8;
+typedef uint16_t nki_char16;
+typedef uint32_t nki_char32;
+
+static inline nki_mbstate nki_mbstate_clear()
+{
+	return 0;
+}
+
+static inline bool nki_mbstate_initial(nki_mbstate v)
+{
+	return (v == 0);
+}
+
+static inline nki_mbstate nki_mbstate_shift(nki_mbstate v, int shift)
+{
+	return ((v) << (shift));
+}
+
+static inline nki_mbstate nki_mbstate_unshift(nki_mbstate v, int shift)
+{
+	return ((v) >> (shift));
+}
+
+static inline nki_mbstate nki_mbstate_put_rest(nki_mbstate v, size_t r)
+{
+	return (((v) & ~0x0Fu) | static_cast<nki_mbstate>(r & 0x0Fu));
+}
+
+static inline size_t nki_mbstate_get_rest(nki_mbstate v)
+{
+	return static_cast<size_t>(v & 0x0Fu);
+}
+
+static inline nki_mbstate nki_mbstate_putc8(nki_mbstate v, nki_char8 c, nki_char8 mask)
+{
+	return (((v) & ~static_cast<nki_mbstate>(mask)) | static_cast<nki_mbstate>((c) & (mask)));
+}
+
+static inline nki_mbstate nki_mbstate_putc16(nki_mbstate v, nki_char16 c, nki_char16 mask)
+{
+	return (((v) & ~static_cast<nki_mbstate>(mask)) | static_cast<nki_mbstate>((c) & (mask)));
+}
+
+static inline nki_char8 nki_mbstate_getc8(nki_mbstate v)
+{
+	return static_cast<nki_char8>(v & 0xFFu);
+}
+
+static inline nki_char16 nki_mbstate_getc16(nki_mbstate v)
+{
+	return static_cast<nki_char16>(v & 0xFFFFu);
+}
+
+static inline nki_char32 nki_mbstate_getc32(nki_mbstate v)
+{
+	return static_cast<nk_char32>(v);
+}
+
+struct c8rconv {
+    const nk_char8* c8s;
+    size_t rest;
+    nk_mbstate st;
+};
+
+typedef uint32_t nki_char16pair;
+
+static inline nki_char16pair nki_c32toc16(nki_char32 c32)
+{
+	if (c32 > 0xFFFFu) {
+		nki_char16 c0 = static_cast<nki_char16>((c32 >> 16) & 0x1F);
+		c0 = c0 - 1;
+		c0 = (c0 << 6) | 0xD800u;
+		nki_char16pair result = (static_cast<nki_char16pair>(c0) << 16) | 0xDC00;
+		result = result | static_cast<nki_char16pair>(c32 & 0x3FFu); 
+		return result;
+	}
+	else {
+		return static_cast<nki_char16pair>(c32 & 0xFFFFu);
+	}
+}
+
+static inline pair<nki_char32, c8rconv> nki_c8rtoc32(const nk_char8* c8s, size_t n, nk_mbstate st)
+{
+	if (nki_mbstate_initial(st)) {
+		nki_char8 c0 = *c8s;
+		c8s++;
+		n--;
+
+		if ((c0 & 0x80u) == 0) {
+			return make_pair((nki_char32)(c0), c8rconv{ .c8s = c8s, .rest = n, .st = nki_mbstate_clear() });
+		}
+
+		if ((c0 & 0xE0u) == 0xC0u) {
+			st = nki_mbstate_putc8(st, c0, 0x1Fu);
+			st = nki_mbstate_shift(st, 6);
+			st = nki_mbstate_put_rest(st, 1);
+		}
+		else if ((c0 & 0xF0u) == 0xE0u) {
+			st = nki_mbstate_putc8(st, c0, 0x0Fu);
+			st = nki_mbstate_shift(st, 6);
+			st = nki_mbstate_put_rest(st, 2);
+        }
+		else if ((c0 & 0xF8u) == 0xF0u) {
+			st = nki_mbstate_putc8(st, c0, 0x07u);
+			st = nki_mbstate_shift(st, 6);
+			st = nki_mbstate_put_rest(st, 3);
+        }
+		else {
+			return make_pair(0, c8rconv{ .c8s = c8s, .rest = n, .st = nki_mbstate_clear() });
+		}
+	}
+
+	size_t rest = nki_mbstate_get_rest(st);
+	st = nki_mbstate_unshift(st, 6);
+	while ((rest>0) && (n>0)) {
+		nk_char8 c1 = *c8s;
+		c8s++;
+		n--;
+
+		if ((c1 & 0xC0u) != 0x80u) {
+			return make_pair(0, c8rconv{ .c8s = c8s, .rest = n, .st = nki_mbstate_clear() });
+		}
+		st = nki_mbstate_shift(st, 6);
+		st = nki_mbstate_putc8(st, c1, 0x3F);
+		rest--;
+	}
+
+	if (rest==0) {
+		nk_char32 c32 = nki_mbstate_getc32(st);
+		return make_pair(c32, c8rconv{ .c8s = c8s, .rest = n, .st = nki_mbstate_clear() });
+	}
+
+	// rest!=0 && n==0
+	st = nki_mbstate_shift(st, 6);
+	st = nki_mbstate_put_rest(st, rest);
+	return make_pair(0, c8rconv{ .c8s = c8s, .rest = n, .st = st });
+}
+
+static inline pair<nki_char16pair, c8rconv> nki_c8rtoc16(const nk_char8* c8s, size_t n, nk_mbstate st)
+{
+	auto result = nki_c8rtoc32(c8s, n, st);
+	return make_pair(nki_c32toc16(result.first), result.second);
 }
 
 } // namespace
