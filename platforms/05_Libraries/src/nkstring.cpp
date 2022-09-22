@@ -4,6 +4,8 @@
  */
 #include "nkstring.h"
 
+#include "nkstring/config.h"
+
 #include <array>
 #include <cstdint>
 #include <utility>
@@ -16,9 +18,6 @@
 #endif
 
 namespace {
-
-using std::pair;
-using std::make_pair;
 
 template <typename AccType>
 static inline AccType* nki_strcpy(AccType* nk_restrict dst, const AccType* nk_restrict src)
@@ -272,6 +271,9 @@ static inline void* nki_memmove(void* dst, const void* src, size_t count)
 	}
 }
 
+using std::pair;
+using std::make_pair;
+
 typedef uint32_t nki_mbstate;
 typedef uint8_t  nki_char8;
 typedef uint16_t nki_char16;
@@ -329,7 +331,7 @@ static inline nki_char16 nki_mbstate_getc16(nki_mbstate v)
 
 static inline nki_char32 nki_mbstate_getc32(nki_mbstate v)
 {
-	return static_cast<nk_char32>(v);
+	return static_cast<nk_char32>(v & 0x1FFFFFu);
 }
 
 struct c8rconv {
@@ -344,18 +346,17 @@ static inline nki_char16pair nki_c32toc16(nki_char32 c32)
 {
 	if (c32 > 0xFFFFu) {
 		nki_char16 c0 = static_cast<nki_char16>((c32 >> 16) & 0x1F);
-		c0 = c0 - 1;
-		c0 = (c0 << 6) | 0xD800u;
-		nki_char16pair result = (static_cast<nki_char16pair>(c0) << 16) | 0xDC00;
-		result = result | static_cast<nki_char16pair>(c32 & 0x3FFu); 
-		return result;
+		c0 = (((c0 - 1) & 0x0F) << 6);
+		c0 = 0xD800u | c0 | ((c32 >> 10) & 0x003Fu);
+		nki_char16 c1 = 0xDC00 | static_cast<nki_char16>(c32 & 0x03FFu);
+		return (static_cast<nki_char16pair>(c1) << 16) | (static_cast<nki_char16pair>(c0));
 	}
 	else {
 		return static_cast<nki_char16pair>(c32 & 0xFFFFu);
 	}
 }
 
-static inline pair<nki_char32, c8rconv> nki_c8rtoc32(const nk_char8* c8s, size_t n, nk_mbstate st)
+static inline pair<nki_char32, c8rconv> nki_c8rtoc32(const nki_char8* c8s, size_t n, nki_mbstate st)
 {
 	if (nki_mbstate_initial(st)) {
 		nki_char8 c0 = *c8s;
@@ -363,7 +364,7 @@ static inline pair<nki_char32, c8rconv> nki_c8rtoc32(const nk_char8* c8s, size_t
 		n--;
 
 		if ((c0 & 0x80u) == 0) {
-			return make_pair((nki_char32)(c0), c8rconv{ .c8s = c8s, .rest = n, .st = nki_mbstate_clear() });
+			return make_pair((nki_char32)(c0), c8rconv{ c8s, n, nki_mbstate_clear() });
 		}
 
 		if ((c0 & 0xE0u) == 0xC0u) {
@@ -382,19 +383,19 @@ static inline pair<nki_char32, c8rconv> nki_c8rtoc32(const nk_char8* c8s, size_t
 			st = nki_mbstate_put_rest(st, 3);
         }
 		else {
-			return make_pair(0, c8rconv{ .c8s = c8s, .rest = n, .st = nki_mbstate_clear() });
+			return make_pair(0, c8rconv{ c8s, n, nki_mbstate_clear() });
 		}
 	}
 
 	size_t rest = nki_mbstate_get_rest(st);
 	st = nki_mbstate_unshift(st, 6);
 	while ((rest>0) && (n>0)) {
-		nk_char8 c1 = *c8s;
+		nki_char8 c1 = *c8s;
 		c8s++;
 		n--;
 
 		if ((c1 & 0xC0u) != 0x80u) {
-			return make_pair(0, c8rconv{ .c8s = c8s, .rest = n, .st = nki_mbstate_clear() });
+			return make_pair(0, c8rconv{ c8s, n, nki_mbstate_clear() });
 		}
 		st = nki_mbstate_shift(st, 6);
 		st = nki_mbstate_putc8(st, c1, 0x3F);
@@ -402,17 +403,17 @@ static inline pair<nki_char32, c8rconv> nki_c8rtoc32(const nk_char8* c8s, size_t
 	}
 
 	if (rest==0) {
-		nk_char32 c32 = nki_mbstate_getc32(st);
-		return make_pair(c32, c8rconv{ .c8s = c8s, .rest = n, .st = nki_mbstate_clear() });
+		nki_char32 c32 = nki_mbstate_getc32(st);
+		return make_pair(c32, c8rconv{ c8s, n, nki_mbstate_clear() });
 	}
 
 	// rest!=0 && n==0
 	st = nki_mbstate_shift(st, 6);
 	st = nki_mbstate_put_rest(st, rest);
-	return make_pair(0, c8rconv{ .c8s = c8s, .rest = n, .st = st });
+	return make_pair(0, c8rconv{ c8s, n, st });
 }
 
-static inline pair<nki_char16pair, c8rconv> nki_c8rtoc16(const nk_char8* c8s, size_t n, nk_mbstate st)
+static inline pair<nki_char16pair, c8rconv> nki_c8rtoc16(const nki_char8* c8s, size_t n, nki_mbstate st)
 {
 	auto result = nki_c8rtoc32(c8s, n, st);
 	return make_pair(nki_c32toc16(result.first), result.second);
