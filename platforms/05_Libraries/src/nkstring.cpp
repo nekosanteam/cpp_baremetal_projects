@@ -1,6 +1,6 @@
 /**
  * @file nkstring.cpp
- * 
+ *
  */
 #include "nkstring.h"
 
@@ -127,7 +127,8 @@ static inline int nki_strcmp(const AccType* lhs, const AccType* rhs)
 	}
 	if (*lhs < *rhs) {
 		return -1;
-	} else {
+	}
+	else {
 		return 1;
 	}
 }
@@ -135,8 +136,7 @@ static inline int nki_strcmp(const AccType* lhs, const AccType* rhs)
 template <char>
 static inline int nki_strcmp(const char* lhs, const char* rhs)
 {
-	return nki_strcmp<unsigned char>(
-	    reinterpret_cast<const unsigned char*>(lhs), reinterpret_cast<const unsigned char*>(rhs));
+	return nki_strcmp<unsigned char>(reinterpret_cast<const unsigned char*>(lhs), reinterpret_cast<const unsigned char*>(rhs));
 }
 
 template <typename AccType>
@@ -157,7 +157,8 @@ static inline int nki_strncmp(const AccType* lhs, const AccType* rhs, size_t cou
 	}
 	if (*lhs < *rhs) {
 		return -1;
-	} else {
+	}
+	else {
 		return 1;
 	}
 }
@@ -165,8 +166,7 @@ static inline int nki_strncmp(const AccType* lhs, const AccType* rhs, size_t cou
 template <char>
 static inline int nki_strncmp(const char* lhs, const char* rhs, size_t count)
 {
-	return nki_strncmp<unsigned char>(
-	    reinterpret_cast<const unsigned char*>(lhs), reinterpret_cast<const unsigned char*>(rhs), count);
+	return nki_strncmp<unsigned char>(reinterpret_cast<const unsigned char*>(lhs), reinterpret_cast<const unsigned char*>(rhs), count);
 }
 
 template <typename AccType>
@@ -178,7 +178,8 @@ static inline AccType* nki_strchr(const AccType* str, AccType ch)
 	}
 	if (*pos == ch) {
 		return const_cast<AccType*>(pos);
-	} else {
+	}
+	else {
 		return NULL;
 	}
 }
@@ -192,7 +193,8 @@ static inline AccType* nki_strrchr(const AccType* str, AccType ch)
 	}
 	if (*pos == ch) {
 		return const_cast<AccType*>(pos);
-	} else {
+	}
+	else {
 		return NULL;
 	}
 }
@@ -205,7 +207,7 @@ static inline void* nki_memchr(const void* ptr, int ch, size_t count)
 		if (*pos == static_cast<unsigned char>(ch)) {
 			return const_cast<void*>(static_cast<const void*>(pos));
 		}
-        pos++;
+		pos++;
 	}
 	return NULL;
 }
@@ -218,11 +220,12 @@ static inline int nki_memcmp(const void* lhs, const void* rhs, size_t count)
 	for (size_t i = 0; i < count; i++) {
 		if (*lhs_u < *rhs_u) {
 			return -1;
-		} else if (*lhs_u > *rhs_u) {
+		}
+		else if (*lhs_u > *rhs_u) {
 			return 1;
 		}
-        lhs_u++;
-        rhs_u++;
+		lhs_u++;
+		rhs_u++;
 	}
 	return 0;
 }
@@ -266,13 +269,14 @@ static inline void* nki_memmove(void* dst, const void* src, size_t count)
 			*dst_u = *src_u;
 		}
 		return dst;
-	} else {
+	}
+	else {
 		return nki_memcpy(dst, src, count);
 	}
 }
 
-using std::pair;
 using std::make_pair;
+using std::pair;
 
 typedef uint32_t nki_mbstate;
 typedef uint8_t  nki_char8;
@@ -335,9 +339,9 @@ static inline nki_char32 nki_mbstate_getc32(nki_mbstate v)
 }
 
 struct c8rconv {
-    const nk_char8* c8s;
-    size_t rest;
-    nk_mbstate st;
+	const nk_char8* c8s;
+	size_t          rest;
+	nk_mbstate      st;
 };
 
 typedef uint32_t nki_char16pair;
@@ -345,10 +349,13 @@ typedef uint32_t nki_char16pair;
 static inline nki_char16pair nki_c32toc16(nki_char32 c32)
 {
 	if (c32 > 0xFFFFu) {
-		nki_char16 c0 = static_cast<nki_char16>((c32 >> 16) & 0x1F);
+		nki_char16 c0;
+		nki_char16 c1;
+
+		c0 = static_cast<nki_char16>((c32 >> 16) & 0x1F);
 		c0 = (((c0 - 1) & 0x0F) << 6);
 		c0 = 0xD800u | c0 | ((c32 >> 10) & 0x003Fu);
-		nki_char16 c1 = 0xDC00 | static_cast<nki_char16>(c32 & 0x03FFu);
+		c1 = 0xDC00 | static_cast<nki_char16>(c32 & 0x03FFu);
 		return (static_cast<nki_char16pair>(c1) << 16) | (static_cast<nki_char16pair>(c0));
 	}
 	else {
@@ -364,7 +371,7 @@ static inline pair<nki_char32, c8rconv> nki_c8rtoc32(const nki_char8* c8s, size_
 		n--;
 
 		if ((c0 & 0x80u) == 0) {
-			return make_pair((nki_char32)(c0), c8rconv{ c8s, n, nki_mbstate_clear() });
+			return make_pair((nki_char32)(c0), c8rconv { c8s, n, nki_mbstate_clear() });
 		}
 
 		if ((c0 & 0xE0u) == 0xC0u) {
@@ -376,41 +383,43 @@ static inline pair<nki_char32, c8rconv> nki_c8rtoc32(const nki_char8* c8s, size_
 			st = nki_mbstate_putc8(st, c0, 0x0Fu);
 			st = nki_mbstate_shift(st, 6);
 			st = nki_mbstate_put_rest(st, 2);
-        }
+		}
 		else if ((c0 & 0xF8u) == 0xF0u) {
 			st = nki_mbstate_putc8(st, c0, 0x07u);
 			st = nki_mbstate_shift(st, 6);
 			st = nki_mbstate_put_rest(st, 3);
-        }
+		}
 		else {
-			return make_pair(0, c8rconv{ c8s, n, nki_mbstate_clear() });
+			return make_pair(0, c8rconv { c8s, n, nki_mbstate_clear() });
 		}
 	}
 
-	size_t rest = nki_mbstate_get_rest(st);
-	st = nki_mbstate_unshift(st, 6);
-	while ((rest>0) && (n>0)) {
+	size_t rest;
+
+	rest = nki_mbstate_get_rest(st);
+	st   = nki_mbstate_unshift(st, 6);
+	while ((rest > 0) && (n > 0)) {
 		nki_char8 c1 = *c8s;
 		c8s++;
 		n--;
 
 		if ((c1 & 0xC0u) != 0x80u) {
-			return make_pair(0, c8rconv{ c8s, n, nki_mbstate_clear() });
+			return make_pair(0, c8rconv { c8s, n, nki_mbstate_clear() });
 		}
 		st = nki_mbstate_shift(st, 6);
 		st = nki_mbstate_putc8(st, c1, 0x3F);
 		rest--;
 	}
 
-	if (rest==0) {
+	if (rest == 0) {
 		nki_char32 c32 = nki_mbstate_getc32(st);
-		return make_pair(c32, c8rconv{ c8s, n, nki_mbstate_clear() });
+		return make_pair(c32, c8rconv { c8s, n, nki_mbstate_clear() });
 	}
 
 	// rest!=0 && n==0
 	st = nki_mbstate_shift(st, 6);
 	st = nki_mbstate_put_rest(st, rest);
-	return make_pair(0, c8rconv{ c8s, n, st });
+	return make_pair(0, c8rconv { c8s, n, st });
 }
 
 static inline pair<nki_char16pair, c8rconv> nki_c8rtoc16(const nki_char8* c8s, size_t n, nki_mbstate st)
@@ -421,6 +430,7 @@ static inline pair<nki_char16pair, c8rconv> nki_c8rtoc16(const nki_char8* c8s, s
 
 } // namespace
 
+// char(nk_char)
 nk_char* nk_strcpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src)
 {
 	return nki_strcpy<nk_char>(dst, src);
@@ -473,6 +483,166 @@ nk_char* nk_strrchr(const nk_char* str, int ch)
 	return nki_strrchr<nk_char>(str, (nk_char)ch);
 }
 
+// nk_char8
+nk_char8* nk_u8scpy(nk_char8* nk_restrict dst, const nk_char8* nk_restrict src)
+{
+	return nki_strcpy<nk_char8>(dst, src);
+}
+
+nk_char8* nk_u8sncpy(nk_char8* nk_restrict dst, const nk_char8* nk_restrict src, size_t count)
+{
+	return nki_strncpy<nk_char8>(dst, src, count);
+}
+
+nk_char8* nk_u8scat(nk_char8* nk_restrict dst, const nk_char8* nk_restrict src)
+{
+	return nki_strcat<nk_char8>(dst, src);
+}
+
+nk_char8* nk_u8sncat(nk_char8* nk_restrict dst, const nk_char8* nk_restrict src, size_t count)
+{
+	return nki_strncat<nk_char8>(dst, src, count);
+}
+
+size_t nk_u8sxfrm(nk_char8* nk_restrict dst, const nk_char8* nk_restrict src, size_t count);
+
+size_t nk_u8slen(const nk_char8* str)
+{
+	return nki_strlen<nk_char8>(str);
+}
+
+size_t nk_u8slen_s(const nk_char8* str, size_t strsz)
+{
+	return nki_strlen_s<nk_char8>(str, strsz);
+}
+
+int nk_u8scmp(const nk_char8* lhs, const nk_char8* rhs)
+{
+	return nki_strcmp<nk_char8>(lhs, rhs);
+}
+
+int nk_u8sncmp(const nk_char8* lhs, const nk_char8* rhs, size_t count)
+{
+	return nki_strncmp<nk_char8>(lhs, rhs, count);
+}
+
+nk_char8* nk_u8schr(const nk_char8* str, int ch)
+{
+	return nki_strchr<nk_char8>(str, (nk_char8)ch);
+}
+
+nk_char8* nk_u8srchr(const nk_char8* str, int ch)
+{
+	return nki_strrchr<nk_char8>(str, (nk_char8)ch);
+}
+
+// nk_char16
+nk_char16* nk_u16scpy(nk_char16* nk_restrict dst, const nk_char16* nk_restrict src)
+{
+	return nki_strcpy<nk_char16>(dst, src);
+}
+
+nk_char16* nk_u16sncpy(nk_char16* nk_restrict dst, const nk_char16* nk_restrict src, size_t count)
+{
+	return nki_strncpy<nk_char16>(dst, src, count);
+}
+
+nk_char16* nk_u16scat(nk_char16* nk_restrict dst, const nk_char16* nk_restrict src)
+{
+	return nki_strcat<nk_char16>(dst, src);
+}
+
+nk_char16* nk_u16sncat(nk_char16* nk_restrict dst, const nk_char16* nk_restrict src, size_t count)
+{
+	return nki_strncat<nk_char16>(dst, src, count);
+}
+
+size_t nk_u16sxfrm(nk_char16* nk_restrict dst, const nk_char16* nk_restrict src, size_t count);
+
+size_t nk_u16slen(const nk_char16* str)
+{
+	return nki_strlen<nk_char16>(str);
+}
+
+size_t nk_u16slen_s(const nk_char16* str, size_t strsz)
+{
+	return nki_strlen_s<nk_char16>(str, strsz);
+}
+
+int nk_u16scmp(const nk_char16* lhs, const nk_char16* rhs)
+{
+	return nki_strcmp<nk_char16>(lhs, rhs);
+}
+
+int nk_u16sncmp(const nk_char16* lhs, const nk_char16* rhs, size_t count)
+{
+	return nki_strncmp<nk_char16>(lhs, rhs, count);
+}
+
+nk_char16* nk_u16schr(const nk_char16* str, int ch)
+{
+	return nki_strchr<nk_char16>(str, (nk_char16)ch);
+}
+
+nk_char16* nk_u16srchr(const nk_char16* str, int ch)
+{
+	return nki_strrchr<nk_char16>(str, (nk_char16)ch);
+}
+
+// nk_char32
+nk_char32* nk_u32scpy(nk_char32* nk_restrict dst, const nk_char32* nk_restrict src)
+{
+	return nki_strcpy<nk_char32>(dst, src);
+}
+
+nk_char32* nk_u32sncpy(nk_char32* nk_restrict dst, const nk_char32* nk_restrict src, size_t count)
+{
+	return nki_strncpy<nk_char32>(dst, src, count);
+}
+
+nk_char32* nk_u32scat(nk_char32* nk_restrict dst, const nk_char32* nk_restrict src)
+{
+	return nki_strcat<nk_char32>(dst, src);
+}
+
+nk_char32* nk_u32sncat(nk_char32* nk_restrict dst, const nk_char32* nk_restrict src, size_t count)
+{
+	return nki_strncat<nk_char32>(dst, src, count);
+}
+
+size_t nk_u32sxfrm(nk_char32* nk_restrict dst, const nk_char32* nk_restrict src, size_t count);
+
+size_t nk_u32slen(const nk_char32* str)
+{
+	return nki_strlen<nk_char32>(str);
+}
+
+size_t nk_u32slen_s(const nk_char32* str, size_t strsz)
+{
+	return nki_strlen_s<nk_char32>(str, strsz);
+}
+
+int nk_u32scmp(const nk_char32* lhs, const nk_char32* rhs)
+{
+	return nki_strcmp<nk_char32>(lhs, rhs);
+}
+
+int nk_u32sncmp(const nk_char32* lhs, const nk_char32* rhs, size_t count)
+{
+	return nki_strncmp<nk_char32>(lhs, rhs, count);
+}
+
+nk_char32* nk_u32schr(const nk_char32* str, int ch)
+{
+	return nki_strchr<nk_char32>(str, (nk_char32)ch);
+}
+
+nk_char32* nk_u32srchr(const nk_char32* str, int ch)
+{
+	return nki_strrchr<nk_char32>(str, (nk_char32)ch);
+}
+
+// memory ops.
 void* nk_memchr(const void* ptr, int ch, size_t count)
 {
 	return nki_memchr(ptr, ch, count);
