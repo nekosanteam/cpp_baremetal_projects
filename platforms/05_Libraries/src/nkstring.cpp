@@ -80,6 +80,24 @@ static inline size_t nki_strlen(const AccType* str)
 }
 
 template <typename AccType>
+static inline size_t nki_strnlen(const AccType* str, size_t strsz)
+{
+	size_t count;
+
+	if (str == NULL) {
+		return 0;
+	}
+	for (count = 0; *str != (AccType)'\0'; count++, str++) {
+		if (count == strsz) {
+//			count = 0;
+			break;
+		}
+	}
+
+	return count;
+}
+
+template <typename AccType>
 static inline size_t nki_strlen_s(const AccType* str, size_t strsz)
 {
 	size_t count;
@@ -436,9 +454,24 @@ nk_char* nk_strcpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src)
 	return nki_strcpy<nk_char>(dst, src);
 }
 
+nk_errno nk_strcpy_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src)
+{
+	return nki_strcpy_s<nk_char>(dst, dstsz, src);
+}
+
 nk_char* nk_strncpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count)
 {
 	return nki_strncpy<nk_char>(dst, src, count);
+}
+
+nk_errno nk_strncpy_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src, size_t count)
+{
+	return nki_strncpy_s<nk_char>(dst, dstsz, src, count);
+}
+
+size_t   nk_strlcpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count)
+{
+	return nki_strlcpy<nk_char>(dst, src, count);
 }
 
 nk_char* nk_strcat(nk_char* nk_restrict dst, const nk_char* nk_restrict src)
@@ -446,9 +479,24 @@ nk_char* nk_strcat(nk_char* nk_restrict dst, const nk_char* nk_restrict src)
 	return nki_strcat<nk_char>(dst, src);
 }
 
+nk_errno nk_strcat_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src)
+{
+	return nki_strcat_s<nk_char>(dst, dstsz, src);
+}
+
 nk_char* nk_strncat(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count)
 {
 	return nki_strncat<nk_char>(dst, src, count);
+}
+
+nk_errno nk_strncat_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src, nk_rsize count)
+{
+	return nki_strncat_s<nk_char>(dst, dstsz, src, count);
+}
+
+size_t nk_strlcat(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count)
+{
+	return nki_strlcat<nk_char>(dst, src, count);
 }
 
 size_t nk_strxfrm(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count);
@@ -458,9 +506,14 @@ size_t nk_strlen(const nk_char* str)
 	return nki_strlen<nk_char>(str);
 }
 
-size_t nk_strlen_s(const nk_char* str, size_t strsz)
+size_t nk_strnlen(const nk_char* str, size_t strsz)
 {
-	return nki_strlen_s<nk_char>(str, strsz);
+	return nki_strnlen<nk_char>(str, strsz);
+}
+
+size_t nk_strnlen_s(const nk_char* str, size_t strsz)
+{
+	return nki_strnlen_s<nk_char>(str, strsz);
 }
 
 int nk_strcmp(const nk_char* lhs, const nk_char* rhs)
@@ -473,14 +526,19 @@ int nk_strncmp(const nk_char* lhs, const nk_char* rhs, size_t count)
 	return nki_strncmp<nk_char>(lhs, rhs, count);
 }
 
-nk_char* nk_strchr(const nk_char* str, int ch)
+nk_char* nk_strchr(const nk_char* str, nk_cint ch)
 {
 	return nki_strchr<nk_char>(str, (nk_char)ch);
 }
 
-nk_char* nk_strrchr(const nk_char* str, int ch)
+nk_char* nk_strrchr(const nk_char* str, nk_cint ch)
 {
 	return nki_strrchr<nk_char>(str, (nk_char)ch);
+}
+
+nk_char* nk_strnchr(const nk_char* str, const nk_char* find, size_t count)
+{
+	return nki_strnrchr<nk_char>(str, find, count);
 }
 
 // nk_char8

@@ -13,11 +13,11 @@
 #include <stdint.h>
 #endif
 
-// char, char* [ASCII, MBCS, (UTF-8)]
-// char8_t, char8_t* [UTF-8]
-// char16_t, char16_t* [UTF-16]
-// char32_t, char32_t* [UTF-32]
-// whar_t, wchar_t*
+// char, char* [ASCII, MBCS, UTF-8, str]
+// char8_t, char8_t* [UTF-8, u8s(tr)]
+// char16_t, char16_t* [UTF-16, u16s(tr)]
+// char32_t, char32_t* [UTF-32, u32s(tr)]
+// whar_t, wchar_t* [wchar, wcs]
 
 // restrict keyword (C11)
 #ifdef __cplusplus
@@ -30,26 +30,52 @@
 extern "C" {
 #endif
 
+#ifndef NK_STRING_USE_RSIZE
+typedef size_t nk_rsize;
+#define NK_RSIZE_MAX (SIZE_MAX >> 1)
+#else
+typedef rsize_t nk_rsize;
+#define NK_RSIZE_MAX (RSIZE_MAX)
+#endif
+
+#ifndef NK_STRING_USE_ERRNO
+typedef int nk_errno;
+#else
+typedef errno_t nk_errno;
+#endif
+
 #ifndef NK_STRING_OMIT_CHAR
 typedef char nk_char;
+typedef int  nk_cint;
 
+// from C99 string.h.
 nk_char* nk_strcpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src);
 nk_char* nk_strncpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count);
 nk_char* nk_strcat(nk_char* nk_restrict dst, const nk_char* nk_restrict src);
 nk_char* nk_strncat(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count);
 size_t   nk_strlen(const nk_char* str);
-size_t   nk_strlen_s(const nk_char* str, size_t strsz);
 int      nk_strcmp(const nk_char* lhs, const nk_char* rhs);
 int      nk_strncmp(const nk_char* lhs, const nk_char* rhs, size_t count);
-nk_char* nk_strchr(const nk_char* str, int ch);
-nk_char* nk_strrchr(const nk_char* str, int ch);
+nk_char* nk_strchr(const nk_char* str, nk_cint ch);
+nk_char* nk_strrchr(const nk_char* str, nk_cint ch);
 size_t   nk_strspn(const nk_char* dst, const nk_char* src);
 size_t   nk_strcspn(const nk_char* dst, const nk_char* src);
 nk_char* nk_strpbrk(const nk_char* dst, const nk_char* breakset);
 nk_char* nk_strstr(const nk_char* str, const nk_char* substr);
-nk_char* nk_strtok(nk_char* nk_restrict str, const nk_char* nk_restrict delim);
 size_t   nk_strxfrm(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count);
-int      nk_strcoll(const nk_char* lhs, const nk_char* rhs);
+// from POSIX.1-2008.
+size_t   nk_strnlen(const nk_char* str, size_t maxsz);
+// from C11.
+nk_errno nk_strcpy_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src);
+nk_errno nk_strncpy_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src, nk_rsize count);
+nk_errno nk_strcat_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src);
+nk_errno nk_strncat_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src, nk_rsize count);
+size_t   nk_strnlen_s(const nk_char* str, size_t strsz);
+nk_char* nk_strtok_s(nk_char* nk_restrict str, nk_rsize* nk_restrict strmax, const nk_char* nk_restrict delim, nk_char** nk_restrict ptr);
+// from libbsd.
+size_t   nk_strlcpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count);
+size_t   nk_strlcat(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count);
+nk_char* nk_strnstr(const nk_char* str, const nk_char* find, size_t count);
 #endif // NK_STRING_OMIT_CHAR
 
 typedef uint32_t nk_mbstate;
@@ -58,6 +84,7 @@ int nk_mbsinit(const nk_mbstate* pst);
 
 #ifndef NK_STRING_OMIT_CHAR8
 typedef uint8_t nk_char8;
+typedef int     nk_c8int;
 
 nk_char8* nk_u8strcpy(nk_char8* nk_restrict dst, const nk_char8* nk_restrict src);
 nk_char8* nk_u8strncpy(nk_char8* nk_restrict dst, const nk_char8* nk_restrict src, size_t count);
@@ -84,6 +111,7 @@ size_t nk_c8rtomb(nk_char* nk_restrict mbs, nk_char8 c8, nk_mbstate* pst);
 
 #ifndef NK_STRING_OMIT_CHAR16
 typedef uint16_t nk_char16;
+typedef int32_t  nk_u16int;
 
 nk_char16* nk_u16strcpy(nk_char16* nk_restrict dst, const nk_char16* nk_restrict src);
 nk_char16* nk_u16strncpy(nk_char16* nk_restrict dst, const nk_char16* nk_restrict src, size_t count);
@@ -112,6 +140,7 @@ size_t nk_c16rtoc8(nk_char8* nk_restrict c8s, nk_char16 c16, nk_mbstate* pst);
 
 #ifndef NK_STRING_OMIT_CHAR32
 typedef uint32_t nk_char32;
+typedef int32_t  nk_u32int;
 
 nk_char32* nk_u32strcpy(nk_char32* nk_restrict dst, const nk_char32* nk_restrict src);
 nk_char32* nk_u32strncpy(nk_char32* nk_restrict dst, const nk_char32* nk_restrict src, size_t count);
@@ -140,6 +169,7 @@ size_t nk_c32rtoc8(nk_char8* nk_restrict c8s, nk_char32 c32, nk_mbstate* pst);
 
 #ifndef NK_STRING_OMIT_WCHAR
 typedef uint32_t nk_wchar;
+typedef int32_t  nk_wint;
 
 nk_wchar* nk_wcsrcpy(nk_wchar* nk_restrict dst, const nk_wchar* nk_restrict src);
 nk_wchar* nk_wcsncpy(nk_wchar* nk_restrict dst, const nk_wchar* nk_restrict src, size_t count);
@@ -171,6 +201,10 @@ int    nk_memcmp(const void* lhs, const void* rhs, size_t count);
 void*  nk_memset(void* dst, int ch, size_t count);
 void*  nk_memcpy(void* nk_restrict dst, const void* nk_restrict src, size_t count);
 void*  nk_memmove(void* dst, const void* src, size_t count);
+// from C11.
+nk_errno nk_memset_s(void* dst, nk_rsize dstsz, int ch, nk_rsize count);
+nk_errno nk_memcpy_s(void* nk_restrict dst, nk_rsize dstsz, const void* nk_restrict src, nk_rsize count);
+nk_errno nk_memmove_s(void* dst, nk_rsize dstsz, const void* src, nk_rsize count);
 
 #ifdef __cplusplus
 } // extern "C"
