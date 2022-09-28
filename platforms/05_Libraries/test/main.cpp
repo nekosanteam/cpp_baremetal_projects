@@ -18,6 +18,22 @@ TEST_GROUP(StringTest)
     TEST_TEARDOWN() {}
 };
 
+TEST(StringTest, TestStrNLenS)
+{
+    UNSIGNED_LONGS_EQUAL(0, nk_strnlen_s(NULL, 2));
+    UNSIGNED_LONGS_EQUAL(0, nk_strnlen_s("", 2));
+    UNSIGNED_LONGS_EQUAL(1, nk_strnlen_s("1", 2));
+    UNSIGNED_LONGS_EQUAL(2, nk_strnlen_s("12", 2));
+    UNSIGNED_LONGS_EQUAL(2, nk_strnlen_s("123", 2));
+}
+
+TEST(StringTest, TestStrLen)
+{
+    UNSIGNED_LONGS_EQUAL(0, nk_strlen(""));
+    UNSIGNED_LONGS_EQUAL(1, nk_strlen("1"));
+    UNSIGNED_LONGS_EQUAL(2, nk_strlen("12"));
+}
+
 TEST(StringTest, TestStrCpy)
 {
     nk_char org[] = "test01";
@@ -35,13 +51,6 @@ TEST(StringTest, TestStrNCpy)
     nk_strncpy(dst, org, 8);
     STRCMP_EQUAL("test02", dst);
     BYTES_EQUAL(0, dst[7]);
-}
-
-TEST(StringTest, TestStrLen)
-{
-    UNSIGNED_LONGS_EQUAL(0, nk_strlen(""));
-    UNSIGNED_LONGS_EQUAL(1, nk_strlen("1"));
-    UNSIGNED_LONGS_EQUAL(2, nk_strlen("12"));
 }
 
 TEST(StringTest, TestStrCat)

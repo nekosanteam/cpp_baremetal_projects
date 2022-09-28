@@ -1,6 +1,6 @@
 /**
  * @file nkstring.h
- * 
+ *
  */
 #ifndef NK_STRING_H_
 #define NK_STRING_H_
@@ -13,11 +13,12 @@
 #include <stdint.h>
 #endif
 
-// char, char* [ASCII, MBCS, UTF-8, str]
-// char8_t, char8_t* [UTF-8, u8s(tr)]
-// char16_t, char16_t* [UTF-16, u16s(tr)]
-// char32_t, char32_t* [UTF-32, u32s(tr)]
-// whar_t, wchar_t* [wchar, wcs]
+// nk_char:   char, char* [ASCII, MBCS, UTF-8, str]
+// nk_char8:  char8_t, char8_t* [UTF-8, u8s(tr)]
+// nk_char16: char16_t, char16_t* [UTF-16, u16s(tr)]
+// nk_char32: char32_t, char32_t* [UTF-32, u32s(tr)]
+// nk_wchar:  wchar_t, wchar_t* [wchar, wcs]
+// nk_ucs4:   UTF-32 charactor.
 
 // restrict keyword (C11)
 #ifdef __cplusplus
@@ -26,23 +27,34 @@
 #define nk_restrict restrict
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#ifndef NK_STRING_USE_RSIZE
+#ifndef NK_RSIZE_MAX
+#if !defined(NK_STRING_USE_RSIZE) || (NK_STRING_USE_RSIZE == 0)
 typedef size_t nk_rsize;
 #define NK_RSIZE_MAX (SIZE_MAX >> 1)
 #else
 typedef rsize_t nk_rsize;
 #define NK_RSIZE_MAX (RSIZE_MAX)
 #endif
-
-#ifndef NK_STRING_USE_ERRNO
-typedef int nk_errno;
-#else
-typedef errno_t nk_errno;
 #endif
+
+#ifndef NK_EINVAL
+#if !defined(NK_STRING_USE_ERRNO) || (NK_STRING_USE_ERRNO == 0)
+typedef int nk_errno;
+#define NK_EINVAL (-1)
+#define NK_ERANGE (-2)
+#else
+#include <errno.h>
+typedef errno_t nk_errno;
+#define NK_EINVAL (EINVAL)
+#define NK_ERANGE (ERANGE)
+#endif
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef uint32_t nk_ucs4;
 
 #ifndef NK_STRING_OMIT_CHAR
 typedef char nk_char;
@@ -76,6 +88,13 @@ nk_char* nk_strtok_s(nk_char* nk_restrict str, nk_rsize* nk_restrict strmax, con
 size_t   nk_strlcpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count);
 size_t   nk_strlcat(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count);
 nk_char* nk_strnstr(const nk_char* str, const nk_char* find, size_t count);
+
+// from libunistring.
+nk_char* nk_strmove(nk_char* dst, const nk_char* src, size_t count);
+nk_char* nk_strset(nk_char* dst, nk_cint c, size_t count);
+
+const nk_char* nk_strcheck(const nk_char* str, size_t count);
+
 #endif // NK_STRING_OMIT_CHAR
 
 typedef uint32_t nk_mbstate;
@@ -107,6 +126,11 @@ int       nk_u8strcoll(const nk_char8* lhs, const nk_char8* rhs);
 size_t nk_mbrtoc8(nk_char8* nk_restrict c8s, const nk_char* nk_restrict mbs, size_t n, nk_mbstate* nk_restrict pst);
 size_t nk_c8rtomb(nk_char* nk_restrict mbs, nk_char8 c8, nk_mbstate* pst);
 
+nk_char8* nk_u8strmove(nk_char8* dst, const nk_char8* src, size_t count);
+nk_char8* nk_u8strset(nk_char8* dst, nk_ucs4 ucs4, size_t count);
+
+const nk_char8* nk_u8scheck(const nk_char8* str, size_t count);
+
 #endif // NK_STRING_OMIT_CHAR8
 
 #ifndef NK_STRING_OMIT_CHAR16
@@ -135,6 +159,11 @@ size_t nk_mbrtoc16(nk_char16* nk_restrict c16s, const nk_char* nk_restrict mbs, 
 size_t nk_c16rtomb(nk_char* nk_restrict mbs, nk_char16 c16, nk_mbstate* pst);
 size_t nk_c8rtoc16(nk_char16* nk_restrict c16s, const nk_char8* nk_restrict c8s, size_t n, nk_mbstate* nk_restrict pst);
 size_t nk_c16rtoc8(nk_char8* nk_restrict c8s, nk_char16 c16, nk_mbstate* pst);
+
+nk_char16* nk_u16strmove(nk_char16* dst, const nk_char16* src, size_t count);
+nk_char16* nk_u16strset(nk_char16* dst, nk_ucs4 ucs4, size_t count);
+
+const nk_char16* nk_u16scheck(const nk_char16* str, size_t count);
 
 #endif // NK_STRING_OMIT_CHAR16
 
@@ -165,6 +194,11 @@ size_t nk_c32rtomb(nk_char* nk_restrict mbs, nk_char32 c32, nk_mbstate* pst);
 size_t nk_c8rtoc32(nk_char32* nk_restrict c32s, const nk_char8* nk_restrict c8s, size_t n, nk_mbstate* nk_restrict pst);
 size_t nk_c32rtoc8(nk_char8* nk_restrict c8s, nk_char32 c32, nk_mbstate* pst);
 
+nk_char32* nk_u32strmove(nk_char32* dst, const nk_char32* src, size_t count);
+nk_char32* nk_u32strset(nk_char32* dst, nk_ucs4 ucs4, size_t count);
+
+const nk_char32* nk_u32scheck(const nk_char32* str, size_t count);
+
 #endif // NK_STRING_OMIT_CHAR32
 
 #ifndef NK_STRING_OMIT_WCHAR
@@ -194,22 +228,29 @@ size_t nk_mbsrtowcs(nk_wchar* wcs, const nk_char** src, size_t n, nk_mbstate* ps
 size_t nk_wcrtomb(nk_char* mbs, nk_wchar wc, nk_mbstate* pst);
 size_t nk_wcsrtombs(nk_char* mbs, const nk_wchar** src, size_t n, nk_mbstate* pst);
 
+nk_wchar* nk_wcsmove(nk_wchar* dst, const nk_wchar* src, size_t count);
+nk_wchar* nk_wcsset(nk_wchar* dst, nk_wint wc, size_t count);
+
+const nk_wchar* nk_wcscheck(const nk_wchar* str, size_t count);
+
 #endif // NK_STRING_OMIT_WCHAR
 
-void*  nk_memchr(const void* ptr, int ch, size_t count);
-int    nk_memcmp(const void* lhs, const void* rhs, size_t count);
-void*  nk_memset(void* dst, int ch, size_t count);
-void*  nk_memcpy(void* nk_restrict dst, const void* nk_restrict src, size_t count);
-void*  nk_memmove(void* dst, const void* src, size_t count);
+#ifndef NK_STRING_OMIT_MEMORY
+
+void*    nk_memchr(const void* ptr, int ch, size_t count);
+int      nk_memcmp(const void* lhs, const void* rhs, size_t count);
+void*    nk_memset(void* dst, int ch, size_t count);
+void*    nk_memcpy(void* nk_restrict dst, const void* nk_restrict src, size_t count);
+void*    nk_memmove(void* dst, const void* src, size_t count);
 // from C11.
 nk_errno nk_memset_s(void* dst, nk_rsize dstsz, int ch, nk_rsize count);
 nk_errno nk_memcpy_s(void* nk_restrict dst, nk_rsize dstsz, const void* nk_restrict src, nk_rsize count);
 nk_errno nk_memmove_s(void* dst, nk_rsize dstsz, const void* src, nk_rsize count);
 
+#endif // NK_STRING_OMIT_MEMORY
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
-
-#undef nk_restrict
 
 #endif // NK_STRING_H_
