@@ -27,15 +27,22 @@
 #define nk_restrict restrict
 #endif
 
+
 #ifndef NK_RSIZE_MAX
+#ifndef NK_OWN_RSIZE_MAX
 #if !defined(NK_STRING_USE_RSIZE) || (NK_STRING_USE_RSIZE == 0)
 typedef size_t nk_rsize;
 #define NK_RSIZE_MAX (SIZE_MAX >> 1)
 #else
 typedef rsize_t nk_rsize;
 #define NK_RSIZE_MAX (RSIZE_MAX)
-#endif
-#endif
+#endif // NK_STRING_USE_RSIZE
+#else
+typedef NK_OWN_RSIZE_TYPE nk_rsize;
+#define NK_RSIZE_MAX (NK_OWN_RSIZE_MAX)
+#endif // NK_OWN_RSIZE_MAX
+#endif // NK_RSIZE_MAX
+
 
 #ifndef NK_EINVAL
 #if !defined(NK_STRING_USE_ERRNO) || (NK_STRING_USE_ERRNO == 0)
@@ -78,11 +85,11 @@ size_t   nk_strxfrm(nk_char* nk_restrict dst, const nk_char* nk_restrict src, si
 // from POSIX.1-2008.
 size_t   nk_strnlen(const nk_char* str, size_t maxsz);
 // from C11.
+size_t   nk_strnlen_s(const nk_char* str, size_t strsz);
 nk_errno nk_strcpy_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src);
 nk_errno nk_strncpy_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src, nk_rsize count);
 nk_errno nk_strcat_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src);
 nk_errno nk_strncat_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src, nk_rsize count);
-size_t   nk_strnlen_s(const nk_char* str, size_t strsz);
 nk_char* nk_strtok_s(nk_char* nk_restrict str, nk_rsize* nk_restrict strmax, const nk_char* nk_restrict delim, nk_char** nk_restrict ptr);
 // from libbsd.
 size_t   nk_strlcpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src, size_t count);

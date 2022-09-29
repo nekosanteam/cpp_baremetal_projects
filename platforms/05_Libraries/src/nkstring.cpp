@@ -20,13 +20,20 @@
 namespace {
 
 template <typename AccType>
-static inline size_t nki_strnlen_s(const AccType* str, size_t strsz)
+static inline size_t nki_strlen(const AccType* str)
 {
 	size_t count;
 
-	if (str == NULL) {
-		return 0;
-	}
+	for (count = 0; *str != (AccType)'\0'; count++, str++)
+		;
+	return count;
+}
+
+template <typename AccType>
+static inline size_t nki_strnlen_si(const AccType* str, size_t strsz)
+{
+	size_t count;
+
 	for (count = 0; *str != (AccType)'\0'; count++, str++) {
 		if (count == strsz) {
 			break;
@@ -149,19 +156,6 @@ static inline AccType* nki_strncpy(AccType* nk_restrict dst, const AccType* nk_r
 	}
 
 	return dst;
-}
-
-template <typename AccType>
-static inline size_t nki_strlen(const AccType* str)
-{
-	size_t count;
-
-	if (str == NULL) {
-		return 0;
-	}
-	for (count = 0; *str != (AccType)'\0'; count++, str++)
-		;
-	return count;
 }
 
 template <typename AccType>
@@ -583,12 +577,15 @@ size_t nk_strlen(const nk_char* str)
 
 size_t nk_strnlen(const nk_char* str, size_t strsz)
 {
-	return nki_strnlen<nk_char>(str, strsz);
+	return nki_strnlen_si<nk_char>(str, strsz);
 }
 
 size_t nk_strnlen_s(const nk_char* str, size_t strsz)
 {
-	return nki_strnlen_s<nk_char>(str, strsz);
+    if (str == NULL) {
+        return 0;
+    }
+	return nki_strnlen_si<nk_char>(str, strsz);
 }
 
 int nk_strcmp(const nk_char* lhs, const nk_char* rhs)
