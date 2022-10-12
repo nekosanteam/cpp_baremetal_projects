@@ -1,25 +1,64 @@
 /**
- * @file nklogger.hpp
+ * @file nklogger.h
  * 
  */
-#ifndef NKLOGGER_HPP_
-#define NKLOGGER_HPP_
+#ifndef NKLOGGER_H_
+#define NKLOGGER_H_
 
 #include <cstddef>
 #include <cstdint>
 
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
+#define NK_LOG_LEVEL_OFF    (0)
+#define NK_LOG_LEVEL_EMERG  (1)
+#define NK_LOG_LEVEL_ALERT  (2)
+#define NK_LOG_LEVEL_FATAL  (3)
+#define NK_LOG_LEVEL_ERROR  (4)
+#define NK_LOG_LEVEL_WARN   (5)
+#define NK_LOG_LEVEL_NOTICE (6)
+#define NK_LOG_LEVEL_INFO   (7)
+#define NK_LOG_LEVEL_DEBUG  (8)
+#define NK_LOG_LEVEL_TRACE  (9)
+#define NK_LOG_LEVEL_ALL    (10)
+
+#ifndef NK_LOG_LEVEL_DEFAULT
+#define NK_LOG_LEVEL_DEFAULT (NK_LOG_LEVEL_NOTICE)
+#endif
+
+void nk_emerg(const char* fmt, ...); // [[noreturn]]
+void nk_alert(const char* fmt, ...);
+void nk_fatal(const char* fmt, ...); // [[noreturn]]
+void nk_error(const char* fmt, ...);
+void nk_warn(const char* fmt, ...);
+void nk_notice(const char* fmt, ...);
+void nk_info(const char* fmt, ...);
+void nk_debug(const char* fmt, ...);
+void nk_trace(const char* fmt, ...);
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
+
+
+#ifdef __cplusplus
 namespace bm {
 namespace NkLogger {
 
 namespace NkLogLevel {
-const static int OFF   = 0;
-const static int FATAL = 1;
-const static int ERROR = 2;
-const static int WARN  = 3;
-const static int INFO  = 4;
-const static int DEBUG = 5;
-const static int TRACE = 6;
-const static int ALL   = 7;
+const static int OFF    = NK_LOG_LEVEL_OFF;
+const static int EMERG  = NK_LOG_LEVEL_EMERG;
+const static int ALERT  = NK_LOG_LEVEL_ALERT;
+const static int FATAL  = NK_LOG_LEVEL_FATAL;
+const static int ERROR  = NK_LOG_LEVEL_ERROR;
+const static int WARN   = NK_LOG_LEVEL_WARN;
+const static int NOTICE = NK_LOG_LEVEL_NOTICE;
+const static int INFO   = NK_LOG_LEVEL_INFO;
+const static int DEBUG  = NK_LOG_LEVEL_DEBUG;
+const static int TRACE  = NK_LOG_LEVEL_TRACE;
+const static int ALL    = NK_LOG_LEVEL_ALL;
 } // NkLogLevel
 
 struct NkString {
@@ -94,5 +133,6 @@ public:
 
 } // namespace NkLogger
 } // namespace bm
+#endif // __cplusplus
 
-#endif // NKLOGGER_HPP_
+#endif // NKLOGGER_H_
