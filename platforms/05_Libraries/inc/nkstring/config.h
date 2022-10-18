@@ -7,4 +7,12 @@
 
 #define SUPPORT_SURROGATE_PAIR 1
 
+#ifndef NK_CONFIG_RSIZE_MAX
+#ifdef NK_RSIZE_MAX
+#define NK_CONFIG_RSIZE_MAX NK_RSIZE_MAX
+#else
+#define NK_CONFIG_RSIZE_MAX RSIZE_MAX
+#endif
+#endif
+
 #endif
