@@ -49,11 +49,14 @@ static inline nk_size nki_strnlen(const AccType* str, nk_size strsz)
 template <typename AccType>
 static inline nk_size nki_strnlen_s(const AccType* str, nk_size strsz)
 {
+    if (str == NULL) {
+        return 0;
+    }
 	return nki_strnlen_si<AccType>(str, strsz);
 }
 
 template <typename AccType>
-static inline AccType* nki_strcpy_si(AccType* nk_restrict dst, nk_size dstsz, const AccType* nk_restrict src, nk_size srcsz)
+static inline nk_size nki_strcpy_si(AccType* nk_restrict dst, nk_size dstsz, const AccType* nk_restrict src, nk_size srcsz)
 {
 	AccType* ptr = dst;
 	nk_size  i   = 0;
@@ -68,7 +71,12 @@ static inline AccType* nki_strcpy_si(AccType* nk_restrict dst, nk_size dstsz, co
         i++;
     }
 
-	return dst;
+	return i;
+}
+
+nk_size nk_strcpy_si(AccType* nk_restrict dst, nk_size dstsz, const AccType* nk_restrict src, nk_size srcsz)
+{
+    return nki_strcpy_si(dst, dstsz, src, srcsz);
 }
 
 template <typename AccType>
@@ -76,6 +84,7 @@ static inline AccType* nki_strncpy_si(AccType* nk_restrict dst, nk_size dstsz, c
 {
 	AccType* ptr = dst;
 	nk_size  i   = 0;
+    nk_size  ret;
 
     if ((dstsz != 0) && (srcsz == 0)) {
         *ptr = (AccType)'\0';
@@ -91,13 +100,15 @@ static inline AccType* nki_strncpy_si(AccType* nk_restrict dst, nk_size dstsz, c
             i++;
         }
     }
+    ret = i;
+
 	while (i < dstsz) {
 		*ptr = (AccType)'\0';
 		ptr++;
 		i++;
 	}
 
-	return dst;
+	return ret;
 }
 
 template <typename AccType>
@@ -118,7 +129,7 @@ static inline nk_errno nki_strcpy_s(AccType* nk_restrict dst, nk_rsize dstsz, co
         dst[0] = (AccType)'\0';
         return NK_ERANGE;
     }
-    if (dstsz < nki_strnlen_s(src, sz)) {
+    if (dstsz < nki_strnlen(src, sz)) {
         dst[0] = (AccType)'\0';
         return NK_ERANGE;
     }
@@ -149,10 +160,10 @@ static inline nk_errno nki_strncpy_s(AccType* nk_restrict dst, nk_rsize dstsz, c
         dst[0] = (AccType)'\0';
         return NK_ERANGE;
     }
-    if (dstsz < nki_strnlen_s(src, srcsz)) {
+    if (dstsz < nki_strnlen(src, srcsz)) {
         return NK_ERANGE;
     }
-    (void)nki_strncpy_si<AccType>(dst, dstsz, src, srcsz);
+    (void)nki_strcpy_si<AccType>(dst, dstsz, src, srcsz);
 
     return 0;
 }
@@ -167,9 +178,10 @@ static inline AccType* nki_strcpy(AccType* nk_restrict dst, const AccType* nk_re
 		*dst = (AccType)'\0';
 		return dst;
 	}
-    nk_size sz = NK_CONFIG_RSIZE_MAX/(sizeof(AccType));
 
-    return nki_strcpy_si<AccType>(dst, sz, src, sz);
+    nk_size sz = NK_CONFIG_RSIZE_MAX/(sizeof(AccType));
+    (void)nki_strcpy_si<AccType>(dst, sz, src, sz);
+    return dst;
 }
 
 template <typename AccType>
@@ -183,7 +195,8 @@ static inline AccType* nki_strncpy(AccType* nk_restrict dst, const AccType* nk_r
         count = sz;
     }
 
-    return nki_strncpy_si<AccType>(dst, count, src, sz);
+    (void)nki_strncpy_si<AccType>(dst, count, src, sz);
+    return dst;
 }
 
 template <typename AccType>
@@ -199,7 +212,7 @@ static inline nk_rsize nki_strlcpy(AccType* nk_restrict dst, const AccType* nk_r
         count = sz;
     }
 
-    (void)nki_strncpy_si<AccType>(dst, count, src, sz);
+    (void)nki_strcpy_si<AccType>(dst, count, src, sz);
     *(dst + (count-1)) = (AccType)'\0';
     ret = nki_strlen(*dst);
 
@@ -639,9 +652,6 @@ nk_size nk_strnlen(const nk_char* str, nk_size strsz)
 
 nk_size nk_strnlen_s(const nk_char* str, nk_size strsz)
 {
-    if (str == NULL) {
-        return 0;
-    }
 	return nki_strnlen_s<nk_char>(str, strsz);
 }
 
