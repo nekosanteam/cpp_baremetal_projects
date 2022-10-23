@@ -74,11 +74,6 @@ static inline nk_size nki_strcpy_si(AccType* nk_restrict dst, nk_size dstsz, con
 	return i;
 }
 
-nk_size nk_strcpy_si(AccType* nk_restrict dst, nk_size dstsz, const AccType* nk_restrict src, nk_size srcsz)
-{
-    return nki_strcpy_si(dst, dstsz, src, srcsz);
-}
-
 template <typename AccType>
 static inline AccType* nki_strncpy_si(AccType* nk_restrict dst, nk_size dstsz, const AccType* nk_restrict src, nk_size srcsz)
 {
@@ -109,6 +104,12 @@ static inline AccType* nki_strncpy_si(AccType* nk_restrict dst, nk_size dstsz, c
 	}
 
 	return ret;
+}
+
+template <typename AccType>
+nk_size nk_strcpy_si(AccType* nk_restrict dst, nk_size dstsz, const AccType* nk_restrict src, nk_size srcsz)
+{
+    return nki_strcpy_si(dst, dstsz, src, srcsz);
 }
 
 template <typename AccType>
@@ -630,12 +631,12 @@ nk_char* nk_strncat(nk_char* nk_restrict dst, const nk_char* nk_restrict src, nk
 
 nk_errno nk_strncat_s(nk_char* nk_restrict dst, nk_rsize dstsz, const nk_char* nk_restrict src, nk_rsize count)
 {
-	return nki_strncat_s<nk_char>(dst, dstsz, src, count);
+//	return nki_strncat_s<nk_char>(dst, dstsz, src, count);
 }
 
 nk_size nk_strlcat(nk_char* nk_restrict dst, const nk_char* nk_restrict src, nk_size count)
 {
-    return nki_strlcat<nk_char>(dst, src, count);
+//    return nki_strlcat<nk_char>(dst, src, count);
 }
 
 nk_size nk_strxfrm(nk_char* nk_restrict dst, const nk_char* nk_restrict src, nk_size count);
@@ -677,7 +678,7 @@ nk_char* nk_strrchr(const nk_char* str, nk_cint ch)
 
 nk_char* nk_strnchr(const nk_char* str, const nk_char* find, nk_size count)
 {
-	return nki_strnrchr<nk_char>(str, find, count);
+//	return nki_strnrchr<nk_char>(str, find, count);
 }
 
 // nk_char8
