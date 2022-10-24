@@ -1,6 +1,8 @@
 #include "nkstring.h"
+
 #include <cstdio>
 #include <cstring>
+#include <array>
 
 #include <CppUTest/CommandLineTestRunner.h>
 
