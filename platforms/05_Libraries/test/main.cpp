@@ -158,6 +158,48 @@ TEST(StringTest, TestMemMove)
     LONGS_EQUAL(-1, nk_memcmp(dst, src, 8));
 }
 
+TEST(StringTest, TestStrCpyCpp01)
+{
+    const char *pSrc = "test01";
+    char pDst[12];
+
+    nk::strcpy(pDst, pSrc);
+    BYTES_EQUAL('1', pDst[5]);
+    BYTES_EQUAL('\0', pDst[6]);
+}
+
+TEST(StringTest, TestStrCpyCpp02)
+{
+    const char *pSrc = "test02";
+    std::array<char,12> pDst;
+
+    nk::strcpy(pDst, pSrc);
+    BYTES_EQUAL('2', pDst[5]);
+    BYTES_EQUAL('\0', pDst[6]);
+}
+
+TEST(StringTest, TestNStrCpyCpp01)
+{
+    const char *pSrc = "test01";
+    char pDst[12];
+
+    nk::strncpy(pDst, pSrc);
+    BYTES_EQUAL('1', pDst[5]);
+    BYTES_EQUAL('\0', pDst[6]);
+    BYTES_EQUAL('\0', pDst[11]);
+}
+
+TEST(StringTest, TestStrNCpyCpp02)
+{
+    const char *pSrc = "test02";
+    std::array<char,12> pDst;
+
+    nk::strncpy(pDst, pSrc);
+    BYTES_EQUAL('2', pDst[5]);
+    BYTES_EQUAL('\0', pDst[6]);
+    BYTES_EQUAL('\0', pDst[11]);
+}
+
 int main(int argc, char** argv)
 {
     return CommandLineTestRunner::RunAllTests(argc, argv);
