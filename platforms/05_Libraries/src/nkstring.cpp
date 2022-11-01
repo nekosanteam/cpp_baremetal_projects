@@ -107,6 +107,36 @@ static inline nk_size nki_strncpy_si(AccType* nk_restrict dst, nk_size dstsz, co
 }
 
 template <typename AccType>
+static inline nk_size nki_strncat_si(AccType* nk_restrict dst, nk_size dstsz, const AccType* nk_restrict src, nk_size count)
+{
+	AccType* ptr = dst;
+	nk_size  i   = 0;
+	nk_size  ret;
+
+	if ((dstsz != 0) && (count == 0)) {
+		*ptr = (AccType)'\0';
+	}
+	if (src != NULL) {
+		while ((i < dstsz) && (i < count)) {
+			*ptr = *src;
+			if (*src == (AccType)'\0') {
+				break;
+			}
+			ptr++;
+			src++;
+			i++;
+		}
+	}
+	ret = i;
+
+	if ((i < dstsz) && (*src != '\0')) {
+		*ptr = (AccType)'\0';
+	}
+
+	return ret;
+}
+
+template <typename AccType>
 static inline AccType* nki_strcpy(AccType* nk_restrict dst, const AccType* nk_restrict src)
 {
 	if (dst == NULL) {
@@ -584,6 +614,11 @@ nk_size nk_strcpy_si(nk_char* nk_restrict dst, nk_size dstsz, const nk_char* nk_
 nk_size nk_strncpy_si(nk_char* nk_restrict dst, nk_size dstsz, const nk_char* nk_restrict src, nk_size srcsz)
 {
 	return nki_strncpy_si(dst, dstsz, src, srcsz);
+}
+
+nk_size nk_strncat_si(nk_char* nk_restrict dst, nk_size dstsz, const nk_char* nk_restrict src, nk_size count)
+{
+	return nki_strncat_si(dst, dstsz, src, count);
 }
 
 nk_char* nk_strcpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src)

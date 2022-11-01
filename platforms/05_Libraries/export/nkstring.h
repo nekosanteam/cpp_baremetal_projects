@@ -292,19 +292,36 @@ namespace nk {
 namespace nk_inner {
 nk_size nk_strcpy_si(nk_char*, nk_size, const nk_char*, nk_size);
 nk_size nk_strncpy_si(nk_char*, nk_size, const nk_char*, nk_size);
+nk_size nk_strncat_si(nk_char*, nk_size, const nk_char*, nk_size);
 nk_size nk_strnlen_si(nk_char*, nk_size);
 nk_size nk_strcpy_si(nk_char8*, nk_size, const nk_char8*, nk_size);
 nk_size nk_strncpy_si(nk_char8*, nk_size, const nk_char8*, nk_size);
+nk_size nk_strncat_si(nk_char8*, nk_size, const nk_char8*, nk_size);
 nk_size nk_strnlen_si(nk_char8*, nk_size);
 nk_size nk_strcpy_si(nk_char16*, nk_size, const nk_char16*, nk_size);
 nk_size nk_strncpy_si(nk_char16*, nk_size, const nk_char16*, nk_size);
+nk_size nk_strncat_si(nk_char16*, nk_size, const nk_char16*, nk_size);
 nk_size nk_strnlen_si(nk_char16*, nk_size);
 nk_size nk_strcpy_si(nk_char32*, nk_size, const nk_char32*, nk_size);
 nk_size nk_strncpy_si(nk_char32*, nk_size, const nk_char32*, nk_size);
+nk_size nk_strncat_si(nk_char32*, nk_size, const nk_char32*, nk_size);
 nk_size nk_strnlen_si(nk_char32*, nk_size);
 nk_size nk_strcpy_si(nk_wchar*, nk_size, const nk_wchar*, nk_size);
 nk_size nk_strncpy_si(nk_wchar*, nk_size, const nk_wchar*, nk_size);
+nk_size nk_strncat_si(nk_wchar*, nk_size, const nk_wchar*, nk_size);
 nk_size nk_strnlen_si(nk_wchar*, nk_size);
+}
+
+template <nk_size M>
+static inline nk_size strlen(const std::array<nk_char, M>& str)
+{
+    return nk_strnlen_si(str.data(), str.size());
+}
+
+template <nk_size M>
+static inline nk_size strlen(const nk_char (&str)[M])
+{
+    return nk_strnlen_si(&str[0], M);
 }
 
 template <nk_size M, nk_size N>
@@ -320,16 +337,22 @@ static inline nk_size strcpy(std::array<nk_char, M>& dst, const nk_char* src, nk
 }
 
 template <nk_size M>
-static inline nk_size strcpy(nk_char (&dst)[M], const nk_char* src, nk_size srcsz)
-{
-    return nk_strcpy_si(&dst[0], M, src, srcsz);
-}
-
-template <nk_size M>
 static inline nk_size strcpy(std::array<nk_char, M>& dst, const nk_char* src)
 {
     nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
     return nk_strcpy_si(dst.data(), dst.size(), src, srcsz);
+}
+
+template <nk_size M, nk_size N>
+static inline nk_size strcpy(nk_char (&dst)[M], const nk_char (&src)[N])
+{
+    return nk_strcpy_si(&dst[0], M, &src[0], N);
+}
+
+template <nk_size M>
+static inline nk_size strcpy(nk_char (&dst)[M], const nk_char* src, nk_size srcsz)
+{
+    return nk_strcpy_si(&dst[0], M, src, srcsz);
 }
 
 template <nk_size M>
@@ -352,16 +375,22 @@ static inline nk_size strncpy(std::array<nk_char, M>& dst, const nk_char* src, n
 }
 
 template <nk_size M>
-static inline nk_size strncpy(nk_char (&dst)[M], const nk_char* src, nk_size srcsz)
-{
-    return nk_strncpy_si(&dst[0], M, src, srcsz);
-}
-
-template <nk_size M>
 static inline nk_size strncpy(std::array<nk_char, M>& dst, const nk_char* src)
 {
     nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
     return nk_strncpy_si(dst.data(), dst.size(), src, srcsz);
+}
+
+template <nk_size M, nk_size N>
+static inline nk_size strncpy(nk_char (&dst)[M], const nk_char (&src)[N])
+{
+    return nk_strncpy_si(&dst[0], M, &src[0], N);
+}
+
+template <nk_size M>
+static inline nk_size strncpy(nk_char (&dst)[M], const nk_char* src, nk_size srcsz)
+{
+    return nk_strncpy_si(&dst[0], M, src, srcsz);
 }
 
 template <nk_size M>
@@ -374,14 +403,8 @@ static inline nk_size strncpy(nk_char (&dst)[M], const nk_char* src)
 template <nk_size M, nk_size N>
 static inline nk_size strcat(std::array<nk_char, M>& dst, const std::array<nk_char, N>& src)
 {
-    return strcat(dst, src.data(), src.size());
-}
-
-template <nk_size M>
-static inline nk_size strcat(std::array<nk_char, M>& dst, const nk_char* src)
-{
-    nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
-    return strcat(dst, src, srcsz);
+    nk_size pos = nk_strnlen_si(dst.data(), dst.size());
+    return (pos + nk_strcpy_si(dst.data() + pos, dst.size() - pos, src.data(), src.size()));
 }
 
 template <nk_size M>
@@ -391,27 +414,63 @@ static inline nk_size strcat(std::array<nk_char, M>& dst, const nk_char* src, nk
     return (pos + nk_strcpy_si((dst.data() + pos), (dst.size() - pos), src, srcsz));
 }
 
-template <nk_size M, nk_size N>
-static inline nk_size strncat(std::array<nk_char, M>& dst, const std::array<nk_char, N>& src)
-{
-    return strncat(dst, src.data(), src.size());
-}
-
 template <nk_size M>
-static inline nk_size strncat(std::array<nk_char, M>& dst, const nk_char* src)
+static inline nk_size strcat(std::array<nk_char, M>& dst, const nk_char* src)
 {
     nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
-    return strncat(dst, src, srcsz);
+    nk_size pos   = nk_strnlen_si(dst.data(), dst.size());
+    return (pos + nk_strcpy_si(dst.data() + pos, dst.size() - pos, src, srcsz));
+}
+
+template <nk_size M, nk_size N>
+static inline nk_size strcat(nk_char (&dst)[M], const nk_char (&src)[N])
+{
+    nk_size pos = nk_strnlen_si(&dst[0], M);
+    return (pos + nk_strcpy_si(&dst[pos], (M - pos), &src[0], N));
 }
 
 template <nk_size M>
-static inline nk_size strncat(std::array<nk_char, M>& dst, const nk_char* src, nk_size srcsz)
+static inline nk_size strcat(nk_char (&dst)[M], const nk_char* src, nk_size srcsz)
 {
-    nk_size pos = nk_strnlen(dst.data(), dst.size());
-    return (pos + nk_strncpy_si((dst.data() + pos), (dst.size() - pos), src, srcsz));
+    nk_size pos = nk_strnlen(&dst[0], M);
+    return (pos + nk_strcpy_si(&dst[pos], (M - pos), src, srcsz));
 }
 
+template <nk_size M>
+static inline nk_size strcat(nk_char (&dst)[M], const nk_char* src)
+{
+    nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
+    nk_size pos   = nk_strnlen_si(&dst[0], M);
+    return (pos + nk_strcpy_si(&dst[pos], (M - pos), src, srcsz));
+}
 
+template <nk_size M, nk_size N>
+static inline nk_size strncat(std::array<nk_char, M>& dst, const std::array<nk_char, N>& src, nk_size count)
+{
+    nk_size pos = nk_strnlen(dst.data(), dst.size());
+    return (pos + nk_strncat_si((dst.data() + pos), (dst.size() - pos), src, count));
+}
+
+template <nk_size M>
+static inline nk_size strncat(std::array<nk_char, M>& dst, const nk_char* src, nk_size count)
+{
+    nk_size pos = nk_strnlen(dst.data(), dst.size());
+    return (pos + nk_strncat_si((dst.data() + pos), (dst.size() - pos), src, count));
+}
+
+template <nk_size M, nk_size N>
+static inline nk_size strncat(nk_char (&dst)[M], const nk_char (&src)[N], nk_size count)
+{
+    nk_size pos = nk_strnlen(&dst[0], M);
+    return (pos + nk_strncat_si(&dst[pos], (M - pos), &src[0], count));
+}
+
+template <nk_size M>
+static inline nk_size strncat(nk_char (&dst)[M], const nk_char* src, nk_size count)
+{
+    nk_size pos = nk_strnlen(&dst[0], M);
+    return (pos + nk_strncat_si(&dst[pos], (M - pos), &src[0], count));
+}
 
 }
 #endif
