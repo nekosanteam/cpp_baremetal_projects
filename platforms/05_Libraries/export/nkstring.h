@@ -112,6 +112,7 @@ const nk_char* nk_strcheck(const nk_char* str, nk_size count);
 nk_size nk_strnlen_si(const nk_char* str, nk_size strsz);
 nk_size nk_strcpy_si(nk_char* nk_restrict dst, nk_size dstsz, const nk_char* nk_restrict src, nk_size srcsz);
 nk_size nk_strncpy_si(nk_char* nk_restrict dst, nk_size dstsz, const nk_char* nk_restrict src, nk_size srcsz);
+nk_size nk_strncat_si(nk_char* nk_restrict dst, nk_size dstsz, const nk_char* nk_restrict src, nk_size srcsz);
 #endif // NK_STRING_OMIT_CHAR
 
 typedef uint32_t nk_mbstate;
@@ -152,6 +153,7 @@ const nk_char8* nk_u8scheck(const nk_char8* str, nk_size count);
 nk_size nk_u8snlen_si(const nk_char8* str, nk_size strsz);
 nk_size nk_u8scpy_si(nk_char8* nk_restrict dst, nk_size dstsz, const nk_char8* nk_restrict src, nk_size srcsz);
 nk_size nk_u8sncpy_si(nk_char8* nk_restrict dst, nk_size dstsz, const nk_char8* nk_restrict src, nk_size srcsz);
+nk_size nk_u8sncat_si(nk_char8* nk_restrict dst, nk_size dstsz, const nk_char8* nk_restrict src, nk_size srcsz);
 #endif // NK_STRING_OMIT_CHAR8
 
 #ifndef NK_STRING_OMIT_CHAR16
@@ -190,6 +192,7 @@ const nk_char16* nk_u16scheck(const nk_char16* str, nk_size count);
 nk_size nk_u16snlen_si(const nk_char16* str, nk_size strsz);
 nk_size nk_u16scpy_si(nk_char16* nk_restrict dst, nk_size dstsz, const nk_char16* nk_restrict src, nk_size srcsz);
 nk_size nk_u16sncpy_si(nk_char16* nk_restrict dst, nk_size dstsz, const nk_char16* nk_restrict src, nk_size srcsz);
+nk_size nk_u16sncat_si(nk_char16* nk_restrict dst, nk_size dstsz, const nk_char16* nk_restrict src, nk_size srcsz);
 #endif // NK_STRING_OMIT_CHAR16
 
 #ifndef NK_STRING_OMIT_CHAR32
@@ -228,6 +231,7 @@ const nk_char32* nk_u32scheck(const nk_char32* str, nk_size count);
 nk_size nk_u32snlen_si(const nk_char32* str, nk_size strsz);
 nk_size nk_u32scpy_si(nk_char32* nk_restrict dst, nk_size dstsz, const nk_char32* nk_restrict src, nk_size srcsz);
 nk_size nk_u32sncpy_si(nk_char32* nk_restrict dst, nk_size dstsz, const nk_char32* nk_restrict src, nk_size srcsz);
+nk_size nk_u32sncat_si(nk_char32* nk_restrict dst, nk_size dstsz, const nk_char32* nk_restrict src, nk_size srcsz);
 #endif // NK_STRING_OMIT_CHAR32
 
 #ifndef NK_STRING_OMIT_WCHAR
@@ -266,6 +270,7 @@ const nk_wchar* nk_wcscheck(const nk_wchar* str, nk_size count);
 nk_size nk_wcsnlen_si(const nk_wchar* str, nk_size strsz);
 nk_size nk_wcscpy_si(nk_wchar* nk_restrict dst, nk_size dstsz, const nk_wchar* nk_restrict src, nk_size srcsz);
 nk_size nk_wcsncpy_si(nk_wchar* nk_restrict dst, nk_size dstsz, const nk_wchar* nk_restrict src, nk_size srcsz);
+nk_size nk_wcsncat_si(nk_wchar* nk_restrict dst, nk_size dstsz, const nk_wchar* nk_restrict src, nk_size srcsz);
 #endif // NK_STRING_OMIT_WCHAR
 
 #ifndef NK_STRING_OMIT_MEMORY
@@ -403,7 +408,7 @@ static inline nk_size strncpy(nk_char (&dst)[M], const nk_char* src)
 template <nk_size M, nk_size N>
 static inline nk_size strcat(std::array<nk_char, M>& dst, const std::array<nk_char, N>& src)
 {
-    nk_size pos = nk_strnlen_si(dst.data(), dst.size());
+    nk_size pos = nk_strnlen(dst.data(), dst.size());
     return (pos + nk_strcpy_si(dst.data() + pos, dst.size() - pos, src.data(), src.size()));
 }
 
@@ -418,14 +423,14 @@ template <nk_size M>
 static inline nk_size strcat(std::array<nk_char, M>& dst, const nk_char* src)
 {
     nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
-    nk_size pos   = nk_strnlen_si(dst.data(), dst.size());
+    nk_size pos   = nk_strnlen(dst.data(), dst.size());
     return (pos + nk_strcpy_si(dst.data() + pos, dst.size() - pos, src, srcsz));
 }
 
 template <nk_size M, nk_size N>
 static inline nk_size strcat(nk_char (&dst)[M], const nk_char (&src)[N])
 {
-    nk_size pos = nk_strnlen_si(&dst[0], M);
+    nk_size pos = nk_strnlen(&dst[0], M);
     return (pos + nk_strcpy_si(&dst[pos], (M - pos), &src[0], N));
 }
 
@@ -440,7 +445,7 @@ template <nk_size M>
 static inline nk_size strcat(nk_char (&dst)[M], const nk_char* src)
 {
     nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
-    nk_size pos   = nk_strnlen_si(&dst[0], M);
+    nk_size pos   = nk_strnlen(&dst[0], M);
     return (pos + nk_strcpy_si(&dst[pos], (M - pos), src, srcsz));
 }
 

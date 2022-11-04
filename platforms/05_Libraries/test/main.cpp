@@ -200,6 +200,34 @@ TEST(StringTest, TestStrNCpyCpp02)
     BYTES_EQUAL('\0', pDst[11]);
 }
 
+TEST(StringTest, TestStrCatCpp01)
+{
+    const char *pSrc = "test01";
+    const char *pApp = "test02";
+    std::array<char,14> pDst {};
+
+    nk::strcpy(pDst, pSrc);
+    nk::strcat(pDst, pApp);
+    BYTES_EQUAL('1', pDst[5]);
+    BYTES_EQUAL('2', pDst[11]);
+    BYTES_EQUAL('\0', pDst[12]);
+    BYTES_EQUAL('\0', pDst[13]);
+}
+
+TEST(StringTest, TestStrNCatCpp01)
+{
+    const char *pSrc = "test01";
+    const char *pApp = "test02";
+    std::array<char,14> pDst {};
+
+    nk::strcpy(pDst, pSrc);
+    nk::strncat(pDst, pApp, 5);
+    BYTES_EQUAL('1', pDst[5]);
+    BYTES_EQUAL('0', pDst[10]);
+    BYTES_EQUAL('\0', pDst[11]);
+    BYTES_EQUAL('\0', pDst[13]);
+}
+
 int main(int argc, char** argv)
 {
     return CommandLineTestRunner::RunAllTests(argc, argv);

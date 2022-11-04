@@ -129,7 +129,8 @@ static inline nk_size nki_strncat_si(AccType* nk_restrict dst, nk_size dstsz, co
 	}
 	ret = i;
 
-	if ((i < dstsz) && (*src != '\0')) {
+	if (((i+1) < dstsz) && (src != NULL) && (*src != '\0')) {
+        ptr++;
 		*ptr = (AccType)'\0';
 	}
 
