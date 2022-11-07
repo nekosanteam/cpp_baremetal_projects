@@ -68,8 +68,9 @@ TEST(StringTest, TestStrNCat01)
     nk_strcpy(dst, "test01");
     nk_strncat(dst, "test02", 7);
     STRCMP_EQUAL("test01test02", dst);
+    BYTES_EQUAL('2', dst[11]);
     BYTES_EQUAL(0, dst[12]);
-    BYTES_EQUAL(0, dst[13]);
+    BYTES_EQUAL(0xc3, dst[13]);
     BYTES_EQUAL(0xc3, dst[14]);
 }
 

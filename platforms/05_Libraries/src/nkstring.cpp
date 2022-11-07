@@ -111,7 +111,6 @@ static inline nk_size nki_strncat_si(AccType* nk_restrict dst, nk_size dstsz, co
 {
 	AccType* ptr = dst;
 	nk_size  i   = 0;
-	nk_size  ret;
 
 	if ((dstsz != 0) && (count == 0)) {
 		*ptr = (AccType)'\0';
@@ -120,21 +119,19 @@ static inline nk_size nki_strncat_si(AccType* nk_restrict dst, nk_size dstsz, co
 		while ((i < dstsz) && (i < count)) {
 			*ptr = *src;
 			if (*src == (AccType)'\0') {
-				break;
+                return i;
 			}
 			ptr++;
 			src++;
 			i++;
 		}
 	}
-	ret = i;
 
-	if (((i+1) < dstsz) && (src != NULL) && (*src != '\0')) {
-        ptr++;
+	if (i < dstsz) {
 		*ptr = (AccType)'\0';
 	}
 
-	return ret;
+	return i;
 }
 
 template <typename AccType>
@@ -240,16 +237,16 @@ static inline nk_rsize nki_strlcpy(AccType* nk_restrict dst, const AccType* nk_r
 
 	(void)nki_strcpy_si<AccType>(dst, count, src, sz);
 	*(dst + (count - 1)) = (AccType)'\0';
-	ret                  = nki_strlen(dst);
 
+	ret = nki_strlen(dst);
 	return ret;
 }
 
 template <typename AccType>
 static inline AccType* nki_strcat(AccType* nk_restrict dst, const AccType* nk_restrict src)
 {
-	const nk_size sz  = (NK_CONFIG_RSIZE_MAX / sizeof(AccType));
-	nk_size       pos = nki_strlen<AccType>(dst);
+	nk_size sz  = (NK_CONFIG_RSIZE_MAX / sizeof(AccType));
+	nk_size pos = nki_strlen<AccType>(dst);
 	(void)nki_strcpy_si<AccType>((dst + pos), (sz - pos), src, sz);
 	return dst;
 }
@@ -257,26 +254,18 @@ static inline AccType* nki_strcat(AccType* nk_restrict dst, const AccType* nk_re
 template <typename AccType>
 static inline nk_errno nki_strcat_s(AccType* nk_restrict dst, nk_rsize dstsz, const AccType* nk_restrict src)
 {
-	nk_size pos = nki_strlen<AccType>(dst);
-	(void)nki_strcpy<AccType>((dst + pos), src);
+    nk_size sz  = (NK_CONFIG_RSIZE_MAX / sizeof(AccType));
+	nk_size pos = nki_strnlen_si<AccType>(dst, dstsz);
+	(void)nki_strcpy_si<AccType>((dst + pos), (dstsz - pos), src, sz);
 	return 0;
 }
 
 template <typename AccType>
 static inline AccType* nki_strncat(AccType* nk_restrict dst, const AccType* nk_restrict src, nk_size count)
 {
-	nk_size pos = nki_strlen<AccType>(dst);
-	(void)nki_strncpy<AccType>((dst + pos), src, count);
-	*(dst + pos + count) = '\0';
-	return dst;
-}
-
-template <typename AccType>
-static inline AccType* nki_strncat_si(AccType* nk_restrict dst, const AccType* nk_restrict src, nk_size count)
-{
-	nk_size pos = nki_strlen<AccType>(dst);
-	(void)nki_strncpy<AccType>((dst + pos), src, count);
-	*(dst + pos + count) = '\0';
+    nk_size sz  = (NK_CONFIG_RSIZE_MAX / sizeof(AccType));
+	nk_size pos = nki_strnlen_si<AccType>(dst, sz);
+	(void)nki_strncat_si<AccType>((dst + pos), (sz - pos), src, count);
 	return dst;
 }
 

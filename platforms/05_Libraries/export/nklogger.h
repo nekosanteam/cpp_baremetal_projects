@@ -8,10 +8,6 @@
 #include <cstddef>
 #include <cstdint>
 
-#ifdef __cplusplus
-extern "C" {
-#endif // __cplusplus
-
 #define NK_LOG_LEVEL_OFF    (0)
 #define NK_LOG_LEVEL_EMERG  (1)
 #define NK_LOG_LEVEL_ALERT  (2)
@@ -28,6 +24,10 @@ extern "C" {
 #define NK_LOG_LEVEL_DEFAULT (NK_LOG_LEVEL_NOTICE)
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
+
 void nk_emerg(const char* fmt, ...); // [[noreturn]]
 void nk_alert(const char* fmt, ...);
 void nk_fatal(const char* fmt, ...); // [[noreturn]]
@@ -41,7 +41,6 @@ void nk_trace(const char* fmt, ...);
 #ifdef __cplusplus
 }
 #endif // __cplusplus
-
 
 #ifdef __cplusplus
 namespace bm {
