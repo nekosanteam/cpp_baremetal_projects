@@ -105,6 +105,8 @@ nk_char* nk_strnstr(const nk_char* str, const nk_char* find, nk_size count);
 // from libunistring.
 nk_char* nk_strmove(nk_char* dst, const nk_char* src, nk_size count);
 nk_char* nk_strset(nk_char* dst, nk_cint c, nk_size count);
+nk_char* nk_stpcpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src);
+nk_char* nk_stpncpy(nk_char* nk_restrict dst, const nk_char* nk_restrict src, nk_size count);
 
 const nk_char* nk_strcheck(const nk_char* str, nk_size count);
 
