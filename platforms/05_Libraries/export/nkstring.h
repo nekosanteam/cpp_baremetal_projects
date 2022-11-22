@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: CC0-1.0
 /**
  * @file nkstring.h
  *
@@ -19,7 +20,7 @@
 // nk_char16: char16_t, char16_t* [UTF-16, u16s(tr)]
 // nk_char32: char32_t, char32_t* [UTF-32, u32s(tr)]
 // nk_wchar:  wchar_t,  wchar_t*  [wchar, wcs(tr)]
-// nk_ucs4:   UTF-32 charactor.
+// nk_ucs4:   UCS-4 charactor.
 
 // restrict keyword (C11)
 #ifdef __cplusplus
