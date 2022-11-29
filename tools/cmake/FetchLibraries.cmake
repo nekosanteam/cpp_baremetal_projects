@@ -19,8 +19,8 @@ FetchContent_Declare(
   #GIT_TAG        67d2dfd41e13f09ff218aa08e2d35f1c32f032a1
   URL      https://github.com/cpputest/cpputest/releases/download/v4.0/cpputest-4.0.tar.gz
   URL_HASH SHA256=21c692105db15299b5529af81a11a7ad80397f92c122bd7bf1e4a4b0e85654f7
+  DOWNLOAD_EXTRACT_TIMESTAMP false
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/cpputest/
-  #DOWNLOAD_EXTRACT_TIMESTAMP false
 )
 set(LONGLONG ON  CACHE BOOL "")
 set(C++11    ON  CACHE BOOL "")
@@ -33,8 +33,8 @@ FetchContent_Declare(
   #GIT_TAG        e2239ee6043f73722e7aa812a459f54a28552929
   URL      https://github.com/google/googletest/archive/refs/tags/release-1.11.0.tar.gz
   URL_HASH SHA256=b4870bf121ff7795ba20d20bcdd8627b8e088f2d1dab299a031c1034eddc93d5
+  DOWNLOAD_EXTRACT_TIMESTAMP false
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/googletest/
-  #DOWNLOAD_EXTRACT_TIMESTAMP false
 )
 
 # fff
@@ -44,8 +44,8 @@ FetchContent_Declare(
   #GIT_TAG        7e09f07e5b262b1cc826189dc5057379e40ce886
   URL      https://github.com/meekrosoft/fff/archive/refs/tags/v1.1.tar.gz
   URL_HASH SHA256=510efb70ab17a0035affd170960401921c9cc36ec81002ed00d2bfec6e08f385
+  DOWNLOAD_EXTRACT_TIMESTAMP false
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/fff/
-  #DOWNLOAD_EXTRACT_TIMESTAMP false
 )
 
 # NT-Shell
@@ -53,18 +53,9 @@ FetchContent_Declare(
   ntshell
   URL      https://cubeatsystems.com/ntshell/resources/ntshell-v0.3.1.tar.gz
   URL_HASH SHA256=ea1497ce208cf9e3d02c161fd5d72e0e785b34074e31dca34fe855ba8fd89c74
+  DOWNLOAD_EXTRACT_TIMESTAMP false
   DOWNLOAD_DIR ${CMAKE_SOURCE_DIR}/external/ntshell/
-  #DOWNLOAD_EXTRACT_TIMESTAMP false
 )
-
-# newlib
-#file(DOWNLOAD
-#  ftp://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz
-#  ${CMAKE_SOURCE_DIR}/external/newlib/newlib-4.1.0.tar.gz
-#  EXPECTED_HASH SHA256=f296e372f51324224d387cc116dc37a6bd397198756746f93a2b02e9a5d40154
-#  #GIT_REPOSITORY https://sourceware.org/git/newlib-cygwin.git
-#  #GIT_TAG        415fdd4279b85eeec9d54775ce13c5c412451e08
-#)
 
 # Trusted Firmware-A
 file(DOWNLOAD

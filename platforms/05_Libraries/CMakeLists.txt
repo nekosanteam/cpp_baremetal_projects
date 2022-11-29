@@ -19,7 +19,7 @@ if(COMMAND target_compile_option_baremetal)
 endif()
 
 if (BUILD_TESTING)
-  add_executable(05_LibrariesTest test/main.cpp)
+  add_executable(05_LibrariesTest test/nkstring_test.cpp)
   target_link_libraries(05_LibrariesTest 05_Libraries CppUTest CppUTestExt)
   add_test(NAME 05_LIBRARIES_ALL COMMAND 05_LibrariesTest)
 

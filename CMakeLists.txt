@@ -9,6 +9,7 @@ message("CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR})
 message("CMAKE_CROSSCOMPILING:   " ${CMAKE_CROSSCOMPILING})
 
 include(CTest)
+include(CTestCoverageCollectGCOV)
 include(BuildBareMetal)
 include(CompilerWarning)
 include(FetchLibraries)

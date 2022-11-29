@@ -13,4 +13,3 @@ endif()
 if(DEFINED CLANG_SYSROOT)
   set(CMAKE_SYSROOT ${CLANG_SYSROOT})
 endif()
-  

@@ -7,9 +7,9 @@
 #define NK_STRING_H_
 
 #ifdef __cplusplus
+#include <array>
 #include <cstddef>
 #include <cstdint>
-#include <array>
 #else
 #include <stddef.h>
 #include <stdint.h>
@@ -50,7 +50,6 @@ typedef NK_OWN_RSIZE_TYPE nk_rsize;
 #endif // NK_OWN_RSIZE_MAX
 #endif // NK_RSIZE_MAX
 
-
 #ifndef NK_EINVAL
 #if !defined(NK_STRING_USE_ERRNO) || (NK_STRING_USE_ERRNO == 0)
 typedef int nk_errno;
@@ -58,7 +57,7 @@ typedef int nk_errno;
 #define NK_ERANGE (-2)
 #else
 #include <errno.h>
-typedef errno_t nk_errno;
+typedef errno_t           nk_errno;
 #define NK_EINVAL (EINVAL)
 #define NK_ERANGE (ERANGE)
 #endif
@@ -144,8 +143,8 @@ nk_char8* nk_u8strtok(nk_char8* nk_restrict str, const nk_char8* nk_restrict del
 nk_size   nk_u8strxfrm(nk_char8* nk_restrict dst, const nk_char8* nk_restrict src, nk_size count);
 int       nk_u8strcoll(const nk_char8* lhs, const nk_char8* rhs);
 
-nk_size   nk_mbrtoc8(nk_char8* nk_restrict c8s, const nk_char* nk_restrict mbs, nk_size n, nk_mbstate* nk_restrict pst);
-nk_size   nk_c8rtomb(nk_char* nk_restrict mbs, nk_char8 c8, nk_mbstate* pst);
+nk_size nk_mbrtoc8(nk_char8* nk_restrict c8s, const nk_char* nk_restrict mbs, nk_size n, nk_mbstate* nk_restrict pst);
+nk_size nk_c8rtomb(nk_char* nk_restrict mbs, nk_char8 c8, nk_mbstate* pst);
 
 nk_char8* nk_u8strmove(nk_char8* dst, const nk_char8* src, nk_size count);
 nk_char8* nk_u8strset(nk_char8* dst, nk_ucs4 ucs4, nk_size count);
@@ -181,10 +180,10 @@ nk_char16* nk_u16strtok(nk_char16* nk_restrict str, const nk_char16* nk_restrict
 nk_size    nk_u16strxfrm(nk_char16* nk_restrict dst, const nk_char16* nk_restrict src, nk_size count);
 int        nk_u16strcoll(const nk_char16* lhs, const nk_char16* rhs);
 
-nk_size    nk_mbrtoc16(nk_char16* nk_restrict c16s, const nk_char* nk_restrict mbs, nk_size n, nk_mbstate* nk_restrict pst);
-nk_size    nk_c16rtomb(nk_char* nk_restrict mbs, nk_char16 c16, nk_mbstate* pst);
-nk_size    nk_c8rtoc16(nk_char16* nk_restrict c16s, const nk_char8* nk_restrict c8s, nk_size n, nk_mbstate* nk_restrict pst);
-nk_size    nk_c16rtoc8(nk_char8* nk_restrict c8s, nk_char16 c16, nk_mbstate* pst);
+nk_size nk_mbrtoc16(nk_char16* nk_restrict c16s, const nk_char* nk_restrict mbs, nk_size n, nk_mbstate* nk_restrict pst);
+nk_size nk_c16rtomb(nk_char* nk_restrict mbs, nk_char16 c16, nk_mbstate* pst);
+nk_size nk_c8rtoc16(nk_char16* nk_restrict c16s, const nk_char8* nk_restrict c8s, nk_size n, nk_mbstate* nk_restrict pst);
+nk_size nk_c16rtoc8(nk_char8* nk_restrict c8s, nk_char16 c16, nk_mbstate* pst);
 
 nk_char16* nk_u16strmove(nk_char16* dst, const nk_char16* src, nk_size count);
 nk_char16* nk_u16strset(nk_char16* dst, nk_ucs4 ucs4, nk_size count);
@@ -220,10 +219,10 @@ nk_char32* nk_u32strtok(nk_char32* nk_restrict str, const nk_char32* nk_restrict
 nk_size    nk_u32strxfrm(nk_char32* nk_restrict dst, const nk_char32* nk_restrict src, nk_size count);
 int        nk_u23strcoll(const nk_char32* lhs, const nk_char32* rhs);
 
-nk_size    nk_mbrtoc32(nk_char32* nk_restrict c32s, const nk_char* nk_restrict mbs, nk_size n, nk_mbstate* nk_restrict pst);
-nk_size    nk_c32rtomb(nk_char* nk_restrict mbs, nk_char32 c32, nk_mbstate* pst);
-nk_size    nk_c8rtoc32(nk_char32* nk_restrict c32s, const nk_char8* nk_restrict c8s, nk_size n, nk_mbstate* nk_restrict pst);
-nk_size    nk_c32rtoc8(nk_char8* nk_restrict c8s, nk_char32 c32, nk_mbstate* pst);
+nk_size nk_mbrtoc32(nk_char32* nk_restrict c32s, const nk_char* nk_restrict mbs, nk_size n, nk_mbstate* nk_restrict pst);
+nk_size nk_c32rtomb(nk_char* nk_restrict mbs, nk_char32 c32, nk_mbstate* pst);
+nk_size nk_c8rtoc32(nk_char32* nk_restrict c32s, const nk_char8* nk_restrict c8s, nk_size n, nk_mbstate* nk_restrict pst);
+nk_size nk_c32rtoc8(nk_char8* nk_restrict c8s, nk_char32 c32, nk_mbstate* pst);
 
 nk_char32* nk_u32strmove(nk_char32* dst, const nk_char32* src, nk_size count);
 nk_char32* nk_u32strset(nk_char32* dst, nk_ucs4 ucs4, nk_size count);
@@ -259,10 +258,10 @@ nk_wchar* nk_wcstok(nk_wchar* nk_restrict str, const nk_wchar* nk_restrict delim
 nk_size   nk_wcsxfrm(nk_wchar* nk_restrict dst, const nk_wchar* nk_restrict src, nk_size count);
 int       nk_wcscoll(const nk_wchar* lhs, const nk_wchar* rhs);
 
-nk_size   nk_mbrtowc(nk_wchar* wcs, const nk_char* mbs, nk_size n, nk_mbstate* pst);
-nk_size   nk_mbsrtowcs(nk_wchar* wcs, const nk_char** src, nk_size n, nk_mbstate* pst);
-nk_size   nk_wcrtomb(nk_char* mbs, nk_wchar wc, nk_mbstate* pst);
-nk_size   nk_wcsrtombs(nk_char* mbs, const nk_wchar** src, nk_size n, nk_mbstate* pst);
+nk_size nk_mbrtowc(nk_wchar* wcs, const nk_char* mbs, nk_size n, nk_mbstate* pst);
+nk_size nk_mbsrtowcs(nk_wchar* wcs, const nk_char** src, nk_size n, nk_mbstate* pst);
+nk_size nk_wcrtomb(nk_char* mbs, nk_wchar wc, nk_mbstate* pst);
+nk_size nk_wcsrtombs(nk_char* mbs, const nk_wchar** src, nk_size n, nk_mbstate* pst);
 
 nk_wchar* nk_wcsmove(nk_wchar* dst, const nk_wchar* src, nk_size count);
 nk_wchar* nk_wcsset(nk_wchar* dst, nk_wint wc, nk_size count);
@@ -278,15 +277,15 @@ nk_size nk_wcsncat_si(nk_wchar* nk_restrict dst, nk_size dstsz, const nk_wchar* 
 
 #ifndef NK_STRING_OMIT_MEMORY
 
-void*     nk_memchr(const void* ptr, int ch, nk_size count);
-int       nk_memcmp(const void* lhs, const void* rhs, nk_size count);
-void*     nk_memset(void* dst, int ch, nk_size count);
-void*     nk_memcpy(void* nk_restrict dst, const void* nk_restrict src, nk_size count);
-void*     nk_memmove(void* dst, const void* src, nk_size count);
+void*    nk_memchr(const void* ptr, int ch, nk_size count);
+int      nk_memcmp(const void* lhs, const void* rhs, nk_size count);
+void*    nk_memset(void* dst, int ch, nk_size count);
+void*    nk_memcpy(void* nk_restrict dst, const void* nk_restrict src, nk_size count);
+void*    nk_memmove(void* dst, const void* src, nk_size count);
 // from C11.
-nk_errno  nk_memset_s(void* dst, nk_rsize dstsz, int ch, nk_rsize count);
-nk_errno  nk_memcpy_s(void* nk_restrict dst, nk_rsize dstsz, const void* nk_restrict src, nk_rsize count);
-nk_errno  nk_memmove_s(void* dst, nk_rsize dstsz, const void* src, nk_rsize count);
+nk_errno nk_memset_s(void* dst, nk_rsize dstsz, int ch, nk_rsize count);
+nk_errno nk_memcpy_s(void* nk_restrict dst, nk_rsize dstsz, const void* nk_restrict src, nk_rsize count);
+nk_errno nk_memmove_s(void* dst, nk_rsize dstsz, const void* src, nk_rsize count);
 
 #endif // NK_STRING_OMIT_MEMORY
 
@@ -318,169 +317,169 @@ nk_size nk_strcpy_si(nk_wchar*, nk_size, const nk_wchar*, nk_size);
 nk_size nk_strncpy_si(nk_wchar*, nk_size, const nk_wchar*, nk_size);
 nk_size nk_strncat_si(nk_wchar*, nk_size, const nk_wchar*, nk_size);
 nk_size nk_strnlen_si(nk_wchar*, nk_size);
-}
+} // namespace nk_inner
 
 template <nk_size M>
 static inline nk_size strlen(const std::array<nk_char, M>& str)
 {
-    return nk_strnlen_si(str.data(), str.size());
+	return nk_strnlen_si(str.data(), str.size());
 }
 
 template <nk_size M>
 static inline nk_size strlen(const nk_char (&str)[M])
 {
-    return nk_strnlen_si(&str[0], M);
+	return nk_strnlen_si(&str[0], M);
 }
 
 template <nk_size M, nk_size N>
 static inline nk_size strcpy(std::array<nk_char, M>& dst, const std::array<nk_char, N>& src)
 {
-    return nk_strcpy_si(dst.data(), dst.size(), src.data(), src.size());
+	return nk_strcpy_si(dst.data(), dst.size(), src.data(), src.size());
 }
 
 template <nk_size M>
 static inline nk_size strcpy(std::array<nk_char, M>& dst, const nk_char* src, nk_size srcsz)
 {
-    return nk_strcpy_si(dst.data(), dst.size(), src, srcsz);
+	return nk_strcpy_si(dst.data(), dst.size(), src, srcsz);
 }
 
 template <nk_size M>
 static inline nk_size strcpy(std::array<nk_char, M>& dst, const nk_char* src)
 {
-    nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
-    return nk_strcpy_si(dst.data(), dst.size(), src, srcsz);
+	nk_size srcsz = (NK_RSIZE_MAX / sizeof(nk_char));
+	return nk_strcpy_si(dst.data(), dst.size(), src, srcsz);
 }
 
 template <nk_size M, nk_size N>
 static inline nk_size strcpy(nk_char (&dst)[M], const nk_char (&src)[N])
 {
-    return nk_strcpy_si(&dst[0], M, &src[0], N);
+	return nk_strcpy_si(&dst[0], M, &src[0], N);
 }
 
 template <nk_size M>
 static inline nk_size strcpy(nk_char (&dst)[M], const nk_char* src, nk_size srcsz)
 {
-    return nk_strcpy_si(&dst[0], M, src, srcsz);
+	return nk_strcpy_si(&dst[0], M, src, srcsz);
 }
 
 template <nk_size M>
 static inline nk_size strcpy(nk_char (&dst)[M], const nk_char* src)
 {
-    nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
-    return nk_strcpy_si(&dst[0], M, src, srcsz);
+	nk_size srcsz = (NK_RSIZE_MAX / sizeof(nk_char));
+	return nk_strcpy_si(&dst[0], M, src, srcsz);
 }
 
 template <nk_size M, nk_size N>
 static inline nk_size strncpy(std::array<nk_char, M>& dst, const std::array<nk_char, N>& src)
 {
-    return nk_strncpy_si(dst.data(), dst.size(), src.data(), src.size());
+	return nk_strncpy_si(dst.data(), dst.size(), src.data(), src.size());
 }
 
 template <nk_size M>
 static inline nk_size strncpy(std::array<nk_char, M>& dst, const nk_char* src, nk_size srcsz)
 {
-    return nk_strncpy_si(dst.data(), dst.size(), src, srcsz);
+	return nk_strncpy_si(dst.data(), dst.size(), src, srcsz);
 }
 
 template <nk_size M>
 static inline nk_size strncpy(std::array<nk_char, M>& dst, const nk_char* src)
 {
-    nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
-    return nk_strncpy_si(dst.data(), dst.size(), src, srcsz);
+	nk_size srcsz = (NK_RSIZE_MAX / sizeof(nk_char));
+	return nk_strncpy_si(dst.data(), dst.size(), src, srcsz);
 }
 
 template <nk_size M, nk_size N>
 static inline nk_size strncpy(nk_char (&dst)[M], const nk_char (&src)[N])
 {
-    return nk_strncpy_si(&dst[0], M, &src[0], N);
+	return nk_strncpy_si(&dst[0], M, &src[0], N);
 }
 
 template <nk_size M>
 static inline nk_size strncpy(nk_char (&dst)[M], const nk_char* src, nk_size srcsz)
 {
-    return nk_strncpy_si(&dst[0], M, src, srcsz);
+	return nk_strncpy_si(&dst[0], M, src, srcsz);
 }
 
 template <nk_size M>
 static inline nk_size strncpy(nk_char (&dst)[M], const nk_char* src)
 {
-    nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
-    return nk_strncpy_si(&dst[0], M, src, srcsz);
+	nk_size srcsz = (NK_RSIZE_MAX / sizeof(nk_char));
+	return nk_strncpy_si(&dst[0], M, src, srcsz);
 }
 
 template <nk_size M, nk_size N>
 static inline nk_size strcat(std::array<nk_char, M>& dst, const std::array<nk_char, N>& src)
 {
-    nk_size pos = nk_strnlen(dst.data(), dst.size());
-    return (pos + nk_strcpy_si(dst.data() + pos, dst.size() - pos, src.data(), src.size()));
+	nk_size pos = nk_strnlen(dst.data(), dst.size());
+	return (pos + nk_strcpy_si(dst.data() + pos, dst.size() - pos, src.data(), src.size()));
 }
 
 template <nk_size M>
 static inline nk_size strcat(std::array<nk_char, M>& dst, const nk_char* src, nk_size srcsz)
 {
-    nk_size pos = nk_strnlen(dst.data(), dst.size());
-    return (pos + nk_strcpy_si((dst.data() + pos), (dst.size() - pos), src, srcsz));
+	nk_size pos = nk_strnlen(dst.data(), dst.size());
+	return (pos + nk_strcpy_si((dst.data() + pos), (dst.size() - pos), src, srcsz));
 }
 
 template <nk_size M>
 static inline nk_size strcat(std::array<nk_char, M>& dst, const nk_char* src)
 {
-    nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
-    nk_size pos   = nk_strnlen(dst.data(), dst.size());
-    return (pos + nk_strcpy_si(dst.data() + pos, dst.size() - pos, src, srcsz));
+	nk_size srcsz = (NK_RSIZE_MAX / sizeof(nk_char));
+	nk_size pos   = nk_strnlen(dst.data(), dst.size());
+	return (pos + nk_strcpy_si(dst.data() + pos, dst.size() - pos, src, srcsz));
 }
 
 template <nk_size M, nk_size N>
 static inline nk_size strcat(nk_char (&dst)[M], const nk_char (&src)[N])
 {
-    nk_size pos = nk_strnlen(&dst[0], M);
-    return (pos + nk_strcpy_si(&dst[pos], (M - pos), &src[0], N));
+	nk_size pos = nk_strnlen(&dst[0], M);
+	return (pos + nk_strcpy_si(&dst[pos], (M - pos), &src[0], N));
 }
 
 template <nk_size M>
 static inline nk_size strcat(nk_char (&dst)[M], const nk_char* src, nk_size srcsz)
 {
-    nk_size pos = nk_strnlen(&dst[0], M);
-    return (pos + nk_strcpy_si(&dst[pos], (M - pos), src, srcsz));
+	nk_size pos = nk_strnlen(&dst[0], M);
+	return (pos + nk_strcpy_si(&dst[pos], (M - pos), src, srcsz));
 }
 
 template <nk_size M>
 static inline nk_size strcat(nk_char (&dst)[M], const nk_char* src)
 {
-    nk_size srcsz = (NK_RSIZE_MAX/sizeof(nk_char));
-    nk_size pos   = nk_strnlen(&dst[0], M);
-    return (pos + nk_strcpy_si(&dst[pos], (M - pos), src, srcsz));
+	nk_size srcsz = (NK_RSIZE_MAX / sizeof(nk_char));
+	nk_size pos   = nk_strnlen(&dst[0], M);
+	return (pos + nk_strcpy_si(&dst[pos], (M - pos), src, srcsz));
 }
 
 template <nk_size M, nk_size N>
 static inline nk_size strncat(std::array<nk_char, M>& dst, const std::array<nk_char, N>& src, nk_size count)
 {
-    nk_size pos = nk_strnlen(dst.data(), dst.size());
-    return (pos + nk_strncat_si((dst.data() + pos), (dst.size() - pos), src, count));
+	nk_size pos = nk_strnlen(dst.data(), dst.size());
+	return (pos + nk_strncat_si((dst.data() + pos), (dst.size() - pos), src, count));
 }
 
 template <nk_size M>
 static inline nk_size strncat(std::array<nk_char, M>& dst, const nk_char* src, nk_size count)
 {
-    nk_size pos = nk_strnlen(dst.data(), dst.size());
-    return (pos + nk_strncat_si((dst.data() + pos), (dst.size() - pos), src, count));
+	nk_size pos = nk_strnlen(dst.data(), dst.size());
+	return (pos + nk_strncat_si((dst.data() + pos), (dst.size() - pos), src, count));
 }
 
 template <nk_size M, nk_size N>
 static inline nk_size strncat(nk_char (&dst)[M], const nk_char (&src)[N], nk_size count)
 {
-    nk_size pos = nk_strnlen(&dst[0], M);
-    return (pos + nk_strncat_si(&dst[pos], (M - pos), &src[0], count));
+	nk_size pos = nk_strnlen(&dst[0], M);
+	return (pos + nk_strncat_si(&dst[pos], (M - pos), &src[0], count));
 }
 
 template <nk_size M>
 static inline nk_size strncat(nk_char (&dst)[M], const nk_char* src, nk_size count)
 {
-    nk_size pos = nk_strnlen(&dst[0], M);
-    return (pos + nk_strncat_si(&dst[pos], (M - pos), &src[0], count));
+	nk_size pos = nk_strnlen(&dst[0], M);
+	return (pos + nk_strncat_si(&dst[pos], (M - pos), &src[0], count));
 }
 
-}
+} // namespace nk
 #endif
 
 #endif // NK_STRING_H_
