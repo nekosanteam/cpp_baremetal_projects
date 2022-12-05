@@ -4,6 +4,7 @@ enable_language(C)
 enable_language(ASM)
 
 add_library(05_Libraries OBJECT
+  src/nkcounting.cpp
   src/nkstring.cpp
   src/nklogger.cpp)
 target_include_directories(05_Libraries
@@ -32,4 +33,8 @@ if (BUILD_TESTING)
   add_executable(05_BarrierTest test/barrier_test.cpp)
   target_compile_options(05_BarrierTest PRIVATE -O2)
   target_link_libraries(05_BarrierTest -lpthread)
+
+  add_executable(05_LibrariesCountingTest test/nkcounting_test.cpp)
+  target_link_libraries(05_LibrariesCountingTest 05_Libraries)
+
 endif()
