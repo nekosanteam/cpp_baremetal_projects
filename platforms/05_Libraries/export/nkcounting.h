@@ -23,29 +23,21 @@ extern "C" {
 #ifdef __cplusplus
 namespace nk {
 
-using CountT = std::uint32_t;
-
-template <typename ValueT>
-class CountingHash {
-public:
-    static CountT hash(ValueT value);
-};
-
 template <typename ValueT>
 class Counting {
 public:
-    virtual int update(ValueT value) = 0;
-    virtual int estimate() = 0;
-
+    int update(ValueT value);
+    int estimate();
 };
 
 template <typename ValueT>
-class CountingSimple : Counting<ValueT> {
+class CountingSimple {
 public:
     CountingSimple() : num_(0) {}
 
-    int    update(ValueT value) override;
-    int    estimate() override;
+    int    update(ValueT value);
+    int    estimate();
+
     ValueT min();
     ValueT max();
     ValueT mean();
@@ -59,6 +51,30 @@ private:
     ValueT   min_;
     ValueT   max_;
 };
+
+using AddrT = std::uint8_t;
+using MaskT = std::uint32_t;
+
+template <typename ValueT>
+class CountingBuffer : public CountingSimple<ValueT> {
+public:
+    CountingBuffer() : buf_(nullptr) {}
+
+    int    update(ValueT value);
+    int    estimate();
+
+private:
+    AddrT* buf_;
+    AddrT  addr_;
+    MaskT  mask_;
+};
+
+template <typename ValueT>
+class CountingHash {
+public:
+    static MaskT hash(ValueT value);
+};
+
 
 template <typename ValueT>
 int CountingSimple<ValueT>::update(ValueT value)
