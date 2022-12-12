@@ -23,67 +23,70 @@ extern "C" {
 #ifdef __cplusplus
 namespace nk {
 
-template <typename ValueT>
+class Counting;
+template <typename ValueT> class CountingSimple;
+template <typename ValueT> class CountingSpecifyAverage;
+template <typename ValueT> class CountingSpecifyRange;
+template <typename ValueT> class CountingSpecifyRangeWithOutliner;
+template <typename ValueT> class CountingHyperLogLog;
+template <typename ValueT> class CountingWithValues;
+
 class Counting {
 public:
-    int update(ValueT value);
-    int estimate();
+    using CountT = std::uint32_t;
+    using TotalT = double;
+    using AddrT  = std::uint8_t;
+    using MaskT  = std::uint32_t;
+
+public:
+    Counting() : num_(0) {}
+    CountT inc();
+    CountT estimate() const;
+
+public:
+    CountT num_;
 };
+
+Counting::CountT Counting::inc()
+{
+    num_ += 1;
+    return num_;
+}
+
+Counting::CountT Counting::estimate() const
+{
+    return num_;
+}
 
 template <typename ValueT>
 class CountingSimple {
 public:
     CountingSimple() : num_(0) {}
 
-    int    update(ValueT value);
-    int    estimate();
+    Counting::CountT inc(ValueT value);
+    Counting::CountT estimate() const;
 
-    ValueT min();
-    ValueT max();
-    ValueT mean();
-
-public:
-    using total_t = double;
+    ValueT min() const;
+    ValueT max() const;
+    ValueT mean() const;
 
 private:
-    total_t  total_;
-    uint32_t num_;
-    ValueT   min_;
-    ValueT   max_;
-};
-
-using AddrT = std::uint8_t;
-using MaskT = std::uint32_t;
-
-template <typename ValueT>
-class CountingBuffer : public CountingSimple<ValueT> {
-public:
-    CountingBuffer() : buf_(nullptr) {}
-
-    int    update(ValueT value);
-    int    estimate();
+    Counting::CountT num_;
+    Counting::TotalT total_;
 
 private:
-    AddrT* buf_;
-    AddrT  addr_;
-    MaskT  mask_;
+    ValueT  min_;
+    ValueT  max_;
 };
 
 template <typename ValueT>
-class CountingHash {
-public:
-    static MaskT hash(ValueT value);
-};
-
-
-template <typename ValueT>
-int CountingSimple<ValueT>::update(ValueT value)
+Counting::CountT CountingSimple<ValueT>::inc(ValueT value)
 {
     if (num_ == 0) {
         min_ = value;
         max_ = value;
-        total_ = (total_t)value;
-        num_++;
+        total_ = (Counting::TotalT)value;
+        num_ = 1;
     }
     else {
         if (min_ > value) {
@@ -92,37 +95,37 @@ int CountingSimple<ValueT>::update(ValueT value)
         if (max_ < value) {
             max_ = value;
         }
-        total_ = total_ + (total_t)value;
-        num_++;
+        total_ = total_ + (Counting::TotalT)value;
+        num_ += 1;
     }
-    return 0;
+    return num_;
 }
 
 template <typename ValueT>
-ValueT CountingSimple<ValueT>::min()
+ValueT CountingSimple<ValueT>::min() const
 {
     return min_;
 }
 
 template <typename ValueT>
-ValueT CountingSimple<ValueT>::max()
+ValueT CountingSimple<ValueT>::max() const
 {
     return max_;
 }
 
 template <typename ValueT>
-ValueT CountingSimple<ValueT>::mean()
+ValueT CountingSimple<ValueT>::mean() const
 {
     if (num_ == 0) {
         return (ValueT)0;
     }
-    return (ValueT)(total_ / (total_t)num_);
+    return (ValueT)(total_ / (Counting::TotalT)num_);
 }
 
 template <typename ValueT>
-int CountingSimple<ValueT>::estimate()
+Counting::CountT CountingSimple<ValueT>::estimate() const
 {
-    return 0;
+    return num_;
 }
 
 } // namespace nk
