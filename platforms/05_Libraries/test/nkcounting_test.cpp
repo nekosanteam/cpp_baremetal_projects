@@ -13,16 +13,21 @@ void test01()
     int pos;
     uint32_t Min = 10;
     uint32_t Max = 110;
-    nk::CountingSimple<uint32_t> counts;
+    nk::Counting countsNum;
+    nk::CountingSimple<uint32_t> countsSimple;
+    nk::CountingSpecifyAverage<int32_t> countsAve(30);
 
     for (i=Min; i<Max; i++) {
-        counts.inc(i);
+        countsNum.inc();
+        countsSimple.inc(i);
+        countsAve.inc(i);
     }
 
-    printf("min  = %d\n", counts.min());
-    printf("max  = %d\n", counts.max());
-    printf("mean = %d\n", counts.mean());
-    printf("estimate = %d\n", counts.estimate());
+    printf("min  = %d, %d\n", countsSimple.min(), countsAve.min());
+    printf("max  = %d, %d\n", countsSimple.max(), countsAve.max());
+    printf("mean = %d, %d\n", countsSimple.mean(), countsAve.mean());
+    printf("estimate = %d, %d\n", countsNum.estimate(), countsAve.estimate());
+    printf("estimate = %d\n", countsSimple.estimate());
 }
 
 int main(int argc, char**argv)

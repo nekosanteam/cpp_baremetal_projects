@@ -35,7 +35,7 @@ class Counting {
 public:
     using CountT = std::uint32_t;
     using TotalT = double;
-    using AddrT  = std::uint8_t;
+    using AddrT  = std::uint16_t;
     using MaskT  = std::uint32_t;
 
 public:
@@ -46,17 +46,6 @@ public:
 public:
     CountT num_;
 };
-
-Counting::CountT Counting::inc()
-{
-    num_ += 1;
-    return num_;
-}
-
-Counting::CountT Counting::estimate() const
-{
-    return num_;
-}
 
 template <typename ValueT>
 class CountingSimple {
@@ -127,6 +116,47 @@ Counting::CountT CountingSimple<ValueT>::estimate() const
 {
     return num_;
 }
+
+template <typename ValueT>
+class CountingSpecifyAverage {
+public:
+    CountingSpecifyAverage(ValueT average) : counts(), ave_(average) {}
+
+    Counting::CountT inc(ValueT value) { return counts.inc(value - ave_); };
+    Counting::CountT estimate() const { return counts.estimate(); }
+
+    ValueT min() const  { return counts.min() + ave_; }
+    ValueT max() const  { return counts.max() + ave_; }
+    ValueT mean() const { return counts.mean() + ave_; }
+
+private:
+    CountingSimple<ValueT> counts;
+    ValueT ave_;
+};
+
+template <typename ValueT>
+class CountingSpecifyRange {
+public:
+    CountingSpecifyRange(ValueT llimit, ValueT hlimit) : counts(), llimit_(llimit), hlimit_(hlimit), buf_(nullptr) {}
+
+    Counting::CountT inc(ValueT value) { return counts.inc(value); };
+    Counting::CountT estimate() const { return counts.estimate(); }
+
+    ValueT min() const  { return counts.min(); }
+    ValueT max() const  { return counts.max(); }
+    ValueT mean() const { return counts.mean(); }
+
+    std::size_t bufferSize(ValueT gap) { gap_ = gap; return ((hlimit_ - llimit_) / gap_); }
+    void setBuffer(Counting::CountT* buf) { buf_ = buf; }
+
+private:
+    CountingSimple<ValueT> counts;
+    ValueT llimit_;
+    ValueT hlimit_;
+    Counting::CountT* buf_;
+    ValueT gap_;
+};
+
 
 } // namespace nk
 #endif
