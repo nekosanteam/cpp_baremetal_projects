@@ -5,8 +5,10 @@ enable_language(ASM)
 
 add_library(05_Libraries OBJECT
   src/nkcounting.cpp
-  src/nkstring.cpp
-  src/nklogger.cpp)
+  src/nkfdtlib.cpp
+  src/nklogger.cpp
+  src/nklogger.cpp
+  src/nkstring.cpp)
 target_include_directories(05_Libraries
   PUBLIC  export/
   PRIVATE inc/)
