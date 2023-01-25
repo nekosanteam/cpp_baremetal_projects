@@ -1,3 +1,4 @@
+/* reference: https://www.devicetree.org/specification/ [v0.3, v0.4-rc1] */
 #include "nkfdtlib.h"
 
 #include <cstdint>
@@ -29,6 +30,21 @@ static int nks_memcmp(const void* data1, const void* data2, size_t n)
     return 0;
 }
 
+static void* nks_memcpy(void* dst, const void* src, size_t n)
+{
+    uint8_t* p1 = (uint8_t*)dst;
+    const uint8_t* p2 = (const uint8_t*)src;
+    size_t i;
+
+    for (i=0; i<n; i++) {
+        *p1 = *p2;
+        p1++;
+        p2++;
+    }
+
+    return dst;
+}
+
 static size_t nks_strnlen(const char* str, size_t n)
 {
     size_t i;
@@ -57,7 +73,7 @@ static uint16_t read16(const void* p)
     return r;
 }
 
-static uint16_t read32(const void* p)
+static uint32_t read32(const void* p)
 {
     uint32_t r = 0;
 
@@ -75,7 +91,7 @@ static void write8(const void* p, uint8_t v)
 
 static void write16(const void* p, uint16_t v)
 {
-    *(uint8_t*)p = (uint8_t)(v & 0x00FF);
+    *(uint8_t*)p = (uint8_t)(v & 0xFF);
     *(((uint8_t*)p) + 1) = (uint8_t)((v >>  8) & 0xFF);
 }
 
@@ -97,16 +113,48 @@ enum {
     NKFDT_ERROR,
 };
 
+#define UNUSED(v) do { (void)v; } while (0)
+
 #define NKFDT_BEGIN_NODE 0x01
 #define NKFDT_END_NODE   0x02
 #define NKFDT_PROP       0x03
 #define NKFDT_NOP        0x04
 #define NKFDT_END        0x09
 
-nkfdt_error nkfdt_check_header(const void* fdt)
+nkfdt_error nkfdt_check_header(const void* fdt, size_t *nextoffset, void* p)
 {
-    if (nks_memcmp("\xD0\x0D\xFE\xED", fdt, 4) != 0) {
+    size_t offset;
+    uint32_t version;
+
+    UNUSED(p);
+
+    // magic.
+    if (nks_memcmp("\xD0\x0D\xFE\xED", offset_ptr(fdt, 0), 4) != 0) {
         return NKFDT_ERROR;
+    }
+    offset += 4;
+    // totalsize.
+    offset += 4;
+    // off_dt_struct.
+    offset += 4;
+    // off_dt_strings;
+    offset += 4;
+    // off_mem_rsvmap;
+    offset += 4;
+    // version;
+    version = read32(offset_ptr(fdt, offset));
+    offset += 4;
+    // last_comp_version.
+    offset += 4;
+    // boot_cpuid_phys.
+    offset += 4;
+    // size_dt_strings.
+    offset += 4;
+    // size_dt_struct.
+    offset += 4;
+
+    if (nextoffset) {
+        *nextoffset = offset;
     }
     return NKFDT_OK;
 }
