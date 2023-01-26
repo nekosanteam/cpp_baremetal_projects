@@ -121,37 +121,65 @@ enum {
 #define NKFDT_NOP        0x04
 #define NKFDT_END        0x09
 
-nkfdt_error nkfdt_check_header(const void* fdt, size_t *nextoffset, void* p)
+struct fdt_header {
+    uint32_t totalsize;
+    uint32_t off_dt_struct;
+    uint32_t off_dt_strings;
+    uint32_t off_mem_rsvmap;
+    uint32_t version;
+    uint32_t last_comp_version;
+    uint32_t boot_cpuid_phys;
+    uint32_t size_dt_strings;
+    uint32_t size_dt_struct;
+};
+
+nkfdt_error nkfdt_parse_header(const void* fdt, size_t *nextoffset, struct fdt_header* h)
 {
     size_t offset;
     uint32_t version;
-
-    UNUSED(p);
+    uint32_t last_comp_version;
 
     // magic.
     if (nks_memcmp("\xD0\x0D\xFE\xED", offset_ptr(fdt, 0), 4) != 0) {
         return NKFDT_ERROR;
     }
-    offset += 4;
+    offset = 4;
     // totalsize.
+    if (h) { h->totalsize = read32(offset_ptr(fdt, offset)); }
     offset += 4;
     // off_dt_struct.
+    if (h) { h->off_dt_struct = read32(offset_ptr(fdt, offset)); }
     offset += 4;
     // off_dt_strings;
+    if (h) { h->off_dt_strings = read32(offset_ptr(fdt, offset)); }
     offset += 4;
     // off_mem_rsvmap;
+    if (h) { h->off_mem_rsvmap = read32(offset_ptr(fdt, offset)); }
     offset += 4;
     // version;
     version = read32(offset_ptr(fdt, offset));
+    if (h) { h->totalsize = version; }
     offset += 4;
     // last_comp_version.
+    last_comp_version = read32(offset_ptr(fdt, offset));
+    if (h) { h->last_comp_version = last_comp_version; }
     offset += 4;
     // boot_cpuid_phys.
+    if (h) { h->boot_cpuid_phys = read32(offset_ptr(fdt, offset)); }
     offset += 4;
     // size_dt_strings.
+    if (h) { h->size_dt_strings = read32(offset_ptr(fdt, offset)); }
     offset += 4;
     // size_dt_struct.
+    if (h) { h->size_dt_struct = read32(offset_ptr(fdt, offset)); }
     offset += 4;
+
+    if (version != 0x11) {
+        return NKFDT_ERROR;
+    }
+    if (last_comp_version > 0x10) {
+        return NKFDT_ERROR;
+    }
 
     if (nextoffset) {
         *nextoffset = offset;
@@ -159,23 +187,98 @@ nkfdt_error nkfdt_check_header(const void* fdt, size_t *nextoffset, void* p)
     return NKFDT_OK;
 }
 
-nkfdt_tag   nkfdt_next_tag(const void* fdt, uint32_t startoffset, uint32_t* nextoffset)
+static inline size_t round4(size_t s)
 {
-    uint32_t offset;
+    return ((s + 3) & 0x03u);
+}
+
+void* nkfdt_skip_node(const void* fdt, size_t* nextoffset, const struct fdt_header* h)
+{
+    uint32_t tag;
+    size_t len;
+    size_t offset;
+
+    if (nextoffset == NULL) {
+        return NULL;
+    }
+    if (h == NULL) {
+        return NULL;
+    }
+    offset = *nextoffset;
+
+    tag = read32(offset_ptr(fdt, offset));
+    if (tag != NKFDT_BEGIN_NODE) {
+        return NULL;
+    }
+    offset += 4;
+    len = nks_strnlen((char*)(offset_ptr(fdt, offset)), h->size_dt_struct);
+    len = round4(len+1);
+    offset += len;
+
+    tag = read32(offset_ptr(fdt, offset));
+    switch (tag) {
+    case NKFDT_BEGIN_NODE:
+        *nextoffset = offset;
+        (void)nkfdt_skip_node(fdt, nextoffset, h);
+        break;
+
+    case NKFDT_END_NODE:
+    case NKFDT_END:
+        *nextoffset = offset;
+        break;
+
+    case NKFDT_NOP:
+        *nextoffset = offset;
+        break;
+    
+    case NKFDT_PROP:
+        *nextoffset = offset;
+        (void)nkfdt_skip_prop(fdt, nextoffset, h);
+        break;
+    }
+
+    return offset_ptr(fdt, offset);
+}
+
+void* nkfdt_skip_prop(const void* fdt, size_t* nextoffset, const struct fdt_header* h)
+{
+    uint32_t tag;
+    uint32_t len;
+    size_t   str_off;
+    size_t   offset;
+
+    if (nextoffset == NULL) {
+        return NULL;
+    }
+    offset = *nextoffset;
+
+    tag = read32(offset_ptr(fdt, offset));
+    if (tag != NKFDT_PROP) {
+        return NULL;
+    }
+    offset += 4;
+    len     = read32(offset_ptr(fdt, offset));
+    offset += 4;
+    str_off = read32(offset_ptr(fdt, offset));
+    offset += 4;
+
+    offset += round4(len);
+
+    *nextoffset = offset;
+    return offset_ptr(fdt, offset);
+}
+
+char* nkfdt_get_string(const void* fdt, size_t offset, int* strlenp, struct fdt_header* h)
+{
 
 }
 
-nkfdt_error nkfdt_next_node(const void* fdt, uint32_t startoffset, uint32_t* nextoffset)
+nkfdt_error nkfdt_get_prop_data(const void* fdt, size_t offset, void** bufp, int* lenp)
 {
 
 }
 
-nkfdt_error nkfdt_get_property(const void* fdt, uint32_t offset, char** name, int* lenp)
-{
-
-}
-
-nkfdt_error nkfdt_set_property(const void* fdt, uint32_t offset, const char* name, const void* val, int len)
+nkfdt_error nkfdt_set_prop_data(const void* fdt, size_t offset, const void* buf, int len)
 {
 
 }

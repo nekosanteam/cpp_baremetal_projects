@@ -19,11 +19,16 @@ extern "C" {
 typedef int      nkfdt_error;
 typedef uint32_t nkfdt_tag;
 
-nkfdt_error nkfdt_check_header(const void* fdt);
-nkfdt_tag   nkfdt_next_tag(const void* fdt, uint32_t startoffset, uint32_t* nextoffset);
-nkfdt_error nkfdt_next_node(const void* fdt, uint32_t startoffset, uint32_t* nextoffset);
-nkfdt_error nkfdt_get_property(const void* fdt, uint32_t offset, char** name, int* lenp);
-nkfdt_error nkfdt_set_property(const void* fdt, uint32_t offset, const char* name, const void* val, int len);
+struct fdt_header;
+
+nkfdt_error nkfdt_parse_header(const void* fdt, size_t *nextoffset, struct fdt_header* h);
+
+void* nkfdt_skip_node(const void* fdt, size_t* nextoffset, const struct fdt_header* h);
+void* nkfdt_skip_prop(const void* fdt, size_t* nextoffset, const struct fdt_header* h);
+char* nkfdt_get_string(const void* fdt, size_t offset, int* strlenp, struct fdt_header* h);
+
+nkfdt_error nkfdt_get_prop_data(const void* fdt, size_t offset, void** bufp, int* lenp);
+nkfdt_error nkfdt_set_prop_data(const void* fdt, size_t offset, const void* buf, int len);
 
 #ifdef __cplusplus
 } // extern "C"
