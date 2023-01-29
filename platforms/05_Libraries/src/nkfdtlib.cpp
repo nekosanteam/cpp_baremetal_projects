@@ -189,7 +189,7 @@ nkfdt_error nkfdt_parse_header(const void* fdt, size_t *nextoffset, struct fdt_h
 
 static inline size_t round4(size_t s)
 {
-    return ((s + 3) & 0x03u);
+    return ((s + 3) & ~0x03u);
 }
 
 void* nkfdt_skip_node(const void* fdt, size_t* nextoffset, const struct fdt_header* h)
@@ -215,27 +215,33 @@ void* nkfdt_skip_node(const void* fdt, size_t* nextoffset, const struct fdt_head
     len = round4(len+1);
     offset += len;
 
-    tag = read32(offset_ptr(fdt, offset));
-    switch (tag) {
-    case NKFDT_BEGIN_NODE:
-        *nextoffset = offset;
-        (void)nkfdt_skip_node(fdt, nextoffset, h);
-        break;
+    do {
+        tag = read32(offset_ptr(fdt, offset));
+        switch (tag) {
+        case NKFDT_BEGIN_NODE:
+            *nextoffset = offset;
+            (void)nkfdt_skip_node(fdt, nextoffset, h);
+            offset = *nextoffset;
+            break;
 
-    case NKFDT_END_NODE:
-    case NKFDT_END:
-        *nextoffset = offset;
-        break;
+        case NKFDT_END_NODE:
+        case NKFDT_END:
+            offset += 4;
+            *nextoffset = offset;
+            break;
 
-    case NKFDT_NOP:
-        *nextoffset = offset;
-        break;
-    
-    case NKFDT_PROP:
-        *nextoffset = offset;
-        (void)nkfdt_skip_prop(fdt, nextoffset, h);
-        break;
-    }
+        case NKFDT_NOP:
+            offset += 4;
+            *nextoffset = offset;
+            break;
+        
+        case NKFDT_PROP:
+            *nextoffset = offset;
+            (void)nkfdt_skip_prop(fdt, nextoffset, h);
+            offset = *nextoffset;
+            break;
+        }
+    } while ((tag != NKFDT_END_NODE) && (tag != NKFDT_END));
 
     return offset_ptr(fdt, offset);
 }
@@ -248,6 +254,9 @@ void* nkfdt_skip_prop(const void* fdt, size_t* nextoffset, const struct fdt_head
     size_t   offset;
 
     if (nextoffset == NULL) {
+        return NULL;
+    }
+    if (h == NULL) {
         return NULL;
     }
     offset = *nextoffset;
