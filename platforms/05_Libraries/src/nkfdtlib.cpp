@@ -9,7 +9,7 @@ using std::uint16_t;
 using std::uint32_t;
 using std::uintptr_t;
 
-static int nks_memcmp(const void* data1, const void* data2, size_t n)
+int nks_memcmp(const void* data1, const void* data2, size_t n)
 {
     const uint8_t* r1 = (const uint8_t*)data1;
     const uint8_t* r2 = (const uint8_t*)data2;
@@ -24,13 +24,15 @@ static int nks_memcmp(const void* data1, const void* data2, size_t n)
             else {
                 return 1;
             }
+            r1++;
+            r2++;
         }
     }
 
     return 0;
 }
 
-static void* nks_memcpy(void* dst, const void* src, size_t n)
+void* nks_memcpy(void* dst, const void* src, size_t n)
 {
     uint8_t* p1 = (uint8_t*)dst;
     const uint8_t* p2 = (const uint8_t*)src;
@@ -103,9 +105,14 @@ static void write32(const void* p, uint32_t v)
     *(((uint8_t*)p) + 3) = (uint8_t)((v >> 24) & 0xFF);
 }
 
-static void* offset_ptr(const void* fdt, int offset)
+static void* offset_ptr(const void* fdt, size_t offset)
 {
     return (void*)(((const uint8_t*)fdt) + offset);
+}
+
+nkfdt_tag nkfdt_get_tag(const void* fdt, size_t offset)
+{
+    return read32(offset_ptr(fdt, offset));
 }
 
 enum {

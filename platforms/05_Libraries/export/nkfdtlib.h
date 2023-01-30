@@ -25,10 +25,10 @@ nkfdt_error nkfdt_parse_header(const void* fdt, size_t *nextoffset, struct fdt_h
 
 void* nkfdt_skip_node(const void* fdt, size_t* nextoffset, const struct fdt_header* h);
 void* nkfdt_skip_prop(const void* fdt, size_t* nextoffset, const struct fdt_header* h);
-char* nkfdt_get_string(const void* fdt, size_t offset, int* strlenp, struct fdt_header* h);
+char* nkfdt_get_string(const void* fdt, size_t offset, size_t* strlenp, struct fdt_header* h);
 
-nkfdt_error nkfdt_get_prop_data(const void* fdt, size_t offset, void** bufp, int* lenp);
-nkfdt_error nkfdt_set_prop_data(const void* fdt, size_t offset, const void* buf, int len);
+nkfdt_error nkfdt_get_prop_data(const void* fdt, size_t offset, void* buf, size_t* lenp);
+nkfdt_error nkfdt_set_prop_data(const void* fdt, size_t offset, const void* buf, size_t len);
 
 #ifdef __cplusplus
 } // extern "C"

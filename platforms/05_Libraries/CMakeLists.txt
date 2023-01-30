@@ -13,7 +13,7 @@ target_include_directories(05_Libraries
   PUBLIC  export/
   PRIVATE inc/)
 target_compile_options(05_Libraries
-  PRIVATE -ffunction-sections)
+  PRIVATE -ffunction-sections -Wall -Wno-unused)
 if(COMMAND target_compile_option_warning)
   target_compile_option_warning(05_Libraries)
 endif()
