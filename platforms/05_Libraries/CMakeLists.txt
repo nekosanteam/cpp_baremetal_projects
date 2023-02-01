@@ -7,7 +7,7 @@ add_library(05_Libraries OBJECT
   src/nkcounting.cpp
   src/nkfdtlib.cpp
   src/nklogger.cpp
-  src/nklogger.cpp
+  src/nkqueue.cpp
   src/nkstring.cpp)
 target_include_directories(05_Libraries
   PUBLIC  export/
