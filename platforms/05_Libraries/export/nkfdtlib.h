@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: CC0-1.0
+/**
+ * @file nkfdtlib.h
+ *
+ */
 #ifndef NKFDTLIB_H_
 #define NKFDTLIB_H_
 

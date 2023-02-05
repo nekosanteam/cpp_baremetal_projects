@@ -39,4 +39,7 @@ if (BUILD_TESTING)
   add_executable(05_LibrariesCountingTest test/nkcounting_test.cpp)
   target_link_libraries(05_LibrariesCountingTest 05_Libraries)
 
+  add_executable(05_LibrariesQueueTest test/nkqueue_test.cpp)
+  target_link_libraries(05_LibrariesQueueTest 05_Libraries)
+
 endif()
