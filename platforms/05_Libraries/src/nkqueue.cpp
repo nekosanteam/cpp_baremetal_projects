@@ -21,24 +21,23 @@ struct vring {
 
 bool is_empty(const struct vring& r)
 {
-    return ((r.wp == r.rp) || ((r.rp + 2 * r.ring.size()) == r.wp));
+    return ((r.rp == r.wp) || ((r.rp + 2 * r.ring.size()) == r.wp));
 }
 
 size_t get_room(const struct vring& r)
 {
+    if ((r.rp + r.ring.size()) < r.wp) {
+        return ((r.rp + 2 * r.ring.size()) - r.wp);
+    }
     if (r.rp < r.wp) {
         return (r.ring.size() + r.rp - r.wp);
     }
-    else if (r.rp >= r.wp) {
-        return (r.ring.size() + r.rp - r.wp);
+    if (r.rp >= r.wp) {
+        return (r.rp - r.wp);
     }
-    else if ((r.rp + r.ring.size()) < r.wp) {
+    if ((r.rp + r.ring.size()) < r.wp) {
             return 0;
     }
-    else {
-        return (r.rp - r.wp - 1);
-    }
-    return (r.ring.size() + r.rp - r.wp);
 }
 
 size_t recv(struct vring& r, uint8_t* buf, size_t len)
@@ -58,7 +57,7 @@ size_t recv(struct vring& r, uint8_t* buf, size_t len)
             if (tgt > len) {
                 tgt = len;
             }
-            copy_n(r.ring[r.rp], tgt, &buf[0]);
+            copy_n(&r.ring[r.rp], tgt, &buf[0]);
             ret = tgt;
             r.rp += tgt;
         }
@@ -71,7 +70,7 @@ size_t recv(struct vring& r, uint8_t* buf, size_t len)
         if (tgt > len) {
             tgt = len;
         }
-        copy_n(r.ring[r.rp], tgt, &buf[0]);
+        copy_n(&r.ring[r.rp], tgt, &buf[0]);
         len = len - tgt;
         ret = tgt;
         rp = (r.rp + tgt) % r.ring.size();
