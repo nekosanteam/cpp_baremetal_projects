@@ -26,17 +26,14 @@ bool is_empty(const struct vring& r)
 
 size_t get_room(const struct vring& r)
 {
-    if ((r.rp + r.ring.size()) < r.wp) {
-        return ((r.rp + 2 * r.ring.size()) - r.wp);
+    if (is_empty(r)) {
+        return r.ring.size();
     }
-    if (r.rp < r.wp) {
-        return (r.ring.size() + r.rp - r.wp);
+    if (r.rp > r.wp) {
+        return (r.rp - r.wp - 1);
     }
-    if (r.rp >= r.wp) {
-        return (r.rp - r.wp);
-    }
-    if ((r.rp + r.ring.size()) < r.wp) {
-            return 0;
+    else {
+        return (r.ring.size() - (r.wp - r.rp)); 
     }
 }
 
@@ -47,10 +44,32 @@ size_t recv(struct vring& r, uint8_t* buf, size_t len)
     }
 
     size_t ret;
+    if ((ret = (r.ring.size() - get_room(r))) <= len) {
+        len = ret;
+    }
+
+    size_t rp;
+    rp = r.rp;
+
     size_t tgt;
-    // r.rp != r.wp;
 
     if (r.rp < r.wp) {
+        if ((r.wp - r.rp) <= len) {
+            size_t rpp = (r.rp % r.ring.size());
+            if ((rpp + len) < r.ring.size()) {
+                copy_n(&r.ring[rpp], len, &buf[0]);
+            }
+            else {
+                size_t a;
+                size_t b;
+                a = r.ring.size() - rpp;
+                copy_n(&r.ring[rpp], a, &buf[0]);
+                b = len - a;
+                copy_n(&r.ring[0], a, &buf[a]);
+                rp = rp + len;
+            }
+
+        }
         if (r.wp <= r.ring.size()) {
             // [rp, wp)
             tgt = r.wp - r.rp;
@@ -89,42 +108,44 @@ size_t recv(struct vring& r, uint8_t* buf, size_t len)
 
 size_t send(struct vring& r, const uint8_t* buf, size_t len)
 {
-    if (get_room(r) < len) {
-        len = get_room(r);
+    size_t ret;
+    
+    if ((ret = get_room(r)) < len) {
+        len = ret;
         if (len == 0) {
             return 0;
         }
     }
 
-    size_t ret;
+    size_t wp;
+    wp = r.wp;
 
-    if ((r.ring.size() - r.wp) >= len) {
-        copy_n(&buf[0], len, &r.ring[r.wp]);
-        ret = len;
-        r.wp += len;
+    if (r.rp <= wp) {
+        if ((r.ring.size() - wp) >= len) {
+            copy_n(&buf[0], len, &r.ring[wp]);
+        }
+        else {
+            size_t a;
+            size_t b;
+            a = r.ring.size() - wp;
+            copy_n(&buf[0], a, &r.ring[wp]);
+            b = len - a;
+            copy_n(&buf[a], b, &r.ring[0]);
+        }
+        if ((wp + len) >= (r.rp + r.ring.size())) {
+            wp = (wp % r.ring.size()) + len;
+        }
+        else {
+            wp = wp + len;
+        }
     }
     else {
-        size_t tgt;
-        size_t wp;
-
-        ret = 0;
-        tgt = r.ring.size() - r.wp;
-        copy_n(&buf[0], tgt, &r.ring[r.wp]);
-        ret = tgt;
-        len -= tgt;
-        wp = r.wp + tgt;
-
-        tgt = r.rp - (r.wp % r.ring.size());
-        if (tgt > len) {
-            tgt = len;
-        }
-        copy_n(&buf[ret], tgt, &r.ring[wp]);
-        ret += tgt;
-        len -= tgt;
-        r.wp = tgt;
+        copy_n(&buf[0], len, &r.ring[wp]);
+        wp = wp + len;
     }
+    r.wp = wp;
 
-    return ret;
+    return len;
 }
 
 
@@ -169,10 +190,16 @@ int nkqueue_test(int argc, char** argv)
     }
 
     print_vring(ring);
-    send(ring, bufA, 128);
-    print_vring(ring);
-    recv(ring, bufB, 128);
-    print_vring(ring);
+//    for (size_t i=0; i<128; i++) {
+        send(ring, bufA, 128);
+        print_vring(ring);
+        recv(ring, bufB, 128);
+        print_vring(ring);
+        send(ring, bufA, 1);
+        print_vring(ring);
+        recv(ring, bufB, 1);
+        print_vring(ring);
+//    }
 
     return 0;
 }
