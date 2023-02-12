@@ -32,9 +32,10 @@ size_t get_room(const struct vring& r)
     if (r.rp > r.wp) {
         return (r.rp - r.wp - 1);
     }
-    else {
-        return (r.ring.size() - (r.wp - r.rp)); 
+    if ((r.wp - r.rp) > r.ring.size()) {
+        return ((r.wp - r.rp) % r.ring.size());
     }
+    return (r.ring.size() - (r.wp - r.rp)); 
 }
 
 size_t recv(struct vring& r, uint8_t* buf, size_t len)
@@ -118,9 +119,9 @@ size_t send(struct vring& r, const uint8_t* buf, size_t len)
     }
 
     size_t wp;
-    wp = r.wp;
+    wp = r.wp % r.ring.size();
 
-    if (r.rp <= wp) {
+    if (r.rp <= r.wp) {
         if ((r.ring.size() - wp) >= len) {
             copy_n(&buf[0], len, &r.ring[wp]);
         }
@@ -132,18 +133,17 @@ size_t send(struct vring& r, const uint8_t* buf, size_t len)
             b = len - a;
             copy_n(&buf[a], b, &r.ring[0]);
         }
-        if ((wp + len) >= (r.rp + r.ring.size())) {
-            wp = (wp % r.ring.size()) + len;
+        if ((r.wp + len) >= (r.rp + r.ring.size())) {
+            r.wp = wp + len;
         }
         else {
-            wp = wp + len;
+            r.wp = r.wp + len;
         }
     }
     else {
         copy_n(&buf[0], len, &r.ring[wp]);
-        wp = wp + len;
+        r.wp = r.wp + len;
     }
-    r.wp = wp;
 
     return len;
 }
@@ -173,6 +173,7 @@ void print_vring(struct vring& r)
     }
     std::printf("wp = %ld\n", r.wp);
     std::printf("rp = %ld\n", r.rp);
+    std::printf("empty = %d, get_room = %ld\n", is_empty(r), get_room(r));
     std::printf("\n");
 }
 
@@ -189,15 +190,19 @@ int nkqueue_test(int argc, char** argv)
         bufB[i] = 0;
     }
 
-    print_vring(ring);
+//    print_vring(ring);
 //    for (size_t i=0; i<128; i++) {
         send(ring, bufA, 128);
         print_vring(ring);
         recv(ring, bufB, 128);
+        std::printf("cmp = %d\n", memcmp(bufA, bufB, 128));
         print_vring(ring);
         send(ring, bufA, 1);
         print_vring(ring);
-        recv(ring, bufB, 1);
+        send(ring, bufA, 1);
+        print_vring(ring);
+        send(ring, bufA, 1);
+        //recv(ring, bufB, 1);
         print_vring(ring);
 //    }
 

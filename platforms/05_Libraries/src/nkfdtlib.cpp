@@ -5,7 +5,6 @@
 
 using std::size_t;
 using std::uint8_t;
-using std::uint16_t;
 using std::uint32_t;
 using std::uintptr_t;
 
@@ -66,15 +65,6 @@ static uint8_t read8(const void* p)
     return *(uint8_t*)p;
 }
 
-static uint16_t read16(const void* p)
-{
-    uint16_t r = 0;
-
-    r = (uint16_t)(*((uint8_t*)p));
-    r = (r << 8) | (uint16_t)(*(((uint8_t*)p) + 1));
-    return r;
-}
-
 static uint32_t read32(const void* p)
 {
     uint32_t r = 0;
@@ -89,12 +79,6 @@ static uint32_t read32(const void* p)
 static void write8(const void* p, uint8_t v)
 {
     *(uint8_t*)p = v;
-}
-
-static void write16(const void* p, uint16_t v)
-{
-    *(uint8_t*)p = (uint8_t)(v & 0xFF);
-    *(((uint8_t*)p) + 1) = (uint8_t)((v >>  8) & 0xFF);
 }
 
 static void write32(const void* p, uint32_t v)
