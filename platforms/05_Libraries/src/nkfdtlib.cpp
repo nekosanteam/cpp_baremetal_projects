@@ -23,9 +23,9 @@ int nks_memcmp(const void* data1, const void* data2, size_t n)
             else {
                 return 1;
             }
-            r1++;
-            r2++;
         }
+        r1++;
+        r2++;
     }
 
     return 0;
