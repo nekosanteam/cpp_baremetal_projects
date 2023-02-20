@@ -54,66 +54,38 @@ size_t recv(struct vring& r, uint8_t* buf, size_t len)
     size_t wp  = r.wp;
     size_t rrp = rp % r.ring.size();
 
-    rp = r.rp % r.ring.size();
-    wp = r.wp % r.ring.size();
-    size_t tgt;
-
     if (rp < wp) {
-        if ((r.wp - r.rp) <= len) {
-            size_t rpp = (r.rp % r.ring.size());
-            if ((rpp + len) <= r.ring.size()) {
-                copy_n(&r.ring[rpp], len, &buf[0]);
-            }
-            else {
-                size_t a;
-                size_t b;
-                a = r.ring.size() - rpp;
-                copy_n(&r.ring[rpp], a, &buf[0]);
-                b = len - a;
-                copy_n(&r.ring[0], a, &buf[a]);
-            }
-
-            if ((r.rp + len) >= r.ring.size()*2) {
-                r.rp = (r.rp + len) % r.ring.size();
-            }
-            else {
-                r.rp = r.rp + len;
+        if ((r.ring.size() - rrp) >= len) {
+            copy_n(&r.ring[rrp], len, &buf[0]);
+            rp = rp + len;
+            if (rp == 2 * r.ring.size()) {
+                rp = 0;
             }
         }
-        if (r.wp <= r.ring.size()) {
-            // [rp, wp)
-            tgt = r.wp - r.rp;
-            if (tgt > len) {
-                tgt = len;
-            }
-            copy_n(&r.ring[r.rp], tgt, &buf[0]);
-            ret = tgt;
-            r.rp += tgt;
+        else {
+            size_t a = r.ring.size() - rrp;
+            size_t b = len - a;
+            copy_n(&r.ring[rrp], a, &buf[0]);
+            copy_n(&r.ring[0], b, &buf[a]);
+            rp = rp + len;
         }
-        // 0 < wp <= size() でまずは実装。
     }
     else {
-        // [r.rp, size()) + [0, r.wp)
-        size_t rp;
-        tgt = r.ring.size() - r.rp;
-        if (tgt > len) {
-            tgt = len;
+        if ((r.ring.size() - rrp) >= len) {
+            copy_n(&r.ring[rrp], len, &buf[0]);
+            rp = rp + len;
         }
-        copy_n(&r.ring[r.rp], tgt, &buf[0]);
-        len = len - tgt;
-        ret = tgt;
-        rp = (r.rp + tgt) % r.ring.size();
-
-        tgt = r.wp - r.rp;
-        if (tgt > len) {
-            tgt = len;
+        else {
+            size_t a = r.ring.size() - rrp;
+            size_t b = len - a;
+            copy_n(&r.ring[rrp], a, &buf[0]);
+            copy_n(&r.ring[0], b, &buf[a]);
+            rp = b;
         }
-        copy_n(&r.ring[0], tgt, &buf[ret]);
-        ret += tgt;
-        r.rp = rp + tgt;
     }
-
-    return ret;
+    r.rp = rp;
+        
+    return len;
 }
 
 size_t send(struct vring& r, const uint8_t* buf, size_t len)
@@ -134,14 +106,19 @@ size_t send(struct vring& r, const uint8_t* buf, size_t len)
     if (rp <= wp) {
         if ((r.ring.size() - rwp) >= len) {
             copy_n(&buf[0], len, &r.ring[rwp]);
-            wp = wp + len;
+            if ((wp + len) > (2 * r.ring.size())) {
+                wp = (wp + len) % (2 * r.ring.size());
+            }
+            else {
+                wp = wp + len;
+            }
         }
         else {
             size_t a = r.ring.size() - rwp;;
             size_t b = len - a;
             copy_n(&buf[0], a, &r.ring[rwp]);
             copy_n(&buf[a], b, &r.ring[0]);
-            if ((wp + len) >= (rp + r.ring.size())) {
+            if ((wp + len) > (rp + r.ring.size())) {
                 wp = b;
             }
             else {
@@ -200,21 +177,56 @@ int nkqueue_test(int argc, char** argv)
         bufB[i] = 0;
     }
 
-//    print_vring(ring);
-//    for (size_t i=0; i<128; i++) {
+    int t0;
+    std::printf("t0\n");
+    for (size_t i=0; i<256; i++) {
         send(ring, bufA, 128);
-        print_vring(ring);
         recv(ring, bufB, 128);
-        std::printf("cmp = %d\n", memcmp(bufA, bufB, 128));
-        print_vring(ring);
+        if ((t0 = std::memcmp(bufA, bufB, 128)) != 0) {
+            std::printf("memcmp[%d] = %d\n", i, t0);
+            print_vring(ring);
+        }
+    }
+
+    int t1;
+    std::printf("t1\n");
+    for (size_t i=0; i<256; i++) {
         send(ring, bufA, 1);
-        print_vring(ring);
-        send(ring, bufA, 1);
-        print_vring(ring);
-        send(ring, bufA, 1);
-        //recv(ring, bufB, 1);
-        print_vring(ring);
-//    }
+        recv(ring, bufB, 1);
+        if ((t1 = std::memcmp(bufA, bufB, 1)) != 0) {
+            std::printf("memcmp[%d] = %d\n", i, t1);
+            print_vring(ring);
+        }
+    }
+ 
+    int t2;
+    std::printf("t2\n");
+    for (size_t i=0; i<256; i++) {
+        for (size_t j=0; j<26; j++) {
+            send(ring, bufA, j+1);
+            print_vring(ring);
+            recv(ring, bufB, j+1);
+            print_vring(ring);
+            if ((t2 = std::memcmp(bufA, bufB, j+1)) != 0) {
+                std::printf("memcmp[%d, %d] = %d\n", i, j, t2);
+                print_vring(ring);
+                return 1;
+            }
+        }
+    }
+
+    int t3;
+    std::printf("t3\n");
+    for (size_t i=0; i<256; i++) {
+        for (size_t j=128; j>0; j++) {
+            send(ring, bufA, j);
+            recv(ring, bufB, j);
+            if ((t3 = std::memcmp(bufA, bufB, j)) != 0) {
+                std::printf("memcmp[%d, %d] = %d\n", i, j, t3);
+                print_vring(ring);
+            }
+        }
+    }
 
     return 0;
 }
