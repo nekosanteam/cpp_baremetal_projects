@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <cstddef>
+#include <cassert>
 
 using std::array;
 using std::copy_n;
@@ -135,13 +136,14 @@ size_t send(struct vring& r, const uint8_t* buf, size_t len)
     return len;
 }
 
-
+#undef NDEBUG
+#include <cassert>
 #include <cstdio>
 #include <cstring>
 
-void dump_buffer(uint8_t* buf)
+void dump_buffer(uint8_t* buf, int len)
 {
-    for (int i=0; i<128; i++) {
+    for (int i=0; i<len; i++) {
         std::printf("%02x ", buf[i]);
         if ((i & 0x0F) == 0x0F) {
             std::printf("\n");
@@ -162,6 +164,9 @@ void print_vring(struct vring& r)
     std::printf("rp = %ld\n", r.rp);
     std::printf("empty = %d, get_room = %ld\n", is_empty(r), get_room(r));
     std::printf("\n");
+    assert(get_room(r) <= r.ring.size());
+    assert(r.wp <= 2*r.ring.size());
+    assert(r.rp <  2*r.ring.size());
 }
 
 extern "C"
@@ -204,14 +209,16 @@ int nkqueue_test(int argc, char** argv)
     for (size_t i=0; i<256; i++) {
         for (size_t j=0; j<26; j++) {
             send(ring, bufA, j+1);
-            print_vring(ring);
+            //print_vring(ring);
             recv(ring, bufB, j+1);
-            print_vring(ring);
+            //print_vring(ring);
             if ((t2 = std::memcmp(bufA, bufB, j+1)) != 0) {
+                dump_buffer(bufB, j+1);
                 std::printf("memcmp[%d, %d] = %d\n", i, j, t2);
                 print_vring(ring);
                 return 1;
             }
+            std::printf("check %d, %d\n", i, j);
         }
     }
 
@@ -222,8 +229,10 @@ int nkqueue_test(int argc, char** argv)
             send(ring, bufA, j);
             recv(ring, bufB, j);
             if ((t3 = std::memcmp(bufA, bufB, j)) != 0) {
+                dump_buffer(bufB, j);
                 std::printf("memcmp[%d, %d] = %d\n", i, j, t3);
                 print_vring(ring);
+                return 1;
             }
         }
     }
