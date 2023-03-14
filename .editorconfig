@@ -8,12 +8,14 @@ indent_style = space
 indent_size  = 2
 
 [*.{h,hh,hpp}]
-indent_style = space
+indent_style = tab
 indent_size  = 4
+tab_width = 4
 
 [*.{c,cc,cpp}]
-indent_style = space
+indent_style = tab
 indent_size  = 4
+tab_width = 4
 
 [*.{s,S}]
 indent_style = tab

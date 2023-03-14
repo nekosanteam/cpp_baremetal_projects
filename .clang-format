@@ -8,14 +8,19 @@ AccessModifierOffset: -4
 AlignConsecutiveAssignments: AcrossComments
 AlignConsecutiveDeclarations: AcrossComments
 AlignConsecutiveMacros: AcrossComments
+AlignEscapedNewlines: Left
 AlignTrailingComments: true
 AllowShortBlocksOnASingleLine: Never
+AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AlwaysBreakTemplateDeclarations: Yes
 BreakBeforeBraces: Stroustrup
 FixNamespaceComments: true
 NamespaceIndentation: None
+PointerAlignment: Left
+ReflowComments: false
+SortIncludes: false
 StatementMacros: [NAMESPACE_HAL_BEGIN NAMESPACE_HAL_END NAMESPACE_FAL_BEGIN NAMESPACE_FAL_END NAMESPACE_MAL_BEGIN NAMESPACE_MAL_END NAMESPACE_PAL_BEGIN NAMESPACE_PAL_END]
 TabWidth: 4
 UseTab: ForIndentation
