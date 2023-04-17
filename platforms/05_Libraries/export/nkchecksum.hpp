@@ -50,7 +50,30 @@ std::uint16_t nk_crc16(std::size_t count, const std::uint8_t* buffer);
 
 std::uint16_t nk_crc16C(std::size_t count, const std::uint8_t* buffer);
 
+// RFC1950
+static inline std::uint32_t adler32(std::uint8_t* data, std::size_t len)
+{
+    const std::uint64_t MOD_ADLER = 65521;
+    const std::uint64_t CHUNK_LEN = 5552; // 255*n*(n+1)/2 + (n+1)*(mod-1) <= 2^32-1
 
+    std::uint64_t a = 1;
+    std::uint64_t b = 0;
+
+    while (len > 0) {
+        std::size_t tlen = (len > CHUNK_LEN) ? CHUNK_LEN : len;
+        len -= tlen;
+        while (tlen > 0) {
+            a += *data;
+            b += a;
+            data++;
+            tlen--;
+        }
+        a %= MOD_ADLER;
+        b %= MOD_ADLER;
+    }
+
+    return (std::uint32_t)(((b << 16) | a) & 0xFFFFFFFFu);
+}
 
 }
 }
