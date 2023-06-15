@@ -5,6 +5,18 @@
 
 #include "cyclictest_main.h"
 
+#include <stdio.h>
+
+void usage(int argc, char** argv)
+{
+	char* prog = "cyclictest";
+	if (argc < 1) {
+		prog = argv[0];
+	}
+
+	fprintf(stderr, "%s: \n", prog);
+}
+
 int main(int argc, char** argv)
 {
 	int ret;
@@ -12,8 +24,14 @@ int main(int argc, char** argv)
 	struct cyclictest_option* opt;
 
 	opt = cyclictest_parse_args(argc, argv);
+	if (!opt) {
+		usage(argc, argv);
+		return MAIN_FAILURE;
+	}
 
 	ret = cyclictest_main(opt);
+
+	cyclictest_free_option(opt);
 
 	return ret;
 }

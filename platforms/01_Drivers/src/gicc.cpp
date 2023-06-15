@@ -20,7 +20,7 @@
 // GIC-500 Errata
 // ref: https://developer.arm.com/documentation/102018/0109/
 
-namespace bm {
+namespace nk {
 namespace work {
 
 class RegisterTable {

@@ -18,9 +18,16 @@ namespace work {
 extern "C" {
 #endif
 
+#define MAIN_SUCCESS (0)
+#define MAIN_FAILURE (1)
+
+#define E_OK (0)
+
 struct cyclictest_option;
 
 struct cyclictest_option* cyclictest_parse_args(int argc, char** argv);
+
+void cyclictest_free_option(struct cyclictest_option* opt);
 
 int cyclictest_main(struct cyclictest_option* opt);
 

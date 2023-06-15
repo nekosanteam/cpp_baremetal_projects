@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <string>
 
-namespace bm {
+namespace nk {
 namespace work {
 
 class UART {

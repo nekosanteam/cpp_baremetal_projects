@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(BM01_Drivers CXX)
+project(PLATFORM01_Drivers CXX)
 enable_language(C)
 enable_language(ASM)
 

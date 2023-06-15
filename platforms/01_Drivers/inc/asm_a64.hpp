@@ -7,7 +7,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace bm {
+namespace nk {
 namespace work {
 
 static inline void sev()

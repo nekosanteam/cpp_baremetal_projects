@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/tools/cmake)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-project(CppBareMetal CXX)
+project(CppBareMetal)
 
 message("CMAKE_SYSTEM:           " ${CMAKE_SYSTEM})
 message("CMAKE_SYSTEM_NAME:      " ${CMAKE_SYSTEM_NAME})

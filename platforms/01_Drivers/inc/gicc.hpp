@@ -6,7 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace bm {
+namespace nk {
 namespace work {
 
 class GICD {

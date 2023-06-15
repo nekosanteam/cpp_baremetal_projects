@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-namespace bm {
+namespace nk {
 namespace work {
 
 using MMIO::PhyBase;
