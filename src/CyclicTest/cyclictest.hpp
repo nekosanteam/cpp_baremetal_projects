@@ -8,6 +8,16 @@
 namespace nk {
 namespace work {
 
+struct cyclictest_stats {
+	double min;
+	double max;
+	double sum;
+	int    count;
+	int    shutdown;
+	int    duration;
+	int    processor;
+};
+
 class CyclicTest {
 public:
 	virtual ~CyclicTest();

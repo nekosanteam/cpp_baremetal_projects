@@ -7,6 +7,8 @@
 
 #include "cyclictest.hpp"
 
+#include <memory>
+
 namespace nk {
 namespace work {
 
@@ -18,6 +20,13 @@ public:
 	virtual void create_timerthread() override;
 	virtual void start_timerthread() override;
 	virtual void shutdown_timerthread() override;
+
+public:
+	static void* timerthread(void* param);
+
+public:
+	class impl;
+	std::shared_ptr<impl> m;
 };
 
 } // namespace work

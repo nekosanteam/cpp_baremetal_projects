@@ -9,7 +9,6 @@
 namespace nk {
 namespace work {
 
-
 } // namespace work
 } // namespace nk
 #endif // __cplusplus

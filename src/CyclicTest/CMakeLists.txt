@@ -1,3 +1,3 @@
 project(SRC_CyclicTest)
 
-add_executable(cyclictest cyclictest_main.cpp main.c)
+add_executable(cyclictest main.c cyclictest_main.cpp cyclictest_itimer.cpp)
