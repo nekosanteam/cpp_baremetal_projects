@@ -101,6 +101,7 @@ void* m::CyclicTestITimer::timerthread(void* param)
 
 		if (calcdiff(now, stop) >= 0) {
 			st->shutdown = 1;
+			break;
 		}
 
 		do {
@@ -139,13 +140,33 @@ void m::CyclicTestITimer::create_timerthread()
 	return;
 }
 
+#define CYCLICTEST_PARALLEL (1)
+
 void m::CyclicTestITimer::start_timerthread()
 {
-	thread_t thr;
+	sigset_t  sigset;
+	pthread_t thr[CYCLICTEST_PARALLEL];
 
-	pthread_create(&thr, NULL, thr, NULL);
+	struct cyclictest_stats st[CYCLICTEST_PARALLEL];
+	st[0].min   = 1000.0*1000.0*1000.0;
+	st[0].max   = 0.0;
+	st[0].sum   = 0.0;
+	st[0].count = 0;
+	st[0].shutdown  = 0;
+	st[0].duration  = 10;
+	st[0].processor = 1;
 
-	
+	::sigemptyset(&sigset);
+	::sigaddset(&sigset, SIGALRM);
+	::sigprocmask(SIG_BLOCK, &sigset, NULL);
+
+	pthread_create(&thr[0], NULL, m::CyclicTestITimer::timerthread, &st[0]);
+
+	pthread_join(thr[0], NULL);
+
+	for (int i=0; i<CYCLICTEST_PARALLEL; i++) {
+		fprintf(stderr, "%.3f, %.3f, %.3f %d\n", st[i].min, st[i].max, (st[i].sum/(double)st[i].count), st[i].count);
+	}
 
 	return;
 }

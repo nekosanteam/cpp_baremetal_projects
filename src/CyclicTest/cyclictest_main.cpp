@@ -30,7 +30,10 @@ struct cyclictest_option {
 
 struct cyclictest_option* cyclictest_parse_args(int argc, char** argv)
 {
-	return nullptr;
+	if (argc < 2) {
+		return nullptr;
+	}
+	return (struct cyclictest_option*)argv[0];
 }
 
 void cyclictest_free_option(struct cyclictest_option* opt)
