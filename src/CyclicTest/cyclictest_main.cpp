@@ -8,6 +8,7 @@
 #include "cyclictest_itimer.hpp"
 
 #include <memory>
+#include <string>
 
 namespace nk {
 namespace work {
@@ -21,19 +22,24 @@ public:
 } // namespace nk
 
 using std::make_unique;
+using std::stoi;
 
 namespace m = nk::work;
 
 struct cyclictest_option {
-	void* ptr;
+	int duration;
 };
 
 struct cyclictest_option* cyclictest_parse_args(int argc, char** argv)
 {
+	auto opt = make_unique<struct cyclictest_option>();
 	if (argc < 2) {
-		return nullptr;
+		opt->duration = 10;
 	}
-	return (struct cyclictest_option*)argv[0];
+	else {
+		opt->duration = stoi(argv[1], nullptr, 0);
+	}
+	return opt.release();
 }
 
 void cyclictest_free_option(struct cyclictest_option* opt)
@@ -46,7 +52,7 @@ int cyclictest_main(struct cyclictest_option* opt)
 	auto ptr = make_unique<m::CyclicTestITimer>();
 
 	ptr->create_timerthread();
-	ptr->start_timerthread();
+	ptr->start_timerthread(opt->duration);
 	ptr->shutdown_timerthread();
 
 	return MAIN_SUCCESS;

@@ -10,7 +10,7 @@
 void usage(int argc, char** argv)
 {
 	char* prog = "cyclictest";
-	if (argc < 1) {
+	if (argc > 0) {
 		prog = argv[0];
 	}
 

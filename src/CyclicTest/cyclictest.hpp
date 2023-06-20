@@ -22,9 +22,9 @@ class CyclicTest {
 public:
 	virtual ~CyclicTest();
 
-	virtual void create_timerthread()   = 0;
-	virtual void start_timerthread()    = 0;
-	virtual void shutdown_timerthread() = 0;
+	virtual void create_timerthread()            = 0;
+	virtual void start_timerthread(int duration) = 0;
+	virtual void shutdown_timerthread()          = 0;
 };
 
 } // namespace work

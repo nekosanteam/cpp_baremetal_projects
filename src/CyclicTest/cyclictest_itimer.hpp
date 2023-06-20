@@ -18,7 +18,7 @@ public:
 	virtual ~CyclicTestITimer() override;
 
 	virtual void create_timerthread() override;
-	virtual void start_timerthread() override;
+	virtual void start_timerthread(int duration) override;
 	virtual void shutdown_timerthread() override;
 
 public:

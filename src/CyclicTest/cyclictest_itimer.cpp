@@ -18,6 +18,8 @@
 #include <unistd.h>
 #include <sys/time.h>
 
+#include <sched.h>
+
 namespace nk {
 namespace work {
 
@@ -39,8 +41,8 @@ static inline void tsnorm(struct timespec* ts)
 
 static inline int64_t calcdiff(struct timespec t1, struct timespec t2)
 {
-	int64_t s1 = (static_cast<int64_t>(t1.tv_sec) * 1000 * 1000 * 100) + static_cast<int64_t>(t1.tv_nsec);
-	int64_t s2 = (static_cast<int64_t>(t2.tv_sec) * 1000 * 1000 * 100) + static_cast<int64_t>(t2.tv_nsec);
+	int64_t s1 = (static_cast<int64_t>(t1.tv_sec) * 1000 * 1000 * 1000) + static_cast<int64_t>(t1.tv_nsec);
+	int64_t s2 = (static_cast<int64_t>(t2.tv_sec) * 1000 * 1000 * 1000) + static_cast<int64_t>(t2.tv_nsec);
 
 	return (s1 - s2);
 }
@@ -48,6 +50,8 @@ static inline int64_t calcdiff(struct timespec t1, struct timespec t2)
 void* m::CyclicTestITimer::timerthread(void* param)
 {
 	sigset_t sigset;
+
+	struct sched_param schedp {};
 
 	struct timespec now;
 	struct timespec next;
@@ -60,12 +64,17 @@ void* m::CyclicTestITimer::timerthread(void* param)
 
 	struct cyclictest_stats* st = reinterpret_cast<struct cyclictest_stats*>(param);
 
+	schedp.sched_priority = 80;
+	if(sched_setscheduler(0, SCHED_FIFO, &schedp) < 0) {
+		perror("sched_setscheduler()");
+	}
+
 	::sigemptyset(&sigset);
 	::sigaddset(&sigset, SIGALRM);
 	::sigprocmask(SIG_BLOCK, &sigset, NULL);
 
 	interval.tv_sec  = 0;
-	interval.tv_nsec = 100000;
+	interval.tv_nsec = 100 * 1000;
 
 	clock_gettime(CLOCK_REALTIME, &now);
 	stop = now;
@@ -76,7 +85,7 @@ void* m::CyclicTestITimer::timerthread(void* param)
 	itimer.it_value = itimer.it_interval;
 	setitimer(ITIMER_REAL, &itimer, NULL);
 
-	//clock_gettime(CLOCK_REALTIME, &now);
+	clock_gettime(CLOCK_REALTIME, &now);
 	next = now;
 	next.tv_sec  += interval.tv_sec;
 	next.tv_nsec += interval.tv_nsec;
@@ -90,14 +99,16 @@ void* m::CyclicTestITimer::timerthread(void* param)
 		}
 		clock_gettime(CLOCK_REALTIME, &now);
 		diff = static_cast<double>(calcdiff(now, next));
-		if (diff < st->min) {
-			st->min = diff;
+		if (diff >= 0.0) {
+			if (diff < st->min) {
+				st->min = diff;
+			}
+			if (diff > st->max) {
+				st->max = diff;
+			}
+			st->sum += diff;
+			st->count++;
 		}
-		if (diff > st->max) {
-			st->max = diff;
-		}
-		st->sum += diff;
-		st->count++;
 
 		if (calcdiff(now, stop) >= 0) {
 			st->shutdown = 1;
@@ -116,6 +127,9 @@ void* m::CyclicTestITimer::timerthread(void* param)
 	itimer.it_value.tv_sec     = 0;
 	itimer.it_value.tv_usec    = 0;
 	setitimer(ITIMER_REAL, &itimer, NULL);
+
+	schedp.sched_priority = 0;
+	sched_setscheduler(0, SCHED_OTHER, &schedp);
 
 	return NULL;
 }
@@ -142,7 +156,7 @@ void m::CyclicTestITimer::create_timerthread()
 
 #define CYCLICTEST_PARALLEL (1)
 
-void m::CyclicTestITimer::start_timerthread()
+void m::CyclicTestITimer::start_timerthread(int duration)
 {
 	sigset_t  sigset;
 	pthread_t thr[CYCLICTEST_PARALLEL];
@@ -153,7 +167,7 @@ void m::CyclicTestITimer::start_timerthread()
 	st[0].sum   = 0.0;
 	st[0].count = 0;
 	st[0].shutdown  = 0;
-	st[0].duration  = 10;
+	st[0].duration  = duration;
 	st[0].processor = 1;
 
 	::sigemptyset(&sigset);
