@@ -49,7 +49,8 @@ static inline int64_t calcdiff(struct timespec t1, struct timespec t2)
 
 void* m::CyclicTestITimer::timerthread(void* param)
 {
-	sigset_t sigset;
+	sigset_t  sigset;
+	cpu_set_t cpuset;
 
 	struct sched_param schedp {};
 
@@ -63,6 +64,12 @@ void* m::CyclicTestITimer::timerthread(void* param)
 	double diff;
 
 	struct cyclictest_stats* st = reinterpret_cast<struct cyclictest_stats*>(param);
+
+	CPU_ZERO(&cpuset);
+	CPU_SET(st->processor, &cpuset);
+	if (sched_setaffinity(0, sizeof(cpuset), &cpuset) < 0) {
+		perror("sched_setaffinity()");
+	}
 
 	schedp.sched_priority = 80;
 	if(sched_setscheduler(0, SCHED_FIFO, &schedp) < 0) {
