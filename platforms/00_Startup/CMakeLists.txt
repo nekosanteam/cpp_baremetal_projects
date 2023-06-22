@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(PLATFORM00_Startup C)
+project(PLATFORMS00_Startup C)
 enable_language(ASM)
 
 set(STARTUP_ASM)

@@ -200,4 +200,4 @@ static inline void set_vbar_el1(std::uint64_t val)
 }
 
 } // namespace work
-} // namespace bm
+} // namespace nk

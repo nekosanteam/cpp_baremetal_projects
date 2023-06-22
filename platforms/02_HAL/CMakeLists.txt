@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(PLATFORM02_HAL CXX)
+project(PLATFORMS02_HAL CXX)
 enable_language(C)
 enable_language(ASM)
 

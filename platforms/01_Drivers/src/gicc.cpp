@@ -106,16 +106,16 @@ using MMIO::RegisterArray;
 using MMIO::RegisterArray64;
 
 namespace devkit {
-constexpr MMIO::PhyAddr GIC_ADDR { 0xffc00000 };
-constexpr MMIO::PhyAddr GICD_OFFSET { 0x1000 };
-constexpr MMIO::PhyAddr GICC_OFFSET { 0x2000 };
+constexpr MMIO::types::PhyAddr GIC_ADDR { 0xffc00000 };
+constexpr MMIO::types::PhyAddr GICD_OFFSET { 0x1000 };
+constexpr MMIO::types::PhyAddr GICC_OFFSET { 0x2000 };
 using GIC_BASE  = MMIO::PhyBase<GIC_ADDR>;
 using GICD_BASE = MMIO::PhyBase<GIC_ADDR + GICD_OFFSET>;
 using GICC_BASE = MMIO::PhyBase<GIC_ADDR + GICC_OFFSET>;
 } // namespace devkit
 namespace qemu {
-constexpr MMIO::PhyAddr GICD_ADDR { 0x08000000 };
-constexpr MMIO::PhyAddr GICC_ADDR { 0x08010000 };
+constexpr MMIO::types::PhyAddr GICD_ADDR { 0x08000000 };
+constexpr MMIO::types::PhyAddr GICC_ADDR { 0x08010000 };
 using GICD_BASE = MMIO::PhyBase<GICD_ADDR>;
 using GICC_BASE = MMIO::PhyBase<GICC_ADDR>;
 } // namespace qemu
@@ -229,4 +229,4 @@ void GICC::enable() { }
 void GICC::disable() { }
 
 } // namespace work
-} // namespace bm
+} // namespace nk

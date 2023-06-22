@@ -17,7 +17,7 @@ namespace MMIO {
 namespace types {
 using PhyAddr  = std::uintptr_t;
 using VirAddr  = std::uintptr_t;
-using LpaeAddr = std::uint64_t;
+using LPaeAddr = std::uint64_t;
 
 using Offset  = std::uintptr_t;
 using PtrDiff = std::intptr_t;
