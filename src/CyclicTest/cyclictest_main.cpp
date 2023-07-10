@@ -6,6 +6,7 @@
 #include "cyclictest_main.h"
 
 #include "cyclictest_itimer.hpp"
+#include "cyclictest_nanosleep.hpp"
 
 #include <memory>
 #include <string>
@@ -49,7 +50,8 @@ void cyclictest_free_option(struct cyclictest_option* opt)
 
 int cyclictest_main(struct cyclictest_option* opt)
 {
-	auto ptr = make_unique<m::CyclicTestITimer>();
+	//auto ptr = make_unique<m::CyclicTestITimer>();
+	auto ptr = make_unique<m::CyclicTestNanoSleep>();
 
 	ptr->create_timerthread();
 	ptr->start_timerthread(opt->duration);

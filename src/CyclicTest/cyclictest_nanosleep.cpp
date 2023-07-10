@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: CC0-1.0
 /**
- * @file cyclictest_itimer.cpp
+ * @file cyclictest_nanosleep.cpp
  */
 
-#include "cyclictest_itimer.hpp"
+#include "cyclictest_nanosleep.hpp"
 
 #include "cyclictest.hpp"
 
@@ -23,7 +23,7 @@
 namespace nk {
 namespace work {
 
-class CyclicTestITimer::impl {
+class CyclicTestNanoSleep::impl {
 public:
 
 };
@@ -69,7 +69,7 @@ static inline pr_timespec calcadd_ns(pr_timespec t1, int64_t sec, int64_t nsec)
 	return ret;
 }
 
-void* m::CyclicTestITimer::timerthread(void* param)
+void* m::CyclicTestNanoSleep::timerthread(void* param)
 {
 	sigset_t  sigset;
 	cpu_set_t cpuset;
@@ -81,7 +81,8 @@ void* m::CyclicTestITimer::timerthread(void* param)
 	pr_timespec interval;
 	pr_timespec stop;
 
-	struct itimerval itimer;
+	struct timespec req;
+	struct timespec rem;
 
 	double diff;
 
@@ -98,28 +99,27 @@ void* m::CyclicTestITimer::timerthread(void* param)
 		perror("sched_setscheduler()");
 	}
 
-	::sigemptyset(&sigset);
-	::sigaddset(&sigset, SIGALRM);
-	::sigprocmask(SIG_BLOCK, &sigset, NULL);
-
 	interval.tv_sec  = 0;
 	interval.tv_nsec = 100 * 1000;
 
-	now = pr_gettime();
+	now  = pr_gettime();
 	stop = calcadd_ns(now, 10, 0);
 
-	itimer.it_interval.tv_sec  = interval.tv_sec;
-	itimer.it_interval.tv_usec = interval.tv_nsec / 1000;
-	itimer.it_value = itimer.it_interval;
-	setitimer(ITIMER_REAL, &itimer, NULL);
-
-	now = pr_gettime();
+	now  = pr_gettime();
 	next = calcadd_ns(now, interval.tv_sec, interval.tv_nsec);
 
 	while (!st->shutdown) {
-		int signo;
-		if (sigwait(&sigset, &signo) < 0) {
-			st->shutdown = 1;
+		req = calcadd_ns(now, interval.tv_sec, interval.tv_nsec);
+		do {
+			if (clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &req, nullptr) < 0) {
+				if (errno == EINTR) {
+					continue;
+				} else {
+					st->shutdown = 1;
+				}
+			}
+		} while (0);
+		if (st->shutdown) {
 			break;
 		}
 		now = pr_gettime();
@@ -143,13 +143,8 @@ void* m::CyclicTestITimer::timerthread(void* param)
 		do {
 			next = calcadd_ns(next, interval.tv_sec, interval.tv_nsec);
 		} while (calcdiff_ns(now, next) > 0);
+		now = next;
 	}
-
-	itimer.it_interval.tv_sec  = 0;
-	itimer.it_interval.tv_usec = 0;
-	itimer.it_value.tv_sec     = 0;
-	itimer.it_value.tv_usec    = 0;
-	setitimer(ITIMER_REAL, &itimer, NULL);
 
 	schedp.sched_priority = 0;
 	sched_setscheduler(0, SCHED_OTHER, &schedp);
@@ -157,29 +152,24 @@ void* m::CyclicTestITimer::timerthread(void* param)
 	return NULL;
 }
 
-m::CyclicTest::~CyclicTest()
+m::CyclicTestNanoSleep::CyclicTestNanoSleep()
 {
 	return;
 }
 
-m::CyclicTestITimer::CyclicTestITimer()
+m::CyclicTestNanoSleep::~CyclicTestNanoSleep()
 {
 	return;
 }
 
-m::CyclicTestITimer::~CyclicTestITimer()
-{
-	return;
-}
-
-void m::CyclicTestITimer::create_timerthread()
+void m::CyclicTestNanoSleep::create_timerthread()
 {
 	return;
 }
 
 #define CYCLICTEST_PARALLEL (1)
 
-void m::CyclicTestITimer::start_timerthread(int duration)
+void m::CyclicTestNanoSleep::start_timerthread(int duration)
 {
 	sigset_t  sigset;
 	pthread_t thr[CYCLICTEST_PARALLEL];
@@ -197,7 +187,7 @@ void m::CyclicTestITimer::start_timerthread(int duration)
 	::sigaddset(&sigset, SIGALRM);
 	::sigprocmask(SIG_BLOCK, &sigset, NULL);
 
-	pthread_create(&thr[0], NULL, m::CyclicTestITimer::timerthread, &st[0]);
+	pthread_create(&thr[0], NULL, m::CyclicTestNanoSleep::timerthread, &st[0]);
 
 	pthread_join(thr[0], NULL);
 
@@ -208,7 +198,7 @@ void m::CyclicTestITimer::start_timerthread(int duration)
 	return;
 }
 
-void m::CyclicTestITimer::shutdown_timerthread()
+void m::CyclicTestNanoSleep::shutdown_timerthread()
 {
 	return;
 }
