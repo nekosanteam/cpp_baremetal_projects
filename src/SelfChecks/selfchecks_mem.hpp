@@ -17,7 +17,7 @@ public:
 	SelfChecksMemory();
 	virtual ~SelfChecksMemory() override;
 
-	virtual void prepare() override;
+	virtual void prepare(std::uintptr_t target, std::size_t size, int pattern) override;
 	virtual void update() override;
 	virtual void verify() override;
 

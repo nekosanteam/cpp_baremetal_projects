@@ -20,12 +20,17 @@
 
 #include <sched.h>
 
+using std::uintptr_t;
+using std::size_t;
+
 namespace nk {
 namespace work {
 
 class SelfChecksMemory::impl {
 public:
-
+	uintptr_t target;
+	size_t    size;
+	int       pattern;
 };
 
 } // namespace work
@@ -84,7 +89,7 @@ m::SelfChecksMemory::~SelfChecksMemory()
 	return;
 }
 
-void m::SelfChecksMemory::prepare()
+void m::SelfChecksMemory::prepare(uintptr_t target, size_t size, int pattern)
 {
 	return;
 }

@@ -5,6 +5,8 @@
 #ifndef NK_SELFCHECKS_HPP_
 #define NK_SELFCHECKS_HPP_
 
+#include <cstdint>
+
 namespace nk {
 namespace work {
 
@@ -22,9 +24,9 @@ class SelfChecks {
 public:
 	virtual ~SelfChecks();
 
-	virtual void prepare() = 0;
-	virtual void update()  = 0;
-	virtual void verify()  = 0;
+	virtual void prepare(std::uintptr_t target, std::size_t size, int pattern) = 0;
+	virtual void update() = 0;
+	virtual void verify() = 0;
 };
 
 } // namespace work
