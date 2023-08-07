@@ -12,7 +12,7 @@ static inline uint64_t* memcpy16b_burst1(uint64_t* dst, uint64_t* src)
 
 	asm volatile ("ldp %[r0], %[r1], [%[src]]\n\t"
 	              "stp %[r0], %[r1], [%[dst]]"
-	            : [r0] "=r" (r0), [r1] "=r" (r1), "=m" (*dst)
+	            : [r0] "=&r" (r0), [r1] "=&r" (r1), "=m" (*dst)
 	            : [dst] "r" (dst), [src] "r" (src), "m" (*src)
 	            : "memory");
 
@@ -26,7 +26,7 @@ static inline uint64_t* memcpy16b_burst2(uint64_t* dst, uint64_t* src)
 
 	asm volatile ("ldp %q[r0], %q[r1], [%[src]]\n\t"
 	              "stp %q[r0], %q[r1], [%[dst]]"
-	            : [r0] "=x" (r0), [r1] "=x" (r1), "=m" (*dst)
+	            : [r0] "=&x" (r0), [r1] "=&x" (r1), "=m" (*dst)
 	            : [dst] "r" (dst), [src] "r" (src), "m" (*src)
 	            : "memory");
 

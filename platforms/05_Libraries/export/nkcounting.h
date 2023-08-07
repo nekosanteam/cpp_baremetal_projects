@@ -22,6 +22,7 @@ extern "C" {
 
 #ifdef __cplusplus
 namespace nk {
+namespace work {
 
 class Counting;
 template <typename ValueT> class CountingSimple;
@@ -55,8 +56,8 @@ public:
     Counting::CountT inc(ValueT value);
     Counting::CountT estimate() const;
 
-    ValueT min() const;
-    ValueT max() const;
+    ValueT min()  const;
+    ValueT max()  const;
     ValueT mean() const;
 
 private:
@@ -64,18 +65,18 @@ private:
     Counting::TotalT total_;
 
 private:
-    ValueT  min_;
-    ValueT  max_;
+    ValueT min_;
+    ValueT max_;
 };
 
 template <typename ValueT>
 Counting::CountT CountingSimple<ValueT>::inc(ValueT value)
 {
     if (num_ == 0) {
-        min_ = value;
-        max_ = value;
-        total_ = (Counting::TotalT)value;
-        num_ = 1;
+        min_   = value;
+        max_   = value;
+        total_ = static_cast<Counting::TotalT>(value);
+        num_   = 1;
     }
     else {
         if (min_ > value) {
@@ -84,8 +85,8 @@ Counting::CountT CountingSimple<ValueT>::inc(ValueT value)
         if (max_ < value) {
             max_ = value;
         }
-        total_ = total_ + (Counting::TotalT)value;
-        num_ += 1;
+        total_ = total_ + static_cast<Counting::TotalT>(value);
+        num_   += 1;
     }
     return num_;
 }
@@ -93,12 +94,18 @@ Counting::CountT CountingSimple<ValueT>::inc(ValueT value)
 template <typename ValueT>
 ValueT CountingSimple<ValueT>::min() const
 {
+    if (num_ == 0) {
+        return static_cast<ValueT>(0);
+    }
     return min_;
 }
 
 template <typename ValueT>
 ValueT CountingSimple<ValueT>::max() const
 {
+    if (num_ == 0) {
+        return static_cast<ValueT>(0);
+    }
     return max_;
 }
 
@@ -106,9 +113,9 @@ template <typename ValueT>
 ValueT CountingSimple<ValueT>::mean() const
 {
     if (num_ == 0) {
-        return (ValueT)0;
+        return static_cast<ValueT>(0);
     }
-    return (ValueT)(total_ / (Counting::TotalT)num_);
+    return static_cast<ValueT>(total_ / static_cast<Counting::TotalT>(num_));
 }
 
 template <typename ValueT>
@@ -125,8 +132,8 @@ public:
     Counting::CountT inc(ValueT value) { return counts.inc(value - ave_); };
     Counting::CountT estimate() const { return counts.estimate(); }
 
-    ValueT min() const  { return counts.min() + ave_; }
-    ValueT max() const  { return counts.max() + ave_; }
+    ValueT min() const  { return counts.min() + ave_;  }
+    ValueT max() const  { return counts.max() + ave_;  }
     ValueT mean() const { return counts.mean() + ave_; }
 
 private:
@@ -157,7 +164,7 @@ private:
     ValueT gap_;
 };
 
-
+} // namespace work
 } // namespace nk
 #endif
 

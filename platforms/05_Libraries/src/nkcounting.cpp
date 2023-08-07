@@ -1,6 +1,7 @@
 #include "nkcounting.h"
 
 namespace nk {
+namespace work {
 
 Counting::CountT Counting::inc()
 {
@@ -14,4 +15,6 @@ Counting::CountT Counting::estimate() const
 }
 
 
+
+} // namespace work
 } // namespace nk
