@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT-0 */
 #include "log.hpp"
 #include "log_c.h"
 

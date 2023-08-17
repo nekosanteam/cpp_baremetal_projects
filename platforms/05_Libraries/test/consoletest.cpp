@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT-0 */
 #include "nklogger.h"
 #include "ntstdio.h"
 #include <stdio.h>

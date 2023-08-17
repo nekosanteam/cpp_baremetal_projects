@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT-0 */
 
 extern "C" int nkqueue_test(int argc, char** argv);
 

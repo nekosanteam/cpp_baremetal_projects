@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT-0 */
 #define STACK_SIZE 0x0800
 
 #define BIT(n) (1<<(n))

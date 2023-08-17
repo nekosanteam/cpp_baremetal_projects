@@ -1,5 +1,5 @@
+/* SPDX-License-Identifier: MIT-0 */
 #pragma once
-/* SPDX-License-Identifier: CC0-1.0 */
 /**
  * @file mmio.hpp
  * 

@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: CC0-1.0 */
+/* SPDX-License-Identifier: MIT-0 */
 #ifndef NK_COUNTING_H_
 #define NK_COUNTING_H_
 

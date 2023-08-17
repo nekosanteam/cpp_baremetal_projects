@@ -1,6 +1,6 @@
+/* SPDX-License-Identifier: MIT-0 */
 
 #include <linux/module.h>
-
 
 #include <fcntl.h>
 

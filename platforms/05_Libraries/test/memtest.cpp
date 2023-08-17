@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT-0 */
 #include <cstddef>
 #include <cstdint>
 #include <algorithm>

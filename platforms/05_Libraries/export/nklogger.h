@@ -1,6 +1,6 @@
+/* SPDX-License-Identifier: MIT-0 */
 /**
  * @file nklogger.h
- * 
  */
 #ifndef NKLOGGER_H_
 #define NKLOGGER_H_

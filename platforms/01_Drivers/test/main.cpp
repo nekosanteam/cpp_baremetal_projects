@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: MIT-0 */
 #include "gicc.hpp"
 #include "mmio.hpp"
 #include "uart.hpp"
