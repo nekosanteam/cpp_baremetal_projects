@@ -2,7 +2,6 @@
 #pragma once
 /**
  * @file mmio.hpp
- * 
  */
 #include <array>
 #include <cassert>
@@ -105,49 +104,41 @@ static inline types::uint8_t read8(const void* ptr, types::Offset off) noexcept
 
 static inline types::uint16_t read16(const void* ptr, types::Offset off) noexcept
 {
-	assert((reinterpret_cast<uintptr_t>(ptr) & ~1u) == 0);
-	assert((off & ~1u) == 0);
 	return *(reinterpret_cast<const volatile types::uint16_t*>(ptr + off));
 }
 
 static inline types::uint32_t read32(const void* ptr, types::Offset off) noexcept
 {
-	assert((reinterpret_cast<uintptr_t>(ptr) & ~3u) == 0);
-	assert((off & ~3u) == 0);
 	return *(reinterpret_cast<const volatile types::uint32_t*>(ptr + off));
 }
 
 static inline types::uint64_t read64(const void* ptr, types::Offset off) noexcept
 {
-	assert((reinterpret_cast<uintptr_t>(ptr) & ~7u) == 0);
-	assert((off & ~7u) == 0);
 	return *(reinterpret_cast<const volatile types::uint64_t*>(ptr + off));
 }
 
-static inline void write8(void* ptr, types::Offset off, types::uint8_t v8) noexcept
+static inline types::uint8_t write8(types::uint8_t v8, void* ptr, types::Offset off) noexcept
 {
 	*(reinterpret_cast<volatile types::uint8_t*>(ptr + off)) = v8;
+	return v8;
 }
 
-static inline void write16(void* ptr, types::Offset off, types::uint16_t v16) noexcept
+static inline types::uint16_t write16(types::uint16_t v16, void* ptr, types::Offset off) noexcept
 {
-	assert((reinterpret_cast<uintptr_t>(ptr) & ~1u) == 0);
-	assert((off & ~1u) == 0);
 	*(reinterpret_cast<volatile types::uint16_t*>(ptr + off)) = v16;
+	return v16;
 }
 
-static inline void write32(void* ptr, types::Offset off, types::uint32_t v32) noexcept
+static inline types::uint32_t write32(types::uint32_t v32, void* ptr, types::Offset off) noexcept
 {
-	assert((reinterpret_cast<uintptr_t>(ptr) & ~3u) == 0);
-	assert((off & ~3u) == 0);
 	*(reinterpret_cast<volatile types::uint32_t*>(ptr + off)) = v32;
+	return v32;
 }
 
-static inline void write64(void* ptr, types::Offset off, types::uint64_t v64) noexcept
+static inline types::uint64_t write64(types::uint64_t v64, void* ptr, types::Offset off) noexcept
 {
-	assert((reinterpret_cast<uintptr_t>(ptr) & ~7u) == 0);
-	assert((off & ~7u) == 0);
 	*(reinterpret_cast<volatile types::uint64_t*>(ptr + off)) = v64;
+	return v64;
 }
 
 static inline types::uint16_t swapbytes2B(types::uint16_t v16) noexcept
@@ -290,10 +281,43 @@ static inline types::uint64_t field64(types::uint64_t v64, types::uint64_t s64, 
 	return modify64(v64, (m64 << shift), ((s64 & m64) << shift));
 }
 
+void* memcpy8(void* dst, const void* src, types::size_t size) noexcept;
+void* memcpy16(void* dst, const void* src, types::size_t size) noexcept;
 void* memcpy32(void* dst, const void* src, types::size_t size) noexcept;
 void* memcpy64(void* dst, const void* src, types::size_t size) noexcept;
+
+static inline void* memcpy16B(void* dst, const void* src, types::size_t size) noexcept
+{
+	return memcpy64(dst, src, size);
+}
+void* memcpy32B(void* dst, const void* src, types::size_t size) noexcept;
+void* memcpy64B(void* dst, const void* src, types::size_t size) noexcept;
+
+int   memcmp8(const void* r1, const void* r2, types::size_t size) noexcept;
+int   memcmp16(const void* r1, const void* r2, types::size_t size) noexcept;
 int   memcmp32(const void* r1, const void* r2, types::size_t size) noexcept;
 int   memcmp64(const void* r1, const void* r2, types::size_t size) noexcept;
+
+enum AddressInc {
+	Increment,
+	Decrement,
+	Fixed,
+};
+
+template<AddressInc Inc>
+class AddressCalc {
+public:
+	void* ptr_;
+};
+
+template<AddressInc Inc>
+void* ioread(void* dst, const AddressCalc<Inc> src, types::size_t size) noexcept;
+
+template<AddressInc Inc>
+void* iowrite(AddressCalc<Inc> dst, const void* src, types::size_t size) noexcept;
+
+template<AddressInc DstInc, AddressInc SrcInc>
+void* iocopy(AddressCalc<DstInc> dst, const AddressCalc<SrcInc> src, types::size_t size) noexcept;
 
 template <class BaseT>
 class RegisterTableT : public BaseT {
@@ -313,65 +337,73 @@ public:
 
 	inline types::uint16_t read16(types::Offset off) noexcept
 	{
+		assert((reinterpret_cast<uintptr_t>(BaseT::base_) & ~1u) == 0);
+		assert((off & ~1u) == 0);
 		return read16(reinterpret_cast<const volatile void*>(BaseT::base_), off);
 	}
 
 	inline types::uint32_t read32(types::Offset off) noexcept
 	{
+		assert((reinterpret_cast<uintptr_t>(BaseT::base_) & ~3u) == 0);
+		assert((off & ~3u) == 0);
 		return read32(reinterpret_cast<const volatile void*>(BaseT::base_), off);
 	}
 
 	inline types::uint64_t read64(types::Offset off) noexcept
 	{
+		assert((reinterpret_cast<uintptr_t>(BaseT::base_) & ~7u) == 0);
+		assert((off & ~7u) == 0);
 		return read64(reinterpret_cast<const volatile void*>(BaseT::base_), off);
 	}
 
-	inline void write8(types::Offset off, types::uint8_t v8) noexcept
+	inline types::uint8_t write8(types::uint8_t v8, types::Offset off) noexcept
 	{
-		write8(reinterpret_cast<volatile void*>(BaseT::base_), off, v8);
+		write8(v8, reinterpret_cast<volatile void*>(BaseT::base_), off);
 	}
 
-	inline void write16(types::Offset off, types::uint16_t v16) noexcept
+	inline types::uint16_t write16(types::uint16_t v16, types::Offset off) noexcept
 	{
-		write16(reinterpret_cast<volatile void*>(BaseT::base_), off, v16);
+		assert((reinterpret_cast<uintptr_t>(BaseT::base_) & ~1u) == 0);
+		assert((off & ~1u) == 0);
+		return write16(v16, reinterpret_cast<volatile void*>(BaseT::base_), off);
 	}
 
-	inline void write32(types::Offset off, types::uint32_t v32) noexcept
+	inline types::uint32_t write32(types::uint32_t v32, types::Offset off) noexcept
 	{
-		write32(reinterpret_cast<volatile void*>(BaseT::base_), off, v32);
+		assert((reinterpret_cast<uintptr_t>(BaseT::base_) & ~3u) == 0);
+		assert((off & ~3u) == 0);
+		return write32(v32, reinterpret_cast<volatile void*>(BaseT::base_), off);
 	}
 
-	inline void write64(types::Offset off, types::int64_t v64) noexcept
+	inline types::uint32_t write64(types::int64_t v64, types::Offset off) noexcept
 	{
-		write64(reinterpret_cast<volatile void*>(BaseT::base_), off, v64);
+		assert((reinterpret_cast<uintptr_t>(BaseT::base_) & ~7u) == 0);
+		assert((off & ~7u) == 0);
+		return write64(v64, reinterpret_cast<volatile void*>(BaseT::base_), off);
 	}
 
-	inline void modify8(Offset off, uint8_t field8, uint8_t v8) noexcept
+	inline types::uint8_t modify8(types::uint8_t v8, Offset off, types::uint8_t m8) noexcept
 	{
-		uint8_t n8 = read8(off);
-		n8         = ((n8 & ~field8) | v8);
-		write8(off, n8);
+		types::uint8_t n8 = read8(off);
+		return write8(MMIO::modify8(n8, m8, v8), off);
 	}
 
-	inline void modify16(Offset off, uint16_t field16, uint16_t v16)
+	inline types::uint16_t modify16(types::uint16_t v16, Offset off, types::uint16_t m16)
 	{
-		uint16_t n16 = read16(off);
-		n16          = ((n16 & ~field16) | v16);
-		write16(off, n16);
+		types::uint16_t n16 = read16(off);
+		return write16(MMIO::modify16(n16, m16, v16), off);
 	}
 
-	inline void modify32(Offset off, uint32_t field32, uint32_t v32)
+	inline types::uint32_t modify32(types::uint32_t v32, Offset off, types::uint32_t m32)
 	{
-		uint32_t n32 = read32(off);
-		n32          = ((n32 & ~field32) | v32);
-		write32(off, n32);
+		types::uint32_t n32 = read32(off);
+		return write32(MMIO::modify32(n32, m32, v32), off);
 	}
 
-	inline void modify64(Offset off, uint64_t field64, uint64_t v64)
+	inline types::uint64_t modify64(types::uint64_t v64, Offset off, types::uint64_t m64)
 	{
-		uint64_t n64 = read64(off);
-		n64          = ((n64 & ~field64) | v64);
-		write64(off, n64);
+		types::uint64_t n64 = read64(off);
+		return write64(MMIO::modify64(n64, m64, v64), off);
 	}
 
 	inline void clear8(Offset off, uint8_t field8)
@@ -435,7 +467,7 @@ public:
 	}
 };
 
-template <class Base, Offset offset, typename Access = std::uint32_t>
+template <class Base, types::Offset offset, typename Access = std::uint32_t>
 class Register {
 public:
 	static inline Access get()
@@ -451,10 +483,10 @@ public:
 	}
 };
 
-template <class Base, Offset offset>
+template <class Base, types::Offset offset>
 using Register64 = Register<Base, offset, std::uint64_t>;
 
-template <class Base, Offset offset, unsigned int members, typename Access = std::uint32_t>
+template <class Base, types::Offset offset, unsigned int members, typename Access = std::uint32_t>
 class RegisterArray {
 public:
 	static inline Access get(int num)
@@ -470,7 +502,7 @@ public:
 	}
 };
 
-template <class Base, Offset offset, unsigned int members>
+template <class Base, types::Offset offset, unsigned int members>
 using RegisterArray64 = RegisterArray<Base, offset, members, std::uint64_t>;
 
 } // namespace MMIO

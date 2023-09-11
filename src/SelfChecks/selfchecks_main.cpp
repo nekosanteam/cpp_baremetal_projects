@@ -60,13 +60,16 @@ void selfchecks_free_option(struct selfchecks_option* opt)
 	return;
 }
 
-int selfchecks_main(struct selfchecks_option* opt)
+int selfchecks_main(struct selfchecks_option* opt, pr_timespec time[])
 {
 	auto ptr = make_unique<m::SelfChecksMemory>();
 
 	ptr->prepare(opt->target, opt->size, opt->pattern);
+	time[0] = pr_getnowtime();
 	ptr->update();
+	time[1] = pr_getnowtime();
 	ptr->verify();
+	time[2] = pr_getnowtime();
 
 	return MAIN_SUCCESS;
 }

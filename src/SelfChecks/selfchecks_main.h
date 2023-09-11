@@ -6,6 +6,14 @@
 #define NK_SELFCHECKS_MAIN_H_
 
 #ifdef __cplusplus
+#include <cstdint>
+using pr_timespec = std::uint64_t;
+#else
+#include <stdint.h>
+typedef uint64_t pr_timespec;
+#endif
+
+#ifdef __cplusplus
 namespace nk {
 namespace work {
 
@@ -28,7 +36,9 @@ struct selfchecks_option* selfchecks_parse_args(int argc, char** argv);
 
 void selfchecks_free_option(struct selfchecks_option* opt);
 
-int selfchecks_main(struct selfchecks_option* opt);
+int selfchecks_main(struct selfchecks_option* opt, pr_timespec time[]);
+
+pr_timespec pr_getnowtime();
 
 #ifdef __cplusplus
 } // extern "C"

@@ -1,5 +1,6 @@
 .vscode/
+.vs/
 .metadata/
 build*/
-.pc/
+/.pc/
 /patches/
