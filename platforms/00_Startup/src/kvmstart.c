@@ -1,5 +1,5 @@
 
-// SPDX-License-Identifier: MIT-0
+// SPDX-License-Identifier: BSD-1-Clause
 #include <stdint.h>
 
 #include <stdio.h>
