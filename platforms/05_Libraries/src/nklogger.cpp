@@ -22,9 +22,150 @@
 #include "nklogger.h"
 #include <cstddef>
 #include <cstdint>
+#include <cstdarg>
 
+#include <cstdio>
 
-void nkpr_fatal(const char* fmt, ...)
+using std::va_list;
+
+#define WEAK_SYMBOL __attribute__((weak))
+
+using std::vfprintf;
+
+void nkpr_emerg(const char* fmt, va_list varg) WEAK_SYMBOL;
+void nkpr_alert(const char* fmt, va_list varg) WEAK_SYMBOL;
+void nkpr_fatal(const char* fmt, va_list varg) WEAK_SYMBOL;
+void nkpr_emerg(const char* fmt, va_list varg) WEAK_SYMBOL;
+void nkpr_error(const char* fmt, va_list varg) WEAK_SYMBOL;
+void nkpr_warn(const char* fmt, va_list varg) WEAK_SYMBOL;
+void nkpr_notice(const char* fmt, va_list varg) WEAK_SYMBOL;
+void nkpr_info(const char* fmt, va_list varg) WEAK_SYMBOL;
+void nkpr_debug(const char* fmt, va_list varg) WEAK_SYMBOL;
+void nkpr_trace(const char* fmt, va_list varg) WEAK_SYMBOL;
+
+void nkpr_emerg(const char* fmt, va_list varg)
 {
-	
+	vfprintf(stderr, fmt, varg);
 }
+
+void nkpr_alert(const char* fmt, va_list varg)
+{
+	vfprintf(stderr, fmt, varg);
+}
+
+void nkpr_fatal(const char* fmt, va_list varg)
+{
+	vfprintf(stderr, fmt, varg);
+}
+
+void nkpr_error(const char* fmt, va_list varg)
+{
+	vfprintf(stderr, fmt, varg);
+}
+
+void nkpr_warn(const char* fmt, va_list varg)
+{
+	vfprintf(stderr, fmt, varg);
+}
+
+void nkpr_notice(const char* fmt, va_list varg)
+{
+	vfprintf(stdout, fmt, varg);
+}
+
+void nkpr_info(const char* fmt, va_list varg)
+{
+	vfprintf(stdout, fmt, varg);
+}
+
+void nkpr_debug(const char* fmt, va_list varg)
+{
+	vfprintf(stdout, fmt, varg);
+}
+
+void nkpr_trace(const char* fmt, va_list varg)
+{
+	vfprintf(stdout, fmt, varg);
+}
+
+void nk_emerg(const char* fmt, ...)
+{
+	va_list varg;
+
+	va_start(varg, fmt);
+	nkpr_emerg(fmt, varg);
+	va_end(varg);
+}
+
+void nk_alert(const char* fmt, ...)
+{
+	va_list varg;
+
+	va_start(varg, fmt);
+	nkpr_alert(fmt, varg);
+	va_end(varg);
+}
+
+void nk_fatal(const char* fmt, ...)
+{
+	va_list varg;
+
+	va_start(varg, fmt);
+	nkpr_fatal(fmt, varg);
+	va_end(varg);
+}
+
+void nk_error(const char* fmt, ...)
+{
+	va_list varg;
+
+	va_start(varg, fmt);
+	nkpr_error(fmt, varg);
+	va_end(varg);
+}
+
+void nk_warn(const char* fmt, ...)
+{
+	va_list varg;
+
+	va_start(varg, fmt);
+	nkpr_warn(fmt, varg);
+	va_end(varg);
+}
+
+void nk_notice(const char* fmt, ...)
+{
+	va_list varg;
+
+	va_start(varg, fmt);
+	nkpr_notice(fmt, varg);
+	va_end(varg);
+}
+
+void nk_info(const char* fmt, ...)
+{
+	va_list varg;
+
+	va_start(varg, fmt);
+	nkpr_info(fmt, varg);
+	va_end(varg);
+}
+
+void nk_debug(const char* fmt, ...)
+{
+	va_list varg;
+
+	va_start(varg, fmt);
+	nkpr_debug(fmt, varg);
+	va_end(varg);
+}
+
+void nk_trace(const char* fmt, ...)
+{
+	va_list varg;
+
+	va_start(varg, fmt);
+	nkpr_trace(fmt, varg);
+	va_end(varg);
+}
+
