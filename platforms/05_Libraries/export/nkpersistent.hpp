@@ -30,7 +30,45 @@
 namespace nk {
 namespace persistent {
 
+static inline int popcount(uint32_t bits)
+{
 
+}
+
+class ArrayBase {
+public:
+    std::uint32_t  bitmap_;
+    std::uint32_t  next_;
+    std::uintptr_t ptr_;
+    ArrayBase*     base_;
+
+public:
+    ArrayBase(std::size_t size);
+    
+    void* at(std::size_t index) {
+        if (index < 32) {
+            if ((bitmap_ & (1 << index)) != 0) {
+                return (void*)(((void**)ptr_)[popcount((bitmap_ & ((1 << index))))]);
+            } else {
+                return nullptr;
+            }
+        } else {
+            if (next_ != 0) {
+                for (std::size_t s=0; base_[s].next_ != 0; s++) {
+                    if ((base_[s].next_ <= index) && (index < (base_[s].next_ + 32))) {
+                        if ((base_[s].bitmap_ & (1 << (index - s))) != 0) {
+                            return (void*)(((void**)base_[s].ptr_)[popcount(base_[s].bitmap_ & ((1 << (index - s))))]);
+                        } else {
+                            return nullptr;
+                        }
+                    }
+                }
+            } else {
+                return nullptr;
+            }
+        }
+    }
+};
 
 }
 }
